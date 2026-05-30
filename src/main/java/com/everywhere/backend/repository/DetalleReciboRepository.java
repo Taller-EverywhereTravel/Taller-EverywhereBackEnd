@@ -12,27 +12,26 @@ import java.util.Optional;
 @Repository
 public interface DetalleReciboRepository extends JpaRepository<DetailReceipt, Integer> {
     
-    @Query("SELECT d FROM DetalleRecibo d WHERE d.recibo.id = :reciboId")
-    List<DetailReceipt> findByReciboId(@Param("reciboId") Integer reciboId);
+    List<DetailReceipt> findByReceiptId(Integer reciboId);
     
-    @Query("SELECT d FROM DetalleRecibo d WHERE d.producto.id = :productoId")
-    List<DetailReceipt> findByProductoId(@Param("productoId") Long productoId);
+    List<DetailReceipt> findByProductId(Long productoId);
 
-    // Métodos sin lazy loading
-    @Query("SELECT DISTINCT d FROM DetalleRecibo d " +
-           "LEFT JOIN FETCH d.recibo " +
-           "LEFT JOIN FETCH d.producto")
+    @Query("SELECT DISTINCT d FROM DetailReceipt d " +
+           "LEFT JOIN FETCH d.receipt " +
+           "LEFT JOIN FETCH d.product")
     List<DetailReceipt> findAllWithRelations();
 
-    @Query("SELECT DISTINCT d FROM DetalleRecibo d " +
-           "LEFT JOIN FETCH d.recibo " +
-           "LEFT JOIN FETCH d.producto " +
-           "WHERE d.id = :id")
-    Optional<DetailReceipt> findByIdWithRelations(@Param("id") Integer id);
+    // Se eliminó @Param y se usa ?1
+    @Query("SELECT DISTINCT d FROM DetailReceipt d " +
+           "LEFT JOIN FETCH d.receipt " +
+           "LEFT JOIN FETCH d.product " +
+           "WHERE d.id = ?1")
+    Optional<DetailReceipt> findByIdWithRelations(Integer id);
 
-    @Query("SELECT DISTINCT d FROM DetalleRecibo d " +
-           "LEFT JOIN FETCH d.recibo " +
-           "LEFT JOIN FETCH d.producto " +
-           "WHERE d.recibo.id = :reciboId")
-    List<DetailReceipt> findByReciboIdWithRelations(@Param("reciboId") Integer reciboId);
+    // Se eliminó @Param, se usa ?1 y d.recibo.id -> d.receipt.id
+    @Query("SELECT DISTINCT d FROM DetailReceipt d " +
+           "LEFT JOIN FETCH d.receipt " +
+           "LEFT JOIN FETCH d.product " +
+           "WHERE d.receipt.id = ?1")
+    List<DetailReceipt> findByReciboIdWithRelations(Integer reciboId);
 }

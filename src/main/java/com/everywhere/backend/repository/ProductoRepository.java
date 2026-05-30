@@ -4,5 +4,5 @@ import com.everywhere.backend.model.entity.Product;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface ProductoRepository extends JpaRepository<Product, Integer> {
-    boolean existsProductosByTipo(String tipo);
+    boolean existsProductByType(String tipo);
 }

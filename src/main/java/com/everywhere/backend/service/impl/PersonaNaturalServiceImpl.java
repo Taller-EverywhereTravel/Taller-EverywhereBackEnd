@@ -50,7 +50,7 @@ public class PersonaNaturalServiceImpl implements PersonaNaturalService {
 
     @Override
     public List<PersonNaturalResponseDTO> findByDocumento(String documento) {
-        Optional<PersonNatural> personaNaturalOptional = personaNaturalRepository.findByDocumentoIgnoreCase(documento);
+        Optional<PersonNatural> personaNaturalOptional = personaNaturalRepository.findByDocumentIgnoreCase(documento);
         if (personaNaturalOptional.isEmpty())
             return List.of();
         return List.of(personaNaturalMapper.toResponseDTO(personaNaturalOptional.get()));
@@ -82,7 +82,7 @@ public class PersonaNaturalServiceImpl implements PersonaNaturalService {
     public PersonNaturalResponseDTO save(PersonNaturalRequestDTO personaNaturalRequestDTO) {
         // Validar que no exista ya una persona con el mismo documento
         if (personaNaturalRequestDTO.getDocument() != null && !personaNaturalRequestDTO.getDocument().trim().isEmpty()) {
-            if (personaNaturalRepository.findByDocumentoIgnoreCase(personaNaturalRequestDTO.getDocument()).isPresent())
+            if (personaNaturalRepository.findByDocumentIgnoreCase(personaNaturalRequestDTO.getDocument()).isPresent())
                 throw new DataIntegrityViolationException("Ya existe una persona natural con el documento: " + personaNaturalRequestDTO.getDocument());
         }
 
@@ -118,7 +118,7 @@ public class PersonaNaturalServiceImpl implements PersonaNaturalService {
         // 🚀 OPTIMIZACIÓN 2: Si viene documento, validar duplicado ANTES de buscar el objeto completo
         if (personaNaturalRequestDTO.getDocument() != null && 
             !personaNaturalRequestDTO.getDocument().trim().isEmpty() &&
-            personaNaturalRepository.findByDocumentoIgnoreCaseAndIdNot(personaNaturalRequestDTO.getDocument(), id).isPresent()) {
+            personaNaturalRepository.findByDocumentIgnoreCaseAndIdNot(personaNaturalRequestDTO.getDocument(), id).isPresent()) {
             throw new BadRequestException("Ya existe otra persona natural con el documento: " + personaNaturalRequestDTO.getDocument());
         }
 

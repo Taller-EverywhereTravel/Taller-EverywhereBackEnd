@@ -35,7 +35,7 @@ public class OperadorServiceImpl implements OperadorService {
 
     @Override
     public OperatorResponseDTO findByNombre(String nombre) {
-        Operator operador = operadorRepository.findByNombre(nombre)
+        Operator operador = operadorRepository.findByName(nombre)
                 .orElseThrow(() -> new ResourceNotFoundException("Operador no encontrado con nombre: " + nombre));
 
         return operadorMapper.toResponseDTO(operador);
@@ -43,7 +43,7 @@ public class OperadorServiceImpl implements OperadorService {
 
     @Override
     public OperatorResponseDTO save(OperatorRequestDTO operadorRequestDTO) {
-        if (operadorRepository.existsByNombreIgnoreCase(operadorRequestDTO.getName()))
+        if (operadorRepository.existsByNameIgnoreCase(operadorRequestDTO.getName()))
             throw new DataIntegrityViolationException("Ya existe un operador con el nombre: " + operadorRequestDTO.getName());
         Operator operador = operadorMapper.toEntity(operadorRequestDTO);
         return operadorMapper.toResponseDTO(operadorRepository.save(operador));
@@ -58,7 +58,7 @@ public class OperadorServiceImpl implements OperadorService {
 
         if (operadorRequestDTO.getName() != null && 
             !operadorRequestDTO.getName().equalsIgnoreCase(operador.getName()) &&
-            operadorRepository.existsByNombreIgnoreCase(operadorRequestDTO.getName())) {
+            operadorRepository.existsByNameIgnoreCase(operadorRequestDTO.getName())) {
             throw new DataIntegrityViolationException("Ya existe otro operador con el nombre: " + operadorRequestDTO.getName());
         }
         

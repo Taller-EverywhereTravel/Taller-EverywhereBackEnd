@@ -52,7 +52,7 @@ public class UserServiceImpl implements UserService {
             Claims claims = tokenProvider.getJwtParser().parseClaimsJws(token).getBody();
             String email = claims.getSubject();
 
-            User user = userRepository.findByEmail(email)
+            User user = userRepository.findByMail(email)
                     .orElseThrow(() -> new UserNotFoundException("Usuario no encontrado con email: " + email));
 
             return user.getId();

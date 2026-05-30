@@ -116,26 +116,26 @@ public class DetalleDocumentoServiceImpl implements DetalleDocumentoService {
     public List<DetailDocumentResponseDto> findByDocumentoId(Integer documentoId) {
         if (!documentoRepository.existsById(documentoId)) 
             throw new ResourceNotFoundException("Documento no encontrado con id: " + documentoId);
-        return mapToResponseList(detalleDocumentoRepository.findByDocumentoId(documentoId));
+        return mapToResponseList(detalleDocumentoRepository.findByDocumentId(documentoId));
     }
 
     @Override
     public List<DetailDocumentResponseDto> findByNumero(String numero) {
-        return mapToResponseList(detalleDocumentoRepository.findByNumeroContainingIgnoreCase(numero));
+        return mapToResponseList(detalleDocumentoRepository.findByNumberContainingIgnoreCase(numero));
     }
 
     @Override
     public List<DetailDocumentResponseDto> findByPersonaNaturalId(Integer personaNaturalId) {
         if (!personaNaturalRepository.existsById(personaNaturalId)) 
             throw new ResourceNotFoundException("PersonaNatural no encontrada con id: " + personaNaturalId);
-        return mapToResponseList(detalleDocumentoRepository.findByPersonaNaturalId(personaNaturalId));
+        return mapToResponseList(detalleDocumentoRepository.findByPersonNaturalId(personaNaturalId));
     }
 
      @Override
     public List<DetailDocumentResponseDto> findByPersonaId(Integer personaId) {
-        PersonNatural personaNatural = personaNaturalRepository.findByPersonasId(personaId)
+        PersonNatural personaNatural = personaNaturalRepository.findByPersonId(personaId)
             .orElseThrow(() -> new ResourceNotFoundException("PersonaNatural no encontrada con personaId: " + personaId));
-        return mapToResponseList(detalleDocumentoRepository.findByPersonaNaturalId(personaNatural.getId()));
+        return mapToResponseList(detalleDocumentoRepository.findByPersonNaturalId(personaNatural.getId()));
     }
 
     private List<DetailDocumentResponseDto> mapToResponseList(List<DetailDocument> detalles) {
@@ -147,7 +147,7 @@ public class DetalleDocumentoServiceImpl implements DetalleDocumentoService {
         if (prefijo == null || prefijo.trim().isEmpty()) {
             return new ArrayList<>();
         }
-        List<DetailDocument> detalles = detalleDocumentoRepository.findByNumeroStartingWithIgnoreCase(prefijo.trim());
+        List<DetailDocument> detalles = detalleDocumentoRepository.findByNumberStartingWithIgnoreCase(prefijo.trim());
         return detalles.stream()
                 .map(detalle -> DetailDocumentSearchDto.builder()
                         .number(detalle.getNumber())
@@ -216,7 +216,7 @@ public class DetalleDocumentoServiceImpl implements DetalleDocumentoService {
         }
         
         // Usar query optimizada con JOIN FETCH para evitar problema N+1
-        List<DetailDocument> detalles = detalleDocumentoRepository.findByNumeroContainingWithPersonasAndDocumento(numero.trim());
+        List<DetailDocument> detalles = detalleDocumentoRepository.findByNumberContainingWithPersonAndDocument(numero.trim());
         
         // Agrupar por número de documento (manejando números nulos)
         return detalles.stream()

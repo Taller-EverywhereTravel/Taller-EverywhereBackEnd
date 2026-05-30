@@ -35,34 +35,34 @@ public class SucursalServiceImpl implements SucursalService {
 
     @Override
     public List<BranchResponseDTO> findByDescripcion(String descripcion) {
-        return mapToResponseList(sucursalRepository.findByDescripcionContainingIgnoreCase(descripcion));
+        return mapToResponseList(sucursalRepository.findByDescriptionContainingIgnoreCase(descripcion));
     }
 
     @Override
     public BranchResponseDTO findByDescripcionExacta(String descripcion) {
-        Branch sucursal = sucursalRepository.findByDescripcionIgnoreCase(descripcion)
+        Branch sucursal = sucursalRepository.findByDescriptionIgnoreCase(descripcion)
                 .orElseThrow(() -> new ResourceNotFoundException("Sucursal no encontrada con descripción: " + descripcion));
         return sucursalMapper.toResponseDTO(sucursal);
     }
 
     @Override
     public List<BranchResponseDTO> findByEstado(Boolean estado) {
-        return mapToResponseList(sucursalRepository.findByEstado(estado));
+        return mapToResponseList(sucursalRepository.findByStatus(estado));
     }
 
     @Override
     public List<BranchResponseDTO> findByEstadoAndDescripcion(Boolean estado, String descripcion) {
-        return mapToResponseList(sucursalRepository.findByEstadoAndDescripcionContainingIgnoreCase(estado, descripcion));
+        return mapToResponseList(sucursalRepository.findByStatusAndDescriptionContainingIgnoreCase(estado, descripcion));
     }
 
     @Override
     public List<BranchResponseDTO> findByDireccion(String direccion) {
-        return mapToResponseList(sucursalRepository.findByDireccionContainingIgnoreCase(direccion));
+        return mapToResponseList(sucursalRepository.findByAddressContainingIgnoreCase(direccion));
     }
 
     @Override
     public BranchResponseDTO findByEmail(String email) {
-        Branch sucursal = sucursalRepository.findByEmail(email)
+        Branch sucursal = sucursalRepository.findByMail(email)
                 .orElseThrow(() -> new ResourceNotFoundException("Sucursal no encontrada con email: " + email));
         return sucursalMapper.toResponseDTO(sucursal);
     }
@@ -71,7 +71,7 @@ public class SucursalServiceImpl implements SucursalService {
     public BranchResponseDTO save(BranchRequestDTO sucursalRequestDTO) {
         if (sucursalRequestDTO.getMail() != null &&
                 !sucursalRequestDTO.getMail().trim().isEmpty() &&
-                sucursalRepository.existsByEmail(sucursalRequestDTO.getMail())) {
+                sucursalRepository.existsByMail(sucursalRequestDTO.getMail())) {
             throw new DataIntegrityViolationException("Ya existe una sucursal con el email: " + sucursalRequestDTO.getMail());
         }
 
@@ -91,7 +91,7 @@ public class SucursalServiceImpl implements SucursalService {
         if (sucursalRequestDTO.getMail() != null &&
                 !sucursalRequestDTO.getMail().trim().isEmpty() &&
                 !sucursalRequestDTO.getMail().equals(existing.getMail()) &&
-                sucursalRepository.existsByEmail(sucursalRequestDTO.getMail())) {
+                sucursalRepository.existsByMail(sucursalRequestDTO.getMail())) {
             throw new BadRequestException("Ya existe una sucursal con el email: " + sucursalRequestDTO.getMail());
         }
 

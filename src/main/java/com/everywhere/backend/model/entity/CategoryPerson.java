@@ -33,6 +33,6 @@ public class CategoryPerson {
 	@Column(name = "cat_per_upd_tmp")
 	private LocalDateTime updated;
 
-	@OneToMany(mappedBy = "categoriaPersona", fetch = FetchType.LAZY)
+	@OneToMany(mappedBy = "categoryPerson", fetch = FetchType.LAZY)
     private List<PersonNatural> personNatural;
 }

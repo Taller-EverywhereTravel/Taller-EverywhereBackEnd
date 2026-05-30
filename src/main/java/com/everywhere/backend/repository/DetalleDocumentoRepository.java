@@ -7,21 +7,21 @@ import org.springframework.data.jpa.repository.Query;
 import java.util.List;
 
 public interface DetalleDocumentoRepository extends JpaRepository<DetailDocument, Integer> {
-    List<DetailDocument> findByDocumentoId(Integer documentoId);
-    List<DetailDocument> findByNumeroContainingIgnoreCase(String numero);
-    List<DetailDocument> findByPersonaNaturalId(Integer personaNaturalId);
-    List<DetailDocument> findByNumeroStartingWithIgnoreCase(String numero);
+    List<DetailDocument> findByDocumentId(Integer documentoId);
+    List<DetailDocument> findByNumberContainingIgnoreCase(String numero);
+    List<DetailDocument> findByPersonNaturalId(Integer personaNaturalId);
+    List<DetailDocument> findByNumberStartingWithIgnoreCase(String numero);
     
-    @Query("SELECT DISTINCT dd FROM DetalleDocumento dd " +
-           "LEFT JOIN FETCH dd.documento " +
-           "LEFT JOIN FETCH dd.personaNatural pn " +
-           "LEFT JOIN FETCH pn.personas")
+    @Query("SELECT DISTINCT dd FROM DetailDocument dd " +
+           "LEFT JOIN FETCH dd.document " +
+           "LEFT JOIN FETCH dd.personNatural pn " +
+           "LEFT JOIN FETCH pn.person")
     List<DetailDocument> findAllWithPersonasAndDocumento();
     
-    @Query("SELECT DISTINCT dd FROM DetalleDocumento dd " +
-           "LEFT JOIN FETCH dd.documento " +
-           "LEFT JOIN FETCH dd.personaNatural pn " +
-           "LEFT JOIN FETCH pn.personas " +
-           "WHERE LOWER(dd.numero) LIKE LOWER(CONCAT(:numero, '%'))")
-    List<DetailDocument> findByNumeroContainingWithPersonasAndDocumento(String numero);
+    @Query("SELECT DISTINCT dd FROM DetailDocument dd " +
+           "LEFT JOIN FETCH dd.document " +
+           "LEFT JOIN FETCH dd.personNatural pn " +
+           "LEFT JOIN FETCH pn.person " +
+           "WHERE LOWER(dd.number) LIKE LOWER(CONCAT(?1, '%'))")
+    List<DetailDocument> findByNumberContainingWithPersonAndDocument(String numero);
 }

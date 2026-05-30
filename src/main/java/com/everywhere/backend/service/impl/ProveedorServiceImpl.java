@@ -69,7 +69,7 @@ public class ProveedorServiceImpl implements ProveedorService {
             throw new ResourceNotFoundException("Proveedor no encontrado con ID: " + id);
         }
 
-        long cotizacionesCount = detalleCotizacionRepository.countByProveedorId(id);
+        long cotizacionesCount = detalleCotizacionRepository.countBySupplierId(id);
         if (cotizacionesCount > 0) {
             throw new ConflictException(
                     "No se puede eliminar este proveedor porque tiene " + cotizacionesCount + " cotización(es) asociada(s).",
@@ -77,7 +77,7 @@ public class ProveedorServiceImpl implements ProveedorService {
             );
         }
 
-        long liquidacionesCount = detalleLiquidacionRepository.countByProveedorId(id);
+        long liquidacionesCount = detalleLiquidacionRepository.countBySupplierId(id);
         if (liquidacionesCount > 0) {
             throw new ConflictException(
                     "No se puede eliminar este proveedor porque tiene " + liquidacionesCount + " liquidación(es) asociada(s).",

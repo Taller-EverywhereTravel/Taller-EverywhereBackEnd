@@ -9,13 +9,13 @@ import java.util.Optional;
 
 @Repository
 public interface SucursalRepository extends JpaRepository<Branch, Integer> {
-    List<Branch> findByDescripcionContainingIgnoreCase(String descripcion);
-    Optional<Branch> findByDescripcionIgnoreCase(String descripcion);
-    List<Branch> findByEstado(Boolean estado);
-    List<Branch> findByEstadoAndDescripcionContainingIgnoreCase(Boolean estado, String descripcion);
-    List<Branch> findByDireccionContainingIgnoreCase(String direccion);
-    Optional<Branch> findByEmail(String email);
-    boolean existsByEmail(String email);
+    List<Branch> findByDescriptionContainingIgnoreCase(String descripcion);
+    Optional<Branch> findByDescriptionIgnoreCase(String descripcion);
+    List<Branch> findByStatus(Boolean estado);
+    List<Branch> findByStatusAndDescriptionContainingIgnoreCase(Boolean estado, String descripcion);
+    List<Branch> findByAddressContainingIgnoreCase(String direccion);
+    Optional<Branch> findByMail(String email);
+    boolean existsByMail(String email);
 
-    boolean existsByDescripcion(String descripcion);
+    boolean existsByDescription(String descripcion);
 }

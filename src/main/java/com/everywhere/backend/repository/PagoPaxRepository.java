@@ -11,12 +11,18 @@ import java.util.Optional;
 @Repository
 public interface PagoPaxRepository extends JpaRepository<PaymentPax, Integer> {
 
-    @Query("SELECT p FROM PagoPax p LEFT JOIN FETCH p.liquidacion LEFT JOIN FETCH p.formaPago WHERE p.id = :id")
+    // 1. Mantenemos @Query por los JOIN FETCH, usamos la entidad correcta y ?1
+    @Query("SELECT p FROM PaymentPax p " +
+           "LEFT JOIN FETCH p.liquidation " +
+           "LEFT JOIN FETCH p.methodPayment " +
+           "WHERE p.id = ?1")
     Optional<PaymentPax> findByIdWithRelations(Integer id);
 
-    @Query("SELECT p FROM PagoPax p LEFT JOIN FETCH p.liquidacion LEFT JOIN FETCH p.formaPago")
+    // 2. Mantenemos @Query por los JOIN FETCH, traducimos entidad y relaciones
+    @Query("SELECT p FROM PaymentPax p " +
+           "LEFT JOIN FETCH p.liquidation " +
+           "LEFT JOIN FETCH p.methodPayment")
     List<PaymentPax> findAllWithRelations();
 
-    @Query("SELECT p FROM PagoPax p WHERE p.liquidacion.id = :liquidacionId")
-    List<PaymentPax> findByLiquidacionId(Integer liquidacionId);
+    List<PaymentPax> findByLiquidationId(Integer liquidacionId);
 }

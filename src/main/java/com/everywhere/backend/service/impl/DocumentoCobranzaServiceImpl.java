@@ -67,7 +67,7 @@ public class DocumentoCobranzaServiceImpl implements DocumentoCobranzaService {
         if (cotizacionId == null)
             throw new IllegalArgumentException("El ID de la cotización no puede ser nulo");
 
-        if (documentoCobranzaRepository.findByCotizacionId(cotizacionId).isPresent())
+        if (documentoCobranzaRepository.findByQuotationId(cotizacionId).isPresent())
             throw new DataIntegrityViolationException(
                     "Ya existe un documento de cobranza para la cotización ID: " + cotizacionId);
 
@@ -89,13 +89,13 @@ public class DocumentoCobranzaServiceImpl implements DocumentoCobranzaService {
             // Validar que la PersonaJuridica esté asociada a la PersonaNatural de la cotización
             if (cotizacion.getPerson() != null) {
                 Integer personaId = cotizacion.getPerson().getId();
-                PersonNatural personaNatural = personaNaturalRepository.findByPersonasId(personaId)
+                PersonNatural personaNatural = personaNaturalRepository.findByPersonId(personaId)
                         .orElse(null);
 
                 if (personaNatural != null) {
                     // Verificar que existe la relación NaturalJuridico
                     boolean relacionExiste = naturalJuridicoRepository
-                            .findByPersonaNaturalIdAndPersonaJuridicaId(personaNatural.getId(), personaJuridicaId)
+                            .findByPersonNaturalIdAndPersonJuridicId(personaNatural.getId(), personaJuridicaId)
                             .isPresent();
 
                     if (!relacionExiste) {
@@ -147,7 +147,7 @@ public class DocumentoCobranzaServiceImpl implements DocumentoCobranzaService {
 
     @Override
     public DocumentCollectionResponseDTO findBySerieAndCorrelativo(String serie, Integer correlativo) {
-        DocumentCollection documentoCobranza = documentoCobranzaRepository.findBySerieAndCorrelativo(serie, correlativo)
+        DocumentCollection documentoCobranza = documentoCobranzaRepository.findBySerieAndCorrelative(serie, correlativo)
                 .orElseThrow(() -> new ResourceNotFoundException(
                         "Documento de cobranza no encontrado con serie: " + serie + " y correlativo: " + correlativo));
         return documentoCobranzaMapper.toResponseDTO(documentoCobranza);
@@ -160,7 +160,7 @@ public class DocumentoCobranzaServiceImpl implements DocumentoCobranzaService {
 
     @Override
     public DocumentCollectionResponseDTO findByCotizacionId(Integer cotizacionId) {
-        DocumentCollection documentoCobranza = documentoCobranzaRepository.findByCotizacionId(cotizacionId)
+        DocumentCollection documentoCobranza = documentoCobranzaRepository.findByQuotationId(cotizacionId)
                 .orElseThrow(() -> new ResourceNotFoundException(
                         "Documento de cobranza no encontrado para cotización ID: " + cotizacionId));
         return documentoCobranzaMapper.toResponseDTO(documentoCobranza);
@@ -199,12 +199,12 @@ public class DocumentoCobranzaServiceImpl implements DocumentoCobranzaService {
             // Validar que la PersonaJuridica esté asociada a la PersonaNatural del documento
             if (documentoCobranza.getPerson() != null) {
                 Integer personaId = documentoCobranza.getPerson().getId();
-                PersonNatural personaNatural = personaNaturalRepository.findByPersonasId(personaId)
+                PersonNatural personaNatural = personaNaturalRepository.findByPersonId(personaId)
                         .orElse(null);
 
                 if (personaNatural != null) {
                     boolean relacionExiste = naturalJuridicoRepository
-                            .findByPersonaNaturalIdAndPersonaJuridicaId(personaNatural.getId(),
+                            .findByPersonNaturalIdAndPersonJuridicId(personaNatural.getId(),
                                     documentoCobranzaUpdateDTO.getPersonJuridicId())
                             .isPresent();
 

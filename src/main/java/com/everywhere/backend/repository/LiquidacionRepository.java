@@ -13,66 +13,65 @@ import java.util.Optional;
 public interface LiquidacionRepository extends JpaRepository<Liquidation, Integer> {
 
     @EntityGraph(attributePaths = {
-            "producto",
-            "formaPago",
-            "cotizacion",
-            "cotizacion.counter",
-            "cotizacion.estadoCotizacion",
-            "cotizacion.formaPago",
-            "cotizacion.personas",
-            "cotizacion.sucursal",
-            "cotizacion.carpeta",
-            "carpeta",
-            "observacionesLiquidacion"
+            "product",
+            "methodPayment",
+            "quotation",
+            "quotation.counter",
+            "quotation.statusQuotation",
+            "quotation.methodPayment",
+            "quotation.persons", 
+            "quotation.branch",
+            "quotation.folder",
+            "folder",
+            "observacionesLiquidacion" // Se mantiene igual porque así estaba en tu Entidad
     })
     @NonNull
     List<Liquidation> findAll();
 
     @EntityGraph(attributePaths = {
-            "producto",
-            "formaPago",
-            "cotizacion",
-            "cotizacion.counter",
-            "cotizacion.estadoCotizacion",
-            "cotizacion.formaPago",
-            "cotizacion.personas",
-            "cotizacion.sucursal",
-            "cotizacion.carpeta",
-            "carpeta",
+            "product",
+            "methodPayment",
+            "quotation",
+            "quotation.counter",
+            "quotation.statusQuotation",
+            "quotation.methodPayment",
+            "quotation.persons",
+            "quotation.branch",
+            "quotation.folder",
+            "folder",
             "observacionesLiquidacion"
     })
     @NonNull
     Optional<Liquidation> findById(@NonNull Integer id);
 
-    // Buscar liquidaciones por carpeta
     @EntityGraph(attributePaths = {
-            "producto",
-            "formaPago",
-            "cotizacion",
-            "cotizacion.counter",
-            "cotizacion.estadoCotizacion",
-            "cotizacion.formaPago",
-            "cotizacion.personas",
-            "cotizacion.sucursal",
-            "cotizacion.carpeta",
-            "carpeta",
+            "product",
+            "methodPayment",
+            "quotation",
+            "quotation.counter",
+            "quotation.statusQuotation",
+            "quotation.methodPayment",
+            "quotation.persons",
+            "quotation.branch",
+            "quotation.folder",
+            "folder",
             "observacionesLiquidacion"
     })
-    List<Liquidation> findByCarpetaId(Integer carpetaId);
+    List<Liquidation> findByFolderId(Integer folderId);
 
-    // Buscar liquidaciones sin carpeta asignada
+    // MAGIA: Carpeta -> Folder
     @EntityGraph(attributePaths = {
-            "producto",
-            "formaPago",
-            "cotizacion",
-            "cotizacion.counter",
-            "cotizacion.estadoCotizacion",
-            "cotizacion.formaPago",
-            "cotizacion.personas",
-            "cotizacion.sucursal",
-            "cotizacion.carpeta",
-            "carpeta",
+            "product",
+            "methodPayment",
+            "quotation",
+            "quotation.counter",
+            "quotation.statusQuotation",
+            "quotation.methodPayment",
+            "quotation.persons",
+            "quotation.branch",
+            "quotation.folder",
+            "folder",
             "observacionesLiquidacion"
     })
-    List<Liquidation> findByCarpetaIsNull();
+    List<Liquidation> findByFolderIsNull();
 }

@@ -35,8 +35,8 @@ public class SupplierGroupContact {
     @Column(name = "cat_upd_tmp")
     private LocalDateTime updated;
 
-    @OneToMany(mappedBy = "grupoContacto", fetch = FetchType.LAZY)
-    @JsonIgnoreProperties("grupoContacto")
+    @OneToMany(mappedBy = "groupContact", fetch = FetchType.LAZY)
+    @JsonIgnoreProperties("groupContact")
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     private List<SupplierContact> contact;

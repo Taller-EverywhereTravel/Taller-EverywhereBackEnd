@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface OperadorRepository extends JpaRepository<Operator, Integer> {
-    Optional<Operator> findByNombre(String nombre);
-    List<Operator> nombre(String nombre);
-    boolean existsByNombreIgnoreCase(String nombre);
+    Optional<Operator> findByName(String nombre);
+    List<Operator> name(String nombre);
+    boolean existsByNameIgnoreCase(String nombre);
 }

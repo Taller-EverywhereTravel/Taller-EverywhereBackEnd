@@ -10,22 +10,20 @@ import java.util.List;
 
 @Repository
 public interface CotizacionRepository extends JpaRepository<Quotation, Integer> {
-    @Query("SELECT MAX(c.id) FROM Cotizacion c")
+    @Query("SELECT MAX(q.id) FROM Quotation q")
     Integer findMaxId();
 
-    @Query("SELECT c FROM Cotizacion c WHERE c.id NOT IN (SELECT l.cotizacion.id FROM Liquidacion l WHERE l.cotizacion IS NOT NULL)")
-    List<Quotation> findCotizacionesSinLiquidacion();
+    @Query("SELECT q FROM Quotation q WHERE q.id NOT IN (SELECT l.quotation.id FROM Liquidation l WHERE l.quotation IS NOT NULL)")
+    List<Quotation> findQuotationWithoutLiquidation();
 
-    @Query("SELECT COUNT(c) FROM Cotizacion c WHERE c.formaPago.id = :formaPagoId")
-    long countByFormaPagoId(@Param("formaPagoId") Integer formaPagoId);
+    long countByMethodPaymentId(Integer formaPagoId);
 
-    @Query("SELECT COUNT(c) FROM Cotizacion c WHERE c.estadoCotizacion.id = :estado")
-    long countByEstadoCotizacionId(@Param("estado") int estado);
+    long countByStatusQuotationId(int estado);
 
     List<Quotation> findByid(int id);
 
     // Métodos para gestión de carpetas
-    List<Quotation> findByCarpetaId(Integer carpetaId);
+    List<Quotation> findByFolderId(Integer carpetaId);
 
-    List<Quotation> findByCarpetaIsNull();
+    List<Quotation> findByFolderIsNull();
 }

@@ -42,7 +42,7 @@ public class DetalleCotizacionServiceImpl implements DetalleCotizacionService {
         if (!cotizacionRepository.existsById(cotizacionId))
             throw new ResourceNotFoundException("Cotización no encontrada con ID: " + cotizacionId);
         
-        return mapToResponseList(detalleCotizacionRepository.findByCotizacionId(cotizacionId));
+        return mapToResponseList(detalleCotizacionRepository.findByQuotationId(cotizacionId));
     }
 
     @Override

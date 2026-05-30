@@ -31,13 +31,13 @@ public class TelefonoPersonaServiceImpl implements TelefonoPersonaService {
 
     @Override
     public Optional<PhonePersonResponseDTO> findById(Integer telefonoId, Integer personaId) {
-        return telefonoPersonaRepository.findByIdAndPersonaId(telefonoId, personaId)
+        return telefonoPersonaRepository.findByIdAndPersonId(telefonoId, personaId)
                 .map(telefonoPersonaMapper::toResponseDTO);
     }
 
     @Override
     public List<PhonePersonResponseDTO> findByPersonaId(Integer personaId) {
-        return telefonoPersonaRepository.findByPersonaId(personaId)
+        return telefonoPersonaRepository.findByPersonId(personaId)
                 .stream()
                 .map(telefonoPersonaMapper::toResponseDTO)
                 .toList();
@@ -57,7 +57,7 @@ public class TelefonoPersonaServiceImpl implements TelefonoPersonaService {
 
     @Override
     public PhonePersonResponseDTO update(Integer personaId, PhonePersonRequestDTO telefonoPersonaRequestDTO, Integer telefonoId) {
-        PhonePerson telefono = telefonoPersonaRepository.findByIdAndPersonaId(telefonoId, personaId)
+        PhonePerson telefono = telefonoPersonaRepository.findByIdAndPersonId(telefonoId, personaId)
                 .orElseThrow(() -> new ResourceNotFoundException("Teléfono no encontrado con ID: " + telefonoId + " para la persona con ID: "+ personaId));
 
         telefonoPersonaMapper.updateEntityFromDTO(telefonoPersonaRequestDTO, telefono);
@@ -67,7 +67,7 @@ public class TelefonoPersonaServiceImpl implements TelefonoPersonaService {
 
     @Override
     public void deleteById(Integer telefonoId, Integer personaId) {
-        if (!telefonoPersonaRepository.existsByIdAndPersonaId(telefonoId, personaId))
+        if (!telefonoPersonaRepository.existsByIdAndPersonId(telefonoId, personaId))
             throw new ResourceNotFoundException("Teléfono no encontrado con ID: " + telefonoId + " para la persona con ID: " + personaId);
         telefonoPersonaRepository.deleteById(telefonoId);
     }

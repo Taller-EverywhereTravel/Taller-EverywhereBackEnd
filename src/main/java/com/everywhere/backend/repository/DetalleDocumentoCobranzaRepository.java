@@ -12,27 +12,24 @@ import java.util.Optional;
 @Repository
 public interface DetalleDocumentoCobranzaRepository extends JpaRepository<DetailDocumentCollection, Long> {
 
-    @Query("SELECT d FROM DetalleDocumentoCobranza d WHERE d.documentoCobranza.id = :documentoId")
-    List<DetailDocumentCollection> findByDocumentoCobranzaId(Long documentoId);
+    List<DetailDocumentCollection> findByDocumentCollectionId(Long documentoId);
     
-    @Query("SELECT d FROM DetalleDocumentoCobranza d WHERE d.producto.id = :productoId")
-    List<DetailDocumentCollection> findByProductoId(Long productoId);
+    List<DetailDocumentCollection> findByProductId(Long productoId);
 
-    // Métodos sin lazy loading
-    @Query("SELECT DISTINCT d FROM DetalleDocumentoCobranza d " +
-           "LEFT JOIN FETCH d.documentoCobranza " +
-           "LEFT JOIN FETCH d.producto")
+    @Query("SELECT DISTINCT d FROM DetailDocumentCollection d " +
+           "LEFT JOIN FETCH d.documentCollection " +
+           "LEFT JOIN FETCH d.product")
     List<DetailDocumentCollection> findAllWithRelations();
 
-    @Query("SELECT DISTINCT d FROM DetalleDocumentoCobranza d " +
-           "LEFT JOIN FETCH d.documentoCobranza " +
-           "LEFT JOIN FETCH d.producto " +
-           "WHERE d.id = :id")
-    Optional<DetailDocumentCollection> findByIdWithRelations(@Param("id") Long id);
+    @Query("SELECT DISTINCT d FROM DetailDocumentCollection d " +
+           "LEFT JOIN FETCH d.documentCollection " +
+           "LEFT JOIN FETCH d.product " +
+           "WHERE d.id = ?1")
+    Optional<DetailDocumentCollection> findByIdWithRelations(Long id);
 
-    @Query("SELECT DISTINCT d FROM DetalleDocumentoCobranza d " +
-           "LEFT JOIN FETCH d.documentoCobranza " +
-           "LEFT JOIN FETCH d.producto " +
-           "WHERE d.documentoCobranza.id = :documentoId")
-    List<DetailDocumentCollection> findByDocumentoCobranzaIdWithRelations(@Param("documentoId") Long documentoId);
+    @Query("SELECT DISTINCT d FROM DetailDocumentCollection d " +
+           "LEFT JOIN FETCH d.documentCollection " +
+           "LEFT JOIN FETCH d.product " +
+           "WHERE d.documentCollection.id = ?1")
+    List<DetailDocumentCollection> findByDocumentCollectionIdWithRelations(Long documentoId);
 }

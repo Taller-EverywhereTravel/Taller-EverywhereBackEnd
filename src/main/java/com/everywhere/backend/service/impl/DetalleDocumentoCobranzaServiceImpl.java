@@ -41,7 +41,7 @@ public class DetalleDocumentoCobranzaServiceImpl implements DetalleDocumentoCobr
     public List<DetailDocumentCollectionResponseDTO> findByDocumentoCobranzaId(Long documentoId) {
         if (!documentoCobranzaRepository.existsById(documentoId))
             throw new ResourceNotFoundException("Documento de cobranza no encontrado con ID: " + documentoId);
-        return mapToResponseList(detalleDocumentoCobranzaRepository.findByDocumentoCobranzaIdWithRelations(documentoId));
+        return mapToResponseList(detalleDocumentoCobranzaRepository.findByDocumentCollectionIdWithRelations(documentoId));
     }
 
     @Override

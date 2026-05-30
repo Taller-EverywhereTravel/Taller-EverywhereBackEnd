@@ -10,17 +10,16 @@ import java.util.List;
 
 public interface CarpetaRepository extends JpaRepository<Folder, Integer> {
 
-    List<Folder> findByCarpetaPadreId(Integer carpetaPadreId);
-    List<Folder> findByNivel(Integer nivel);
-    List<Folder> findByNombreContainingIgnoreCase(String nombre);
-    List<Folder> findByCreadoBetween(LocalDateTime inicio, LocalDateTime fin);
-    List<Folder> findByCreadoBetweenOrderByCreadoAsc(LocalDateTime inicio, LocalDateTime fin);
-    List<Folder> findByCarpetaPadreIsNull(); // Carpeta raíz (sin padre) 
-    List<Folder> findAllByOrderByCreadoDesc(); 
+    List<Folder> findByFolderFatherId(Integer carpetaPadreId);
+    List<Folder> findByLevel(Integer nivel);
+    List<Folder> findByNameContainingIgnoreCase(String nombre);
+    List<Folder> findByCreatedBetween(LocalDateTime inicio, LocalDateTime fin);
+    List<Folder> findByCreatedBetweenOrderByCreatedAsc(LocalDateTime inicio, LocalDateTime fin);
+    List<Folder> findByFolderFatherIsNull(); // Carpeta raíz (sin padre) 
+    List<Folder> findAllByOrderByCreatedDesc(); 
 
-    @Query("SELECT COUNT(c) > 0 FROM Carpeta c WHERE c.nombre = :nombre AND c.nivel = :nivel")
-    boolean existsByNombreAndNivel(@Param("nombre") String nombre, @Param("nivel") Integer nivel);
+    boolean existsByNameAndLevel(String nombre,Integer nivel);
 
-    @Query("SELECT c FROM Carpeta c WHERE YEAR(c.creado) = :anio AND MONTH(c.creado) = :mes")
-    List<Folder> findByAnioAndMes(@Param("anio") int anio, @Param("mes") int mes);
+    @Query("SELECT f FROM Folder f WHERE YEAR(f.created) = ?1 AND MONTH(f.created) = ?2")
+    List<Folder> findByAnioAndMes(int anio, int mes);
 }

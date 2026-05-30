@@ -74,7 +74,7 @@ public class PagoPaxServiceImpl implements PagoPaxService {
             throw new ResourceNotFoundException("Liquidación no encontrada con ID: " + liquidacionId);
         }
 
-        return pagoPaxRepository.findByLiquidacionId(liquidacionId).stream()
+        return pagoPaxRepository.findByLiquidationId(liquidacionId).stream()
                 .map(pagoPaxMapper::toResponseDTO)
                 .collect(Collectors.toList());
     }

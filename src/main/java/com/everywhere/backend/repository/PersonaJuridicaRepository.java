@@ -13,11 +13,11 @@ import java.util.Optional;
 public interface PersonaJuridicaRepository extends JpaRepository<PersonJuridic, Integer> {
     Optional<PersonJuridic> findByRucIgnoreCase(String ruc);
 
-    @Query(value = "SELECT * FROM persona_juridica WHERE UPPER(TRANSLATE(per_jurd_razSocial_vac, 'ÁÉÍÓÚáéíóú', 'AEIOUaeiou')) LIKE UPPER(TRANSLATE(:razonSocial, 'ÁÉÍÓÚáéíóú', 'AEIOUaeiou'))", nativeQuery = true)
-    List<PersonJuridic> findByRazonSocialIgnoreAccents(@Param("razonSocial") String razonSocial);
+    @Query(value = "SELECT * FROM persona_juridica WHERE UPPER(TRANSLATE(per_jurd_razSocial_vac, 'ÁÉÍÓÚáéíóú', 'AEIOUaeiou')) LIKE UPPER(TRANSLATE(?1, 'ÁÉÍÓÚáéíóú', 'AEIOUaeiou'))", nativeQuery = true)
+    List<PersonJuridic> findByRazonSocialIgnoreAccents(String razonSocial);
 
     // Método original mantenido para compatibilidad
-    List<PersonJuridic> findByRazonSocialIgnoreCase(String razonSocial);
-    Optional<PersonJuridic> findByPersonasId(Integer personaId);
+    List<PersonJuridic> findByNameCompanyIgnoreCase(String razonSocial);
+    Optional<PersonJuridic> findByPersonId(Integer personaId);
     Optional<PersonJuridic> findByRucIgnoreCaseAndIdNot(String ruc, Integer id);
 }

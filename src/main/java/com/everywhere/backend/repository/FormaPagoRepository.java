@@ -9,8 +9,8 @@ import java.util.Optional;
 
 @Repository
 public interface FormaPagoRepository extends JpaRepository<MethodPayment, Integer> {
-    Optional<MethodPayment> findByCodigo(Integer codigo); 
-    boolean existsByCodigo(Integer codigo);
-    List<MethodPayment> findByDescripcionContainingIgnoreCase(String descripcion);
-    Optional<MethodPayment> findByDescripcionIgnoreCase(String descripcion);
+    Optional<MethodPayment> findByCode(Integer codigo); 
+    boolean existsByCode(Integer codigo);
+    List<MethodPayment> findByDescriptionContainingIgnoreCase(String descripcion);
+    Optional<MethodPayment> findByDescriptionIgnoreCase(String descripcion);
 }

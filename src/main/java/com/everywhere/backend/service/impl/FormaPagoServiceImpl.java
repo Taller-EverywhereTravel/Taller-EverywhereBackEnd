@@ -38,13 +38,13 @@ public class FormaPagoServiceImpl implements FormaPagoService {
 
     @Override
     public MethodPaymentResponseDTO findByCodigo(Integer codigo) {
-        return formaPagoRepository.findByCodigo(codigo).map(formaPagoMapper::toResponseDTO)
+        return formaPagoRepository.findByCode(codigo).map(formaPagoMapper::toResponseDTO)
             .orElseThrow(() -> new ResourceNotFoundException("Forma de pago no encontrada con código: " + codigo));
     }
 
     @Override
     public List<MethodPaymentResponseDTO> findByDescripcion(String descripcion) {
-        return mapToResponseList(formaPagoRepository.findByDescripcionContainingIgnoreCase(descripcion));
+        return mapToResponseList(formaPagoRepository.findByDescriptionContainingIgnoreCase(descripcion));
     }
 
     @Override
@@ -62,7 +62,7 @@ public class FormaPagoServiceImpl implements FormaPagoService {
 
         if (formaPagoRequestDTO.getCode() != null && 
             !formaPagoRequestDTO.getCode().equals(formaPago.getCode()) &&
-            formaPagoRepository.existsByCodigo(formaPagoRequestDTO.getCode())) {
+            formaPagoRepository.existsByCode(formaPagoRequestDTO.getCode())) {
             throw new DataIntegrityViolationException("Ya existe una forma de pago con el código: " + formaPagoRequestDTO.getCode());
         }
 
@@ -81,7 +81,7 @@ public class FormaPagoServiceImpl implements FormaPagoService {
             throw new ResourceNotFoundException("Forma de pago no encontrada con ID: " + id);
         }
 
-        long cotizacionesCount = cotizacionRepository.countByFormaPagoId(id);
+        long cotizacionesCount = cotizacionRepository.countByMethodPaymentId(id);
         if (cotizacionesCount > 0) {
             throw new ConflictException(
                     "No se puede eliminar esta forma de pago porque tiene " + cotizacionesCount + " cotización(es) asociada(s).",

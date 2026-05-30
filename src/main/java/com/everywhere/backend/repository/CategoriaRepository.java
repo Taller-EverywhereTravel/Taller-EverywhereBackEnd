@@ -4,5 +4,5 @@ import com.everywhere.backend.model.entity.Category;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface CategoriaRepository extends JpaRepository<Category, Integer> {
-    boolean existsByNombreIgnoreCase(String nombre);
+    boolean existsByNameIgnoreCase(String nombre);
 }

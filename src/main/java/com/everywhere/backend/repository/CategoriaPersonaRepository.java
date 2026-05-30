@@ -11,9 +11,8 @@ import java.util.Optional;
 public interface CategoriaPersonaRepository extends JpaRepository<CategoryPerson, Integer> {
     
     // Buscar por nombre (case insensitive)
-    @Query("SELECT cp FROM CategoriaPersona cp WHERE LOWER(cp.nombre) LIKE LOWER(CONCAT('%', :nombre, '%'))")
-    List<CategoryPerson> findByNombreContainingIgnoreCase(@Param("nombre") String nombre);
+    List<CategoryPerson> findByNameContainingIgnoreCase(String nombre);
     
-    Optional<CategoryPerson> findByNombreIgnoreCase(String nombre);
-    boolean existsByNombreIgnoreCase(String nombre);
+    Optional<CategoryPerson> findByNameIgnoreCase(String nombre);
+    boolean existsByNameIgnoreCase(String nombre);
 }

@@ -16,77 +16,82 @@ public interface DocumentoCobranzaRepository extends JpaRepository<DocumentColle
        // correlativo
        Optional<DocumentCollection> findTopByOrderByIdDesc();
 
-       @Query("SELECT d FROM DocumentoCobranza d " +
-                     "LEFT JOIN FETCH d.carpeta " +
-                     "LEFT JOIN FETCH d.formaPago " +
-                     "LEFT JOIN FETCH d.usuario " +
-                     "LEFT JOIN FETCH d.sucursal " +
-                     "LEFT JOIN FETCH d.persona " +
-                     "LEFT JOIN FETCH d.detalles " +
-                     "LEFT JOIN FETCH d.cotizacion " +
-                     "WHERE d.serie = :serie AND d.correlativo = :correlativo")
-       Optional<DocumentCollection> findBySerieAndCorrelativo(@Param("serie") String serie,
-                     @Param("correlativo") Integer correlativo);
+      @Query("SELECT d FROM DocumentCollection d " +
+              "LEFT JOIN FETCH d.folder " +
+              "LEFT JOIN FETCH d.methodPayment " +
+              "LEFT JOIN FETCH d.user " +
+              "LEFT JOIN FETCH d.branch " +
+              "LEFT JOIN FETCH d.person " +
+              "LEFT JOIN FETCH d.detail " + 
+              "LEFT JOIN FETCH d.quotation " +
+              "WHERE d.serie = ?1 AND d.correlative = ?2")
+       Optional<DocumentCollection> findBySerieAndCorrelative(String serie, Integer correlativo);
 
-       @Query("SELECT d FROM DocumentoCobranza d WHERE d.persona.id = :personaId")
-       Optional<DocumentCollection> findByPersonaId(@Param("personaId") Long personaId);
+       Optional<DocumentCollection> findByPersonId(Long personaId);
 
-       @Query("SELECT d FROM DocumentoCobranza d WHERE d.cotizacion.id = :cotizacionId")
-       Optional<DocumentCollection> findByCotizacionId(@Param("cotizacionId") Integer cotizacionId);
+       Optional<DocumentCollection> findByQuotationId(Integer cotizacionId);
 
-       @Query("SELECT DISTINCT d FROM DocumentoCobranza d " +
-                     "LEFT JOIN FETCH d.carpeta " +
-                     "LEFT JOIN FETCH d.formaPago fp " +
-                     "LEFT JOIN FETCH d.usuario " +
-                     "LEFT JOIN FETCH d.sucursal " +
-                     "LEFT JOIN FETCH d.persona " +
-                     "LEFT JOIN FETCH d.personaJuridica " +
-                     "LEFT JOIN FETCH d.detalleDocumento " +
-                     "LEFT JOIN FETCH d.cotizacion " +
-                     "WHERE d.id = :id")
-       Optional<DocumentCollection> findByIdWithRelations(@Param("id") Long id);
+       @Query("SELECT DISTINCT d FROM DocumentCollection d " +
+              "LEFT JOIN FETCH d.folder " +
+              "LEFT JOIN FETCH d.methodPayment fp " +
+              "LEFT JOIN FETCH d.user " +
+              "LEFT JOIN FETCH d.branch " +
+              "LEFT JOIN FETCH d.person " +
+              "LEFT JOIN FETCH d.personJuridic " +
+              "LEFT JOIN FETCH d.detailDocument " +
+              "LEFT JOIN FETCH d.quotation " +
+              "WHERE d.id = ?1")
+       Optional<DocumentCollection> findByIdWithRelations(Long id);
 
-       @Query("SELECT d FROM DocumentoCobranza d " +
-                     "LEFT JOIN FETCH d.carpeta " +
-                     "LEFT JOIN FETCH d.formaPago " +
-                     "LEFT JOIN FETCH d.usuario " +
-                     "LEFT JOIN FETCH d.sucursal " +
-                     "LEFT JOIN FETCH d.persona " +
-                     "LEFT JOIN FETCH d.cotizacion")
+       // 6. Traducción completa al inglés en el HQL
+       @Query("SELECT d FROM DocumentCollection d " +
+              "LEFT JOIN FETCH d.folder " +
+              "LEFT JOIN FETCH d.methodPayment " +
+              "LEFT JOIN FETCH d.user " +
+              "LEFT JOIN FETCH d.branch " +
+              "LEFT JOIN FETCH d.person " +
+              "LEFT JOIN FETCH d.quotation")
        List<DocumentCollection> findAllWithRelations();
 
-       @Query("SELECT DISTINCT d FROM DocumentoCobranza d " +
-                     "LEFT JOIN FETCH d.formaPago " +
-                     "LEFT JOIN FETCH d.sucursal " +
-                     "LEFT JOIN FETCH d.persona " +
-                     "LEFT JOIN FETCH d.personaJuridica " +
-                     "LEFT JOIN FETCH d.cotizacion")
+       // 7. Traducción completa al inglés en el HQL
+       @Query("SELECT DISTINCT d FROM DocumentCollection d " +
+              "LEFT JOIN FETCH d.methodPayment " +
+              "LEFT JOIN FETCH d.branch " +
+              "LEFT JOIN FETCH d.person " +
+              "LEFT JOIN FETCH d.personJuridic " +
+              "LEFT JOIN FETCH d.quotation")
        List<DocumentCollection> findAllForListing();
 
-       @Query("SELECT DISTINCT d FROM DocumentoCobranza d " +
-                     "LEFT JOIN FETCH d.detalles det " +
-                     "LEFT JOIN FETCH det.producto " +
-                     "WHERE d.id = :id")
-       Optional<DocumentCollection> findByIdWithDetalles(@Param("id") Long id);
+       // 8. Traducción de relaciones y eliminación de @Param (usamos ?1)
+       @Query("SELECT DISTINCT d FROM DocumentCollection d " +
+              "LEFT JOIN FETCH d.detail det " +
+              "LEFT JOIN FETCH det.product " +
+              "WHERE d.id = ?1")
+       Optional<DocumentCollection> findByIdWithDetalles(Long id);
 
-       // Métodos para gestión de carpetas
-       @Query("SELECT d FROM DocumentoCobranza d " +
-                     "LEFT JOIN FETCH d.carpeta " +
-                     "LEFT JOIN FETCH d.formaPago " +
-                     "LEFT JOIN FETCH d.usuario " +
-                     "LEFT JOIN FETCH d.sucursal " +
-                     "LEFT JOIN FETCH d.persona " +
-                     "LEFT JOIN FETCH d.cotizacion " +
-                     "WHERE d.carpeta.id = :carpetaId")
-       List<DocumentCollection> findByCarpetaId(@Param("carpetaId") Integer carpetaId);
+       // ----------------------------------------------------------------------
+       // MÉTODOS PARA GESTIÓN DE CARPETAS (Requieren @Query por el JOIN FETCH)
+       // ----------------------------------------------------------------------
 
-       @Query("SELECT d FROM DocumentoCobranza d " +
-                     "LEFT JOIN FETCH d.carpeta " +
-                     "LEFT JOIN FETCH d.formaPago " +
-                     "LEFT JOIN FETCH d.usuario " +
-                     "LEFT JOIN FETCH d.sucursal " +
-                     "LEFT JOIN FETCH d.persona " +
-                     "LEFT JOIN FETCH d.cotizacion " +
-                     "WHERE d.carpeta IS NULL")
+       // 9. Se usa ?1 en lugar de :carpetaId
+       @Query("SELECT d FROM DocumentCollection d " +
+              "LEFT JOIN FETCH d.folder " +
+              "LEFT JOIN FETCH d.methodPayment " +
+              "LEFT JOIN FETCH d.user " +
+              "LEFT JOIN FETCH d.branch " +
+              "LEFT JOIN FETCH d.person " +
+              "LEFT JOIN FETCH d.quotation " +
+              "WHERE d.folder.id = ?1")
+       List<DocumentCollection> findByCarpetaId(Integer carpetaId);
+
+       // 10. d.carpeta IS NULL -> d.folder IS NULL
+       @Query("SELECT d FROM DocumentCollection d " +
+              "LEFT JOIN FETCH d.folder " +
+              "LEFT JOIN FETCH d.methodPayment " +
+              "LEFT JOIN FETCH d.user " +
+              "LEFT JOIN FETCH d.branch " +
+              "LEFT JOIN FETCH d.person " +
+              "LEFT JOIN FETCH d.quotation " +
+              "WHERE d.folder IS NULL")
        List<DocumentCollection> findByCarpetaIsNull();
 }

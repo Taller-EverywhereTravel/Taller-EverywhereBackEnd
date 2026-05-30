@@ -8,6 +8,6 @@ import java.util.List;
 
 @Repository
 public interface ViajeroFrecuenteRepository extends JpaRepository<TravelerFrequent, Integer> {
-    List<TravelerFrequent> findByViajero_Id(Integer viajeroId);
-    boolean existsByAreolineaAndCodigo(String areolinea, String codigo);
+    List<TravelerFrequent> findByTravelerId(Integer viajeroId);
+    boolean existsByAirlineAndCode(String airline, String code);
 }

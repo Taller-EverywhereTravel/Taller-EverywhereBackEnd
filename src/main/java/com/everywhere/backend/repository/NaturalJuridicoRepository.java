@@ -12,17 +12,14 @@ import java.util.Optional;
 @Repository
 public interface NaturalJuridicoRepository extends JpaRepository<NaturalJuridic, Integer> {
 
-    @Query("SELECT nj FROM NaturalJuridico nj WHERE nj.personaNatural.id = :personaNaturalId")
-    List<NaturalJuridic> findByPersonaNaturalId(@Param("personaNaturalId") Integer personaNaturalId);
+    List<NaturalJuridic> findByPersonNaturalId(Integer personaNaturalId);
 
-    @Query("SELECT nj FROM NaturalJuridico nj WHERE nj.personaJuridica.id = :personaJuridicaId")
-    List<NaturalJuridic> findByPersonaJuridicaId(@Param("personaJuridicaId") Integer personaJuridicaId);
+    List<NaturalJuridic> findByPersonJuridicId(Integer personaJuridicaId);
 
-    @Query("SELECT nj FROM NaturalJuridico nj WHERE nj.personaNatural.id = :personaNaturalId AND nj.personaJuridica.id = :personaJuridicaId")
-    Optional<NaturalJuridic> findByPersonaNaturalIdAndPersonaJuridicaId( // Verificar si ya existe una relación específica
-        @Param("personaNaturalId") Integer personaNaturalId, 
-        @Param("personaJuridicaId") Integer personaJuridicaId
+    Optional<NaturalJuridic> findByPersonNaturalIdAndPersonJuridicId( // Verificar si ya existe una relación específica
+        Integer personaNaturalId, 
+        Integer personaJuridicaId
     );
 
-    void deleteByPersonaNaturalIdAndPersonaJuridicaId(Integer personaNaturalId, Integer personaJuridicaId);
+    void deleteByPersonNaturalIdAndPersonJuridicId(Integer personaNaturalId, Integer personaJuridicaId);
 }

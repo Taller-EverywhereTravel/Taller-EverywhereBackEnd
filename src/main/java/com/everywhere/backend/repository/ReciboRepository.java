@@ -16,77 +16,82 @@ public interface ReciboRepository extends JpaRepository<Receipt, Integer> {
         // Busca el último recibo para generar el siguiente serie y correlativo
         Optional<Receipt> findTopByOrderByIdDesc();
 
-        @Query("SELECT r FROM Recibo r " +
-                        "LEFT JOIN FETCH r.carpeta " +
-                        "LEFT JOIN FETCH r.formaPago " +
-                        "LEFT JOIN FETCH r.usuario " +
-                        "LEFT JOIN FETCH r.sucursal " +
-                        "LEFT JOIN FETCH r.persona " +
-                        "LEFT JOIN FETCH r.detalleRecibo " +
-                        "LEFT JOIN FETCH r.cotizacion " +
-                        "WHERE r.serie = :serie AND r.correlativo = :correlativo")
-        Optional<Receipt> findBySerieAndCorrelativo(@Param("serie") String serie,
-                        @Param("correlativo") Integer correlativo);
+        @Query("SELECT r FROM Receipt r " +
+               "LEFT JOIN FETCH r.folder " +
+               "LEFT JOIN FETCH r.methodPayment " +
+               "LEFT JOIN FETCH r.user " +
+               "LEFT JOIN FETCH r.branch " +
+               "LEFT JOIN FETCH r.person " +
+               "LEFT JOIN FETCH r.detailReceipt " + 
+               "LEFT JOIN FETCH r.quotation " +
+               "WHERE r.serie = ?1 AND r.correlative = ?2")
+        Optional<Receipt> findBySerieAndCorrelative(String serie, Integer correlativo);
 
-        @Query("SELECT r FROM Recibo r WHERE r.persona.id = :personaId")
-        Optional<Receipt> findByPersonaId(@Param("personaId") Long personaId);
+        Optional<Receipt> findByPersonId(Long personaId);
 
-        @Query("SELECT r FROM Recibo r WHERE r.cotizacion.id = :cotizacionId")
-        Optional<Receipt> findByCotizacionId(@Param("cotizacionId") Integer cotizacionId);
+        Optional<Receipt> findByQuotationId(Integer cotizacionId);
 
-        @Query("SELECT DISTINCT r FROM Recibo r " +
-                        "LEFT JOIN FETCH r.carpeta " +
-                        "LEFT JOIN FETCH r.formaPago fp " +
-                        "LEFT JOIN FETCH r.usuario " +
-                        "LEFT JOIN FETCH r.sucursal " +
-                        "LEFT JOIN FETCH r.persona " +
-                        "LEFT JOIN FETCH r.personaJuridica " +
-                        "LEFT JOIN FETCH r.detalleDocumento " +
-                        "LEFT JOIN FETCH r.cotizacion " +
-                        "WHERE r.id = :id")
-        Optional<Receipt> findByIdWithRelations(@Param("id") Integer id);
+        @Query("SELECT DISTINCT r FROM Receipt r " +
+               "LEFT JOIN FETCH r.folder " +
+               "LEFT JOIN FETCH r.methodPayment fp " +
+               "LEFT JOIN FETCH r.user " +
+               "LEFT JOIN FETCH r.branch " +
+               "LEFT JOIN FETCH r.person " +
+               "LEFT JOIN FETCH r.personJuridic " +
+               "LEFT JOIN FETCH r.detailDocument " +
+               "LEFT JOIN FETCH r.quotation " +
+               "WHERE r.id = ?1")
+        Optional<Receipt> findByIdWithRelations(Integer id);
 
-        @Query("SELECT r FROM Recibo r " +
-                        "LEFT JOIN FETCH r.carpeta " +
-                        "LEFT JOIN FETCH r.formaPago " +
-                        "LEFT JOIN FETCH r.usuario " +
-                        "LEFT JOIN FETCH r.sucursal " +
-                        "LEFT JOIN FETCH r.persona " +
-                        "LEFT JOIN FETCH r.cotizacion")
+        // 6. Traducción completa al inglés en el HQL
+        @Query("SELECT r FROM Receipt r " +
+               "LEFT JOIN FETCH r.folder " +
+               "LEFT JOIN FETCH r.methodPayment " +
+               "LEFT JOIN FETCH r.user " +
+               "LEFT JOIN FETCH r.branch " +
+               "LEFT JOIN FETCH r.person " +
+               "LEFT JOIN FETCH r.quotation")
         List<Receipt> findAllWithRelations();
 
-        @Query("SELECT DISTINCT r FROM Recibo r " +
-                        "LEFT JOIN FETCH r.formaPago " +
-                        "LEFT JOIN FETCH r.sucursal " +
-                        "LEFT JOIN FETCH r.persona " +
-                        "LEFT JOIN FETCH r.personaJuridica " +
-                        "LEFT JOIN FETCH r.cotizacion")
+        // 7. Traducción completa al inglés en el HQL
+        @Query("SELECT DISTINCT r FROM Receipt r " +
+               "LEFT JOIN FETCH r.methodPayment " +
+               "LEFT JOIN FETCH r.branch " +
+               "LEFT JOIN FETCH r.person " +
+               "LEFT JOIN FETCH r.personJuridic " +
+               "LEFT JOIN FETCH r.quotation")
         List<Receipt> findAllForListing();
 
-        @Query("SELECT DISTINCT r FROM Recibo r " +
-                        "LEFT JOIN FETCH r.detalleRecibo det " +
-                        "LEFT JOIN FETCH det.producto " +
-                        "WHERE r.id = :id")
-        Optional<Receipt> findByIdWithDetalles(@Param("id") Integer id);
+        // 8. Traducción de relaciones y eliminación de @Param (usamos ?1)
+        @Query("SELECT DISTINCT r FROM Receipt r " +
+               "LEFT JOIN FETCH r.detailReceipt det " +
+               "LEFT JOIN FETCH det.product " +
+               "WHERE r.id = ?1")
+        Optional<Receipt> findByIdWithDetalles(Integer id);
 
-        // Métodos para gestión de carpetas
-        @Query("SELECT r FROM Recibo r " +
-                        "LEFT JOIN FETCH r.carpeta " +
-                        "LEFT JOIN FETCH r.formaPago " +
-                        "LEFT JOIN FETCH r.usuario " +
-                        "LEFT JOIN FETCH r.sucursal " +
-                        "LEFT JOIN FETCH r.persona " +
-                        "LEFT JOIN FETCH r.cotizacion " +
-                        "WHERE r.carpeta.id = :carpetaId")
-        List<Receipt> findByCarpetaId(@Param("carpetaId") Integer carpetaId);
+        // ----------------------------------------------------------------------
+        // MÉTODOS PARA GESTIÓN DE CARPETAS
+        // ----------------------------------------------------------------------
 
-        @Query("SELECT r FROM Recibo r " +
-                        "LEFT JOIN FETCH r.carpeta " +
-                        "LEFT JOIN FETCH r.formaPago " +
-                        "LEFT JOIN FETCH r.usuario " +
-                        "LEFT JOIN FETCH r.sucursal " +
-                        "LEFT JOIN FETCH r.persona " +
-                        "LEFT JOIN FETCH r.cotizacion " +
-                        "WHERE r.carpeta IS NULL")
+        // 9. Se usa ?1 en lugar de :carpetaId
+        @Query("SELECT r FROM Receipt r " +
+               "LEFT JOIN FETCH r.folder " +
+               "LEFT JOIN FETCH r.methodPayment " +
+               "LEFT JOIN FETCH r.user " +
+               "LEFT JOIN FETCH r.branch " +
+               "LEFT JOIN FETCH r.person " +
+               "LEFT JOIN FETCH r.quotation " +
+               "WHERE r.folder.id = ?1")
+        List<Receipt> findByCarpetaId(Integer carpetaId);
+
+        // 10. r.carpeta IS NULL -> r.folder IS NULL
+        @Query("SELECT r FROM Receipt r " +
+               "LEFT JOIN FETCH r.folder " +
+               "LEFT JOIN FETCH r.methodPayment " +
+               "LEFT JOIN FETCH r.user " +
+               "LEFT JOIN FETCH r.branch " +
+               "LEFT JOIN FETCH r.person " +
+               "LEFT JOIN FETCH r.quotation " +
+               "WHERE r.folder IS NULL")
         List<Receipt> findByCarpetaIsNull();
 }

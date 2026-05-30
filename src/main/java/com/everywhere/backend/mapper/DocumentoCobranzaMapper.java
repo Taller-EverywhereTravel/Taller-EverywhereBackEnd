@@ -119,7 +119,7 @@ public class DocumentoCobranzaMapper {
         else if (documentoCobranza.getPerson() != null) {
             Integer personaId = documentoCobranza.getPerson().getId();
 
-            PersonNatural personaNatural = personaNaturalRepository.findByPersonasId(personaId).orElse(null);
+            PersonNatural personaNatural = personaNaturalRepository.findByPersonId(personaId).orElse(null);
             if (personaNatural != null) {
                 // Concatenación null-safe para evitar mostrar "null" en el nombre
                 String nombreCompleto = String.join(" ",
@@ -136,7 +136,7 @@ public class DocumentoCobranzaMapper {
                     documentoCobranzaResponseDTO.setTypeDocumentClient("DNI");
                 }
             } else {
-                PersonJuridic personaJuridica = personaJuridicaRepository.findByPersonasId(personaId).orElse(null);
+                PersonJuridic personaJuridica = personaJuridicaRepository.findByPersonId(personaId).orElse(null);
                 if (personaJuridica != null) {
                     documentoCobranzaResponseDTO.setPersonJuridicId(personaJuridica.getId());
                     documentoCobranzaResponseDTO.setPersonJuridicRuc(personaJuridica.getRuc());

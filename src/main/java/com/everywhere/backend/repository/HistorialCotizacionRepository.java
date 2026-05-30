@@ -12,24 +12,26 @@ import java.util.Optional;
 @Repository
 public interface HistorialCotizacionRepository extends JpaRepository<RecordQuotation, Integer> {
 
-    @Query("SELECT h FROM HistorialCotizacion h " +
-           "LEFT JOIN FETCH h.usuario " +
-           "LEFT JOIN FETCH h.cotizacion " +
-           "LEFT JOIN FETCH h.estadoCotizacion " +
-           "ORDER BY h.fechaCreacion DESC")
+    @Query("SELECT h FROM RecordQuotation h " +
+           "LEFT JOIN FETCH h.user " +
+           "LEFT JOIN FETCH h.quotation " +
+           "LEFT JOIN FETCH h.statusQuotation " +
+           "ORDER BY h.dateCreated DESC")
     List<RecordQuotation> findAllWithRelations();
 
-    @Query("SELECT h FROM HistorialCotizacion h " +
-           "LEFT JOIN FETCH h.usuario " +
-           "LEFT JOIN FETCH h.cotizacion " +
-           "LEFT JOIN FETCH h.estadoCotizacion " +
-           "WHERE h.id = :id")
-    Optional<RecordQuotation> findByIdWithRelations(@Param("id") Integer id);
+    // Se eliminó @Param y se reemplazó :id por ?1
+    @Query("SELECT h FROM RecordQuotation h " +
+           "LEFT JOIN FETCH h.user " +
+           "LEFT JOIN FETCH h.quotation " +
+           "LEFT JOIN FETCH h.statusQuotation " +
+           "WHERE h.id = ?1")
+    Optional<RecordQuotation> findByIdWithRelations(Integer id);
 
-    @Query("SELECT h FROM HistorialCotizacion h " +
-           "LEFT JOIN FETCH h.usuario " +
-           "LEFT JOIN FETCH h.estadoCotizacion " +
-           "WHERE h.cotizacion.id = :cotizacionId " +
-           "ORDER BY h.fechaCreacion DESC")
-    List<RecordQuotation> findByCotizacionIdWithRelations(@Param("cotizacionId") Integer cotizacionId);
+    // Se eliminó @Param y se reemplazó :cotizacionId por ?1
+    @Query("SELECT h FROM RecordQuotation h " +
+           "LEFT JOIN FETCH h.user " +
+           "LEFT JOIN FETCH h.statusQuotation " +
+           "WHERE h.quotation.id = ?1 " +
+           "ORDER BY h.dateCreated DESC")
+    List<RecordQuotation> findByCotizacionIdWithRelations(Integer cotizacionId);
 }

@@ -38,14 +38,14 @@ public class Supplier {
     @Column(name = "prov_upd_tmp")
     private LocalDateTime updated;
 
-    @OneToMany(mappedBy = "proveedor", fetch = FetchType.LAZY)
-    @JsonIgnoreProperties("proveedor")
+    @OneToMany(mappedBy = "supplier", fetch = FetchType.LAZY)
+    @JsonIgnoreProperties("supplier")
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     private List<SupplierContact> contact;
 
-    @OneToMany(mappedBy = "proveedor", fetch = FetchType.LAZY)
-    @JsonIgnoreProperties("proveedor")
+    @OneToMany(mappedBy = "supplier", fetch = FetchType.LAZY)
+    @JsonIgnoreProperties("supplier")
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     private List<SupplierCollaborator> collaborator;

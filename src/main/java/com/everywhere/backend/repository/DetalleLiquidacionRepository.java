@@ -12,45 +12,43 @@ import java.util.Optional;
 @Repository
 public interface DetalleLiquidacionRepository extends JpaRepository<DetailLiquidation, Integer> {
 
-    @Query("SELECT d FROM DetalleLiquidacion d " +
-           "LEFT JOIN FETCH d.liquidacion " +
-           "LEFT JOIN FETCH d.viajero " +
-           "LEFT JOIN FETCH d.producto " +
-           "LEFT JOIN FETCH d.proveedor " +
-           "LEFT JOIN FETCH d.operador")
+    @Query("SELECT d FROM DetailLiquidation d " +
+           "LEFT JOIN FETCH d.liquidation " +
+           "LEFT JOIN FETCH d.traveler " +
+           "LEFT JOIN FETCH d.product " +
+           "LEFT JOIN FETCH d.supplier " +
+           "LEFT JOIN FETCH d.operator")
     List<DetailLiquidation> findAllWithRelations();
 
-    @Query("SELECT d FROM DetalleLiquidacion d " +
-           "LEFT JOIN FETCH d.liquidacion " +
-           "LEFT JOIN FETCH d.viajero " +
-           "LEFT JOIN FETCH d.producto " +
-           "LEFT JOIN FETCH d.proveedor " +
-           "LEFT JOIN FETCH d.operador " +
-           "WHERE d.id = :id")
+    @Query("SELECT d FROM DetailLiquidation d " +
+           "LEFT JOIN FETCH d.liquidation " +
+           "LEFT JOIN FETCH d.traveler " +
+           "LEFT JOIN FETCH d.product " +
+           "LEFT JOIN FETCH d.supplier " +
+           "LEFT JOIN FETCH d.operator " +
+           "WHERE d.id = ?1")
     Optional<DetailLiquidation> findByIdWithRelations(@Param("id") Integer id);
 
-    @Query("SELECT d FROM DetalleLiquidacion d " +
-           "LEFT JOIN FETCH d.liquidacion " +
-           "LEFT JOIN FETCH d.viajero " +
-           "LEFT JOIN FETCH d.producto " +
-           "LEFT JOIN FETCH d.proveedor " +
-           "LEFT JOIN FETCH d.operador " +
-           "WHERE d.liquidacion.id = :liquidacionId")
+   @Query("SELECT d FROM DetailLiquidation d " +
+           "LEFT JOIN FETCH d.liquidation " +
+           "LEFT JOIN FETCH d.traveler " +
+           "LEFT JOIN FETCH d.product " +
+           "LEFT JOIN FETCH d.supplier " +
+           "LEFT JOIN FETCH d.operator " +
+           "WHERE d.liquidation.id = ?1")
     List<DetailLiquidation> findByLiquidacionIdWithRelations(@Param("liquidacionId") Integer liquidacionId);
 
-    @Query("SELECT d FROM DetalleLiquidacion d " +
-           "LEFT JOIN FETCH d.viajero v " +
-           "LEFT JOIN FETCH v.personaNatural " +
-           "LEFT JOIN FETCH d.producto " +
-           "LEFT JOIN FETCH d.proveedor " +
-           "LEFT JOIN FETCH d.operador " +
-           "WHERE d.liquidacion.id = :liquidacionId")
+    @Query("SELECT d FROM DetailLiquidation d " +
+           "LEFT JOIN FETCH d.traveler v " +
+           "LEFT JOIN FETCH v.personNatural " +
+           "LEFT JOIN FETCH d.product " +
+           "LEFT JOIN FETCH d.supplier " +
+           "LEFT JOIN FETCH d.operator " +
+           "WHERE d.liquidation.id = ?1")
     List<DetailLiquidation> findByLiquidacionIdSinLiquidacion(@Param("liquidacionId") Integer liquidacionId);
 
-    @Query("SELECT COUNT(dl) FROM DetalleLiquidacion dl WHERE dl.producto.id = :productoId")
-    long countByProductoId(@Param("productoId") Integer productoId);
+    long countByProductId(Integer productoId);
 
-    @Query("SELECT COUNT(dl) FROM DetalleLiquidacion dl WHERE dl.proveedor.id = :proveedorId")
-    long countByProveedorId(@Param("proveedorId") Integer proveedorId);
+    long countBySupplierId(Integer proveedorId);
 
 }

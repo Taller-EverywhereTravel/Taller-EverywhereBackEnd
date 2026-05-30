@@ -47,7 +47,7 @@ public class CategoriaServiceImpl implements CategoriaService {
 	@Override
 	@Transactional
 	public CategoryResponseDto create(CategoryRequestDto categoriaRequestDto) {
-		if(categoriaRepository.existsByNombreIgnoreCase(categoriaRequestDto.getName()))
+		if(categoriaRepository.existsByNameIgnoreCase(categoriaRequestDto.getName()))
 			throw new DataIntegrityViolationException("Ya existe una categoría con el nombre: " + categoriaRequestDto.getName());
 		Category categoria = categoriaMapper.toEntity(categoriaRequestDto); 
 		return categoriaMapper.toResponseDto(categoriaRepository.save(categoria));
@@ -60,7 +60,7 @@ public class CategoriaServiceImpl implements CategoriaService {
 			throw new ResourceNotFoundException("Categoria no encontrada con ID: " + id);
 
 		if (categoriaRequestDto.getName() != null && 
-			categoriaRepository.existsByNombreIgnoreCase(categoriaRequestDto.getName())) {
+			categoriaRepository.existsByNameIgnoreCase(categoriaRequestDto.getName())) {
 			Category categoria = categoriaRepository.findById(id).get();
 			if (!categoriaRequestDto.getName().equalsIgnoreCase(categoria.getName()))
 				throw new DataIntegrityViolationException("Ya existe una categoría con el nombre: " + categoriaRequestDto.getName());
@@ -76,7 +76,7 @@ public class CategoriaServiceImpl implements CategoriaService {
         if (!categoriaRepository.existsById(id))
             throw new ResourceNotFoundException("Categoria no encontrada con ID: " + id);
 
-        long detallesCount = detalleCotizacionRepository.countByCategoriaId(id);
+        long detallesCount = detalleCotizacionRepository.countByCategoryId(id);
         if (detallesCount > 0) {
             throw new ConflictException(
                     "No se puede eliminar esta categoría porque tiene " + detallesCount + " detalle(s) de cotización asociado(s).",

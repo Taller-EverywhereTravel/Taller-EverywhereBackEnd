@@ -10,9 +10,9 @@ import java.util.Optional;
 @Repository
 public interface ProveedorContactoRepository extends JpaRepository<SupplierContact, Integer> {
 
-    List<SupplierContact> findByProveedorId(Integer proveedorId);
+    List<SupplierContact> findBySupplierId(Integer proveedorId);
 
-    List<SupplierContact> findByGrupoContactoId(Integer grupoContactoId);
+    List<SupplierContact> findByGroupContactId(Integer grupoContactoId);
 
-    Optional<SupplierContact> findByEmail(String email);
+    Optional<SupplierContact> findByMail(String email);
 }

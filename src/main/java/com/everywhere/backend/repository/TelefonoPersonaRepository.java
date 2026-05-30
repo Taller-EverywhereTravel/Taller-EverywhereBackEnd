@@ -10,9 +10,9 @@ import java.util.Optional;
 @Repository
 public interface TelefonoPersonaRepository extends JpaRepository<PhonePerson, Integer> {
 
-    List<PhonePerson> findByNumeroContaining(String numero);
-    List<PhonePerson> findByCodigoPais(String codigoPais);
-    List<PhonePerson> findByPersonaId(Integer personaId);
-    Optional<PhonePerson> findByIdAndPersonaId(Integer telefonoId, Integer personaId);
-    boolean existsByIdAndPersonaId(Integer telefonoId, Integer personaId);
+    List<PhonePerson> findByNumberContaining(String numero);
+    List<PhonePerson> findByCodeCountry(String codigoPais);
+    List<PhonePerson> findByPersonId(Integer personaId);
+    Optional<PhonePerson> findByIdAndPersonId(Integer telefonoId, Integer personaId);
+    boolean existsByIdAndPersonId(Integer telefonoId, Integer personaId);
 }

@@ -40,7 +40,7 @@ public class ProductoServiceImpl implements ProductoService {
         Product producto = productoRepository.findById(id).get();
         
         if (productoRequestDTO.getType() != null && 
-            productoRepository.existsProductosByTipo(productoRequestDTO.getType()) &&
+            productoRepository.existsProductByType(productoRequestDTO.getType()) &&
             !productoRequestDTO.getType().equals(producto.getType())) {
             throw new DataIntegrityViolationException("Ya existe un producto con el tipo: " + productoRequestDTO.getType());
         }
@@ -67,7 +67,7 @@ public class ProductoServiceImpl implements ProductoService {
             throw new ResourceNotFoundException("Producto no encontrado con ID: " + id);
         }
 
-        long cotizacionesCount = detalleCotizacionRepository.countByProductoId(id);
+        long cotizacionesCount = detalleCotizacionRepository.countByProductId(id);
         if (cotizacionesCount > 0) {
             throw new ConflictException(
                     "No se puede eliminar este producto porque tiene " + cotizacionesCount + " cotización(es) asociada(s).",
@@ -75,7 +75,7 @@ public class ProductoServiceImpl implements ProductoService {
             );
         }
 
-        long liquidacionesCount = detalleLiquidacionRepository.countByProductoId(id);
+        long liquidacionesCount = detalleLiquidacionRepository.countByProductId(id);
         if (liquidacionesCount > 0) {
             throw new ConflictException(
                     "No se puede eliminar este producto porque tiene " + liquidacionesCount + " liquidación(es) asociada(s).",

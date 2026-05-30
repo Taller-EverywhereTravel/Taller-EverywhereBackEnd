@@ -6,6 +6,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.Optional;
 
 public interface CounterRepository extends JpaRepository<Counter, Integer> {
-    Optional<Counter> findByCodigo(String codigo);
-    Optional<Counter> findByNombreIgnoreCase(String nombre);
+    Optional<Counter> findByCode(String codigo);
+    Optional<Counter> findByNameIgnoreCase(String nombre);
 }

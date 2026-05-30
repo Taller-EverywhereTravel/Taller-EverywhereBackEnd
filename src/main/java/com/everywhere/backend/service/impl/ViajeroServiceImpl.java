@@ -41,12 +41,12 @@ public class ViajeroServiceImpl implements ViajeroService {
 
     @Override
     public List<TravelerResponseDTO> findByNacionalidad(String nacionalidad) {
-        return mapToResponseList(viajeroRepository.findByNacionalidadIgnoreAccents(nacionalidad));
+        return mapToResponseList(viajeroRepository.findByNationalityIgnoreAccents(nacionalidad));
     }
 
     @Override
     public List<TravelerResponseDTO> findByResidencia(String residencia) {
-        return mapToResponseList(viajeroRepository.findByResidenciaIgnoreAccents(residencia));
+        return mapToResponseList(viajeroRepository.findByResidenceIgnoreAccents(residencia));
     }
 
     @Override

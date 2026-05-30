@@ -12,25 +12,28 @@ import java.util.Optional;
 @Repository
 public interface ObservacionLiquidacionRepository extends JpaRepository<ObservationLiquidation, Long> {
 
-    @Query("SELECT o FROM ObservacionLiquidacion o " +
-           "LEFT JOIN FETCH o.liquidacion l " +
-           "LEFT JOIN FETCH l.producto " +
-           "LEFT JOIN FETCH l.formaPago " +
-           "LEFT JOIN FETCH l.cotizacion " +
-           "LEFT JOIN FETCH l.carpeta " +
-           "WHERE o.id = :id")
-    Optional<ObservationLiquidation> findByIdWithLiquidacion(@Param("id") Long id);
+    // 1. Traducción de entidad, relaciones y uso de ?1 en lugar de :id
+    @Query("SELECT o FROM ObservationLiquidation o " +
+           "LEFT JOIN FETCH o.liquidation l " +
+           "LEFT JOIN FETCH l.product " +
+           "LEFT JOIN FETCH l.methodPayment " +
+           "LEFT JOIN FETCH l.quotation " +
+           "LEFT JOIN FETCH l.folder " +
+           "WHERE o.id = ?1")
+    Optional<ObservationLiquidation> findByIdWithLiquidacion(Long id);
 
-    @Query("SELECT o FROM ObservacionLiquidacion o " +
-           "LEFT JOIN FETCH o.liquidacion l " +
-           "LEFT JOIN FETCH l.producto " +
-           "LEFT JOIN FETCH l.formaPago " +
-           "LEFT JOIN FETCH l.cotizacion " +
-           "LEFT JOIN FETCH l.carpeta")
+    // 2. Traducción de entidad y relaciones
+    @Query("SELECT o FROM ObservationLiquidation o " +
+           "LEFT JOIN FETCH o.liquidation l " +
+           "LEFT JOIN FETCH l.product " +
+           "LEFT JOIN FETCH l.methodPayment " +
+           "LEFT JOIN FETCH l.quotation " +
+           "LEFT JOIN FETCH l.folder")
     List<ObservationLiquidation> findAllWithLiquidacion();
 
-    @Query("SELECT o FROM ObservacionLiquidacion o " +
-           "LEFT JOIN FETCH o.liquidacion " +
-           "WHERE o.liquidacion.id = :liquidacionId")
-    List<ObservationLiquidation> findByLiquidacionId(@Param("liquidacionId") Integer liquidacionId);
+    // 3. Traducción de entidad, relaciones y uso de ?1 en lugar de :liquidacionId
+    @Query("SELECT o FROM ObservationLiquidation o " +
+           "LEFT JOIN FETCH o.liquidation " +
+           "WHERE o.liquidation.id = ?1")
+    List<ObservationLiquidation> findByLiquidacionId(Integer liquidacionId);
 }

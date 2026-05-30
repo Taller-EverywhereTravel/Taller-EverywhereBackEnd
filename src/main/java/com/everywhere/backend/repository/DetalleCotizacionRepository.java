@@ -10,14 +10,13 @@ import java.util.List;
 
 @Repository
 public interface DetalleCotizacionRepository extends JpaRepository<DetailQuotation, Integer> {
-    List<DetailQuotation> findByCotizacionId(int cotizacionId);
-    @Query("SELECT COUNT(dc) FROM DetalleCotizacion dc WHERE dc.producto.id = :productoId")
-    long countByProductoId(@Param("productoId") Integer productoId);
-    @Query("SELECT COUNT(dc) FROM DetalleCotizacion dc WHERE dc.proveedor.id = :proveedorId")
-    long countByProveedorId(@Param("proveedorId") Integer proveedorId);
+    List<DetailQuotation> findByQuotationId(int cotizacionId);
 
-    @Query("SELECT COUNT(dc) FROM DetalleCotizacion dc WHERE dc.categoria.id = :categoriaId")
-    long countByCategoriaId(@Param("categoriaId") Integer categoriaId);
+    long countByProductId(@Param("productoId") Integer productoId);
+
+    long countBySupplierId(@Param("proveedorId") Integer proveedorId);
+
+    long countByCategoryId(@Param("categoriaId") Integer categoriaId);
 
 
 }

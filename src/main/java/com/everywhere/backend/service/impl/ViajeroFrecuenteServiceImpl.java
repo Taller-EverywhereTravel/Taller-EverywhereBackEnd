@@ -52,7 +52,7 @@ public class ViajeroFrecuenteServiceImpl implements ViajeroFrecuenteService {
 
     @Override
     public List<TravelerFrequentResponseDto> listarPorViajero(Integer viajeroId) {
-        return mapToResponseList(viajeroFrecuenteRepository.findByViajero_Id(viajeroId));
+        return mapToResponseList(viajeroFrecuenteRepository.findByTravelerId(viajeroId));
     }
 
 
@@ -69,7 +69,7 @@ public class ViajeroFrecuenteServiceImpl implements ViajeroFrecuenteService {
 
         TravelerFrequent viajeroFrecuente = viajeroFrecuenteRepository.findById(id).get();
         
-        if (viajeroFrecuenteRepository.existsByAreolineaAndCodigo(
+        if (viajeroFrecuenteRepository.existsByAirlineAndCode(
                 viajeroFrecuenteRequestDto.getAirline(),
                 viajeroFrecuenteRequestDto.getCode())) {
             throw new IllegalArgumentException(
@@ -85,7 +85,7 @@ public class ViajeroFrecuenteServiceImpl implements ViajeroFrecuenteService {
 
     @Override
     public List<TravelerFrequentResponseDto> buscarPorViajeroId(Integer viajeroId) {
-        return mapToResponseList(viajeroFrecuenteRepository.findByViajero_Id(viajeroId));
+        return mapToResponseList(viajeroFrecuenteRepository.findByTravelerId(viajeroId));
     }
 
     private List<TravelerFrequentResponseDto> mapToResponseList(List<TravelerFrequent> viajerosFrecuentes) {

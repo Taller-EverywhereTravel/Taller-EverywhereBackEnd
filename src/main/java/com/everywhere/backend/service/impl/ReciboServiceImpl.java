@@ -68,7 +68,7 @@ public class ReciboServiceImpl implements ReciboService {
         if (cotizacionId == null)
             throw new IllegalArgumentException("El ID de la cotización no puede ser nulo");
 
-        if (reciboRepository.findByCotizacionId(cotizacionId).isPresent())
+        if (reciboRepository.findByQuotationId(cotizacionId).isPresent())
             throw new DataIntegrityViolationException(
                     "Ya existe un recibo para la cotización ID: " + cotizacionId);
 
@@ -88,12 +88,12 @@ public class ReciboServiceImpl implements ReciboService {
             // cotización
             if (cotizacion.getPerson() != null) {
                 Integer personaId = cotizacion.getPerson().getId();
-                PersonNatural personaNatural = personaNaturalRepository.findByPersonasId(personaId)
+                PersonNatural personaNatural = personaNaturalRepository.findByPersonId(personaId)
                         .orElse(null);
 
                 if (personaNatural != null) {
                     boolean relacionExiste = naturalJuridicoRepository
-                            .findByPersonaNaturalIdAndPersonaJuridicaId(personaNatural.getId(), personaJuridicaId)
+                            .findByPersonNaturalIdAndPersonJuridicId(personaNatural.getId(), personaJuridicaId)
                             .isPresent();
 
                     if (!relacionExiste) {
@@ -144,7 +144,7 @@ public class ReciboServiceImpl implements ReciboService {
 
     @Override
     public ReceiptResponseDTO findBySerieAndCorrelativo(String serie, Integer correlativo) {
-        Receipt recibo = reciboRepository.findBySerieAndCorrelativo(serie, correlativo)
+        Receipt recibo = reciboRepository.findBySerieAndCorrelative(serie, correlativo)
                 .orElseThrow(() -> new ResourceNotFoundException(
                         "Recibo no encontrado con serie: " + serie + " y correlativo: " + correlativo));
         return reciboMapper.toResponseDTO(recibo);
@@ -157,7 +157,7 @@ public class ReciboServiceImpl implements ReciboService {
 
     @Override
     public ReceiptResponseDTO findByCotizacionId(Integer cotizacionId) {
-        Receipt recibo = reciboRepository.findByCotizacionId(cotizacionId)
+        Receipt recibo = reciboRepository.findByQuotationId(cotizacionId)
                 .orElseThrow(() -> new ResourceNotFoundException(
                         "Recibo no encontrado para cotización ID: " + cotizacionId));
         return reciboMapper.toResponseDTO(recibo);
@@ -191,12 +191,12 @@ public class ReciboServiceImpl implements ReciboService {
 
             if (recibo.getPerson() != null) {
                 Integer personaId = recibo.getPerson().getId();
-                PersonNatural personaNatural = personaNaturalRepository.findByPersonasId(personaId)
+                PersonNatural personaNatural = personaNaturalRepository.findByPersonId(personaId)
                         .orElse(null);
 
                 if (personaNatural != null) {
                     boolean relacionExiste = naturalJuridicoRepository
-                            .findByPersonaNaturalIdAndPersonaJuridicaId(personaNatural.getId(),
+                            .findByPersonNaturalIdAndPersonJuridicId(personaNatural.getId(),
                                     reciboUpdateDTO.getPersonJuridicId())
                             .isPresent();
 

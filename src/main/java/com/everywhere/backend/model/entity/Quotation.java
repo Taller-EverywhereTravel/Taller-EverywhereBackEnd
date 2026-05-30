@@ -85,7 +85,7 @@ public class Quotation {
     @JoinColumn(name = "per_id_int")
     private Person person;
 
-    @OneToMany(mappedBy = "cotizacion", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "quotation", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnore
     private List<DetailQuotation> detail;
 }

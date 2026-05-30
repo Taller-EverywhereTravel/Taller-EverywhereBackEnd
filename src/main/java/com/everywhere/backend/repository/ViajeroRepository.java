@@ -11,9 +11,11 @@ import java.util.List;
 @Repository
 public interface ViajeroRepository extends JpaRepository<Traveler, Integer> {
 
-    @Query(value = "SELECT * FROM viajeros WHERE UPPER(TRANSLATE(via_nacio_vac, 'ÁÉÍÓÚáéíóú', 'AEIOUaeiou')) LIKE UPPER(TRANSLATE(:nacionalidad, 'ÁÉÍÓÚáéíóú', 'AEIOUaeiou'))", nativeQuery = true)
-    List<Traveler> findByNacionalidadIgnoreAccents(@Param("nacionalidad") String nacionalidad);
+    // 1. Eliminamos @Param, usamos ?1, y traducimos el método a Nationality
+    @Query(value = "SELECT * FROM viajeros WHERE UPPER(TRANSLATE(via_nacio_vac, 'ÁÉÍÓÚáéíóú', 'AEIOUaeiou')) LIKE UPPER(TRANSLATE(?1, 'ÁÉÍÓÚáéíóú', 'AEIOUaeiou'))", nativeQuery = true)
+    List<Traveler> findByNationalityIgnoreAccents(String nacionalidad);
 
-    @Query(value = "SELECT * FROM viajeros WHERE UPPER(TRANSLATE(via_resi_vac, 'ÁÉÍÓÚáéíóú', 'AEIOUaeiou')) LIKE UPPER(TRANSLATE(:residencia, 'ÁÉÍÓÚáéíóú', 'AEIOUaeiou'))", nativeQuery = true)
-    List<Traveler> findByResidenciaIgnoreAccents(@Param("residencia") String residencia);
+    // 2. Eliminamos @Param, usamos ?1, y traducimos el método a Residence
+    @Query(value = "SELECT * FROM viajeros WHERE UPPER(TRANSLATE(via_resi_vac, 'ÁÉÍÓÚáéíóú', 'AEIOUaeiou')) LIKE UPPER(TRANSLATE(?1, 'ÁÉÍÓÚáéíóú', 'AEIOUaeiou'))", nativeQuery = true)
+    List<Traveler> findByResidenceIgnoreAccents(String residencia);
 }

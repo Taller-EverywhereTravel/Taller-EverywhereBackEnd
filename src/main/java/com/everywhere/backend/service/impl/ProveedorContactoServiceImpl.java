@@ -42,14 +42,14 @@ public class ProveedorContactoServiceImpl implements ProveedorContactoService {
 
     @Override
     public List<SupplierContactResponseDTO> findByProveedorId(Integer proveedorId) {
-        return repository.findByProveedorId(proveedorId).stream()
+        return repository.findBySupplierId(proveedorId).stream()
                 .map(mapper::toResponseDTO)
                 .toList();
     }
 
     @Override
     public List<SupplierContactResponseDTO> findByGrupoContactoId(Integer grupoContactoId) {
-        return repository.findByGrupoContactoId(grupoContactoId).stream()
+        return repository.findByGroupContactId(grupoContactoId).stream()
                 .map(mapper::toResponseDTO)
                 .toList();
     }

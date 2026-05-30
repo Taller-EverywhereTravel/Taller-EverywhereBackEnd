@@ -664,14 +664,14 @@ public class LiquidacionServiceImpl implements LiquidacionService {
         if (!carpetaRepository.existsById(carpetaId))
             throw new ResourceNotFoundException("Carpeta no encontrada con ID: " + carpetaId);
 
-        return liquidacionRepository.findByCarpetaId(carpetaId).stream()
+        return liquidacionRepository.findByFolderId(carpetaId).stream()
                 .map(liquidacionMapper::toResponseDTO)
                 .toList();
     }
 
     @Override
     public List<LiquidationResponseDTO> findSinCarpeta() {
-        return liquidacionRepository.findByCarpetaIsNull().stream()
+        return liquidacionRepository.findByFolderIsNull().stream()
                 .map(liquidacionMapper::toResponseDTO)
                 .toList();
     }

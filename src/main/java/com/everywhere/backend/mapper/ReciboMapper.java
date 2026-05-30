@@ -116,7 +116,7 @@ public class ReciboMapper {
         else if (recibo.getPerson() != null) {
             Integer personaId = recibo.getPerson().getId();
 
-            PersonNatural personaNatural = personaNaturalRepository.findByPersonasId(personaId).orElse(null);
+            PersonNatural personaNatural = personaNaturalRepository.findByPersonId(personaId).orElse(null);
             if (personaNatural != null) {
                 String nombreCompleto = String.join(" ",
                         personaNatural.getName() != null ? personaNatural.getName().trim() : "",
@@ -130,7 +130,7 @@ public class ReciboMapper {
                     reciboResponseDTO.setTypeDocumentClient("DNI");
                 }
             } else {
-                PersonJuridic personaJuridica = personaJuridicaRepository.findByPersonasId(personaId).orElse(null);
+                PersonJuridic personaJuridica = personaJuridicaRepository.findByPersonId(personaId).orElse(null);
                 if (personaJuridica != null) {
                     reciboResponseDTO.setPersonJuridicId(personaJuridica.getId());
                     reciboResponseDTO.setPersonJuridicRuc(personaJuridica.getRuc());

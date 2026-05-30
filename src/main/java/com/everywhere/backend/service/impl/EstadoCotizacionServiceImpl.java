@@ -55,7 +55,7 @@ public class EstadoCotizacionServiceImpl implements EstadoCotizacionService {
             throw new ResourceNotFoundException("Estado de Cotización no encontrado con ID: " + ida);
 
         // Validar que no existan cotizaciones vinculadas a este estado
-        Long cotizacionesCount = cotizacionRepository.countByEstadoCotizacionId(ida);
+        Long cotizacionesCount = cotizacionRepository.countByStatusQuotationId(ida);
         if (cotizacionesCount > 0) {
             throw new ConflictException(
                     "No se puede eliminar el Estado de Cotización porque hay " + cotizacionesCount +

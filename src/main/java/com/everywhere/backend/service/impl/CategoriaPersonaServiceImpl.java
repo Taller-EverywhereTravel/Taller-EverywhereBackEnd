@@ -43,13 +43,13 @@ public class CategoriaPersonaServiceImpl implements CategoriaPersonaService {
 
     @Override
     public List<CategoryPersonaResponseDTO> findByNombre(String nombre) { 
-        return mapToResponseList(categoriaPersonaRepository.findByNombreContainingIgnoreCase(nombre));
+        return mapToResponseList(categoriaPersonaRepository.findByNameContainingIgnoreCase(nombre));
     }
 
     @Override
     @Transactional
     public CategoryPersonaResponseDTO save(CategoryPersonaRequestDTO categoriaPersonaRequestDTO) {
-        if (categoriaPersonaRepository.existsByNombreIgnoreCase(categoriaPersonaRequestDTO.getName()))
+        if (categoriaPersonaRepository.existsByNameIgnoreCase(categoriaPersonaRequestDTO.getName()))
             throw new DataIntegrityViolationException("Ya existe una categoría con el nombre: " + categoriaPersonaRequestDTO.getName());
         CategoryPerson categoria = categoriaPersonaMapper.toEntity(categoriaPersonaRequestDTO); 
         return categoriaPersonaMapper.toResponseDTO(categoriaPersonaRepository.save(categoria));
@@ -62,7 +62,7 @@ public class CategoriaPersonaServiceImpl implements CategoriaPersonaService {
             throw new ResourceNotFoundException("Categoría de persona no encontrada con ID: " + id);
         
         if (categoriaPersonaRequestDTO.getName() != null && 
-            categoriaPersonaRepository.existsByNombreIgnoreCase(categoriaPersonaRequestDTO.getName())) {
+            categoriaPersonaRepository.existsByNameIgnoreCase(categoriaPersonaRequestDTO.getName())) {
             CategoryPerson existing = categoriaPersonaRepository.findById(id).get();
             if (!categoriaPersonaRequestDTO.getName().equalsIgnoreCase(existing.getName())) 
                 throw new DataIntegrityViolationException("Ya existe una categoría con el nombre: " + categoriaPersonaRequestDTO.getName());
@@ -79,7 +79,7 @@ public class CategoriaPersonaServiceImpl implements CategoriaPersonaService {
         if (!categoriaPersonaRepository.existsById(id))
             throw new ResourceNotFoundException("Categoría de persona no encontrada con ID: " + id);
 
-        long personasNaturalesCount = personaNaturalRepository.countByCategoriaPersonaId(id);
+        long personasNaturalesCount = personaNaturalRepository.countByCategoryPersonId(id);
         if (personasNaturalesCount > 0) {
             throw new ConflictException(
                     "No se puede eliminar esta categoría porque tiene " + personasNaturalesCount + " persona(s) natural(es) asociada(s).",
@@ -122,7 +122,7 @@ public class CategoriaPersonaServiceImpl implements CategoriaPersonaService {
         if (!categoriaPersonaRepository.existsById(categoriaId))
             throw new ResourceNotFoundException("Categoría no encontrada con ID: " + categoriaId);
 
-        List<PersonNatural> personasNaturales = personaNaturalRepository.findByCategoriaPersonaId(categoriaId);
+        List<PersonNatural> personasNaturales = personaNaturalRepository.findByCategoryPersonId(categoriaId);
         return personasNaturales.stream().map(personaNaturalMapper::toResponseDTO).toList();
     }
 

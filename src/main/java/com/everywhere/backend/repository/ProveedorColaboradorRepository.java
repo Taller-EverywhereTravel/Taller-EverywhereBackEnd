@@ -10,9 +10,9 @@ import java.util.Optional;
 @Repository
 public interface ProveedorColaboradorRepository extends JpaRepository<SupplierCollaborator, Integer> {
 
-    List<SupplierCollaborator> findByProveedorId(Integer proveedorId);
+    List<SupplierCollaborator> findBySupplierId(Integer proveedorId);
 
-    List<SupplierCollaborator> findByNombreContainingIgnoreCase(String nombre);
+    List<SupplierCollaborator> findByNameContainingIgnoreCase(String nombre);
 
-    Optional<SupplierCollaborator> findByEmail(String email);
+    Optional<SupplierCollaborator> findByMail(String email);
 }

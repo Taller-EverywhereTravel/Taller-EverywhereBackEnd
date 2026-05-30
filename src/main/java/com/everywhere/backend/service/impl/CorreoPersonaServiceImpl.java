@@ -38,7 +38,7 @@ public class CorreoPersonaServiceImpl implements CorreoPersonaService {
 
     @Override
     public List<MailPersonResponseDTO> findByPersonaId(Integer personaId) {
-        return correoPersonaRepository.findByPersonaId(personaId)
+        return correoPersonaRepository.findByPersonId(personaId)
                 .stream()
                 .map(correoPersonaMapper::toResponseDTO)
                 .toList();

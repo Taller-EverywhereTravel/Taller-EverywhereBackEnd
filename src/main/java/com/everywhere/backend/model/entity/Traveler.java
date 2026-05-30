@@ -36,7 +36,7 @@ public class Traveler {
     @Column(name = "via_upd_tmp")
     private LocalDateTime updated;
 
-    @OneToOne(mappedBy = "viajero", fetch = FetchType.LAZY)
-    @JsonBackReference("viajero-personaNatural")
+    @OneToOne(mappedBy = "traveler", fetch = FetchType.LAZY)
+    @JsonBackReference("traveler-personNatural")
     private PersonNatural personNatural;
 }

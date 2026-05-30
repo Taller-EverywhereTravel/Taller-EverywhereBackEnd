@@ -40,7 +40,7 @@ public class ProveedorColaboradorServiceImpl implements ProveedorColaboradorServ
 
     @Override
     public List<SupplierCollaboratorResponseDTO> findByProveedorId(Integer proveedorId) {
-        return repository.findByProveedorId(proveedorId).stream()
+        return repository.findBySupplierId(proveedorId).stream()
                 .map(mapper::toResponseDTO)
                 .toList();
     }

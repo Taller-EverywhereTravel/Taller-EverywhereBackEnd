@@ -47,7 +47,7 @@ public class PersonNatural {
     @JoinColumn(name = "per_id_int", nullable = false)
     private Person person;
 
-    @OneToMany(mappedBy = "personaNatural", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "personNatural", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<NaturalJuridic> relacionesJuridicas = new ArrayList<>();
 
     @OneToOne

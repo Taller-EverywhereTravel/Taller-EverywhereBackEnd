@@ -45,7 +45,7 @@ public class CarpetaServiceImpl implements CarpetaService {
             carpeta.setLevel(0); // raíz
         }
 
-        if (carpetaRepository.existsByNombreAndNivel(carpeta.getName(), carpeta.getLevel()))
+        if (carpetaRepository.existsByNameAndLevel(carpeta.getName(), carpeta.getLevel()))
             throw new DataIntegrityViolationException("Ya existe una carpeta con el nombre '" + carpeta.getName() + "' en el nivel " + carpeta.getLevel());
 
         return carpetaMapper.toResponse(carpetaRepository.save(carpeta));
@@ -84,17 +84,17 @@ public class CarpetaServiceImpl implements CarpetaService {
     public List<FolderResponseDto> findByCarpetaPadreId(Integer carpetaPadreId) {
         if (!carpetaRepository.existsById(carpetaPadreId)) 
             throw new ResourceNotFoundException("Carpeta padre no encontrada con ID: " + carpetaPadreId);
-        return mapToResponseList(carpetaRepository.findByCarpetaPadreId(carpetaPadreId));
+        return mapToResponseList(carpetaRepository.findByFolderFatherId(carpetaPadreId));
     }
 
     @Override
     public List<FolderResponseDto> findByNivel(Integer nivel) {
-        return mapToResponseList(carpetaRepository.findByNivel(nivel));
+        return mapToResponseList(carpetaRepository.findByLevel(nivel));
     }
 
     @Override
     public List<FolderResponseDto> findByNombre(String nombre) { 
-        return mapToResponseList(carpetaRepository.findByNombreContainingIgnoreCase(nombre));
+        return mapToResponseList(carpetaRepository.findByNameContainingIgnoreCase(nombre));
     }
 
     @Override
@@ -107,7 +107,7 @@ public class CarpetaServiceImpl implements CarpetaService {
     public List<FolderResponseDto> findByFechaCreacionBetween(LocalDate inicio, LocalDate fin) {
         LocalDateTime start = inicio.atStartOfDay();
         LocalDateTime end = fin.plusDays(1).atStartOfDay().minusSeconds(1); 
-        return mapToResponseList(carpetaRepository.findByCreadoBetweenOrderByCreadoAsc(start, end));
+        return mapToResponseList(carpetaRepository.findByCreatedBetweenOrderByCreatedAsc(start, end));
     }
 
     @Override
@@ -118,7 +118,7 @@ public class CarpetaServiceImpl implements CarpetaService {
 
     @Override
     public List<FolderResponseDto> findRaices() { 
-        return mapToResponseList(carpetaRepository.findByCarpetaPadreIsNull());
+        return mapToResponseList(carpetaRepository.findByFolderFatherIsNull());
     }
 
     @Override
@@ -140,7 +140,7 @@ public class CarpetaServiceImpl implements CarpetaService {
     public List<FolderResponseDto> findHijosByPadreId(Integer carpetaPadreId) {
         if (!carpetaRepository.existsById(carpetaPadreId)) 
             throw new ResourceNotFoundException("Carpeta padre no encontrada con ID: " + carpetaPadreId);
-        return mapToResponseList(carpetaRepository.findByCarpetaPadreId(carpetaPadreId));
+        return mapToResponseList(carpetaRepository.findByFolderFatherId(carpetaPadreId));
     }
 
     private List<FolderResponseDto> mapToResponseList(List<Folder> carpetas) {

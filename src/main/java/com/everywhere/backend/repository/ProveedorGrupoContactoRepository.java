@@ -10,7 +10,7 @@ import java.util.Optional;
 @Repository
 public interface ProveedorGrupoContactoRepository extends JpaRepository<SupplierGroupContact, Integer> {
 
-    Optional<SupplierGroupContact> findByNombreIgnoreCase(String nombre);
+    Optional<SupplierGroupContact> findByNameIgnoreCase(String nombre);
 
-    List<SupplierGroupContact> findByNombreContainingIgnoreCase(String nombre);
+    List<SupplierGroupContact> findByNameContainingIgnoreCase(String nombre);
 }

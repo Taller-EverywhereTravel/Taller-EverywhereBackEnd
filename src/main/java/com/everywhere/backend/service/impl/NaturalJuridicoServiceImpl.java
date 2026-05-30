@@ -43,7 +43,7 @@ public class NaturalJuridicoServiceImpl implements NaturalJuridicoService {
                 throw new ResourceNotFoundException("Persona jurídica no encontrada con ID: " + personaJuridicaId);
                 
             Optional<NaturalJuridic> naturalJuridicOptional = naturalJuridicoRepository
-                    .findByPersonaNaturalIdAndPersonaJuridicaId(naturalJuridicoRequestDTO.getPersonNaturalId(), personaJuridicaId);
+                    .findByPersonNaturalIdAndPersonJuridicId(naturalJuridicoRequestDTO.getPersonNaturalId(), personaJuridicaId);
 
             if (naturalJuridicOptional.isPresent())
                 throw new DataIntegrityViolationException("Ya existe una relación entre la persona natural " + 
@@ -69,14 +69,14 @@ public class NaturalJuridicoServiceImpl implements NaturalJuridicoService {
     public List<NaturalJuridicResponseDTO> findByPersonaNaturalId(Integer personaNaturalId) {
         if (!personaNaturalRepository.existsById(personaNaturalId))
             throw new ResourceNotFoundException("Persona natural no encontrada con ID: " + personaNaturalId); 
-        return mapToResponseList(naturalJuridicoRepository.findByPersonaNaturalId(personaNaturalId));
+        return mapToResponseList(naturalJuridicoRepository.findByPersonNaturalId(personaNaturalId));
     }
 
     @Override
     public List<NaturalJuridicResponseDTO> findByPersonaJuridicaId(Integer personaJuridicaId) {
         if (!personaJuridicaRepository.existsById(personaJuridicaId))
             throw new ResourceNotFoundException("Persona jurídica no encontrada con ID: " + personaJuridicaId);
-        return mapToResponseList(naturalJuridicoRepository.findByPersonaJuridicaId(personaJuridicaId));
+        return mapToResponseList(naturalJuridicoRepository.findByPersonJuridicId(personaJuridicaId));
     }
 
     @Override
@@ -97,10 +97,10 @@ public class NaturalJuridicoServiceImpl implements NaturalJuridicoService {
     @Override
     @Transactional
     public void deleteByPersonas(Integer personaNaturalId, Integer personaJuridicaId) {
-        Optional<NaturalJuridic> naturalJuridicoOptional = naturalJuridicoRepository.findByPersonaNaturalIdAndPersonaJuridicaId(personaNaturalId, personaJuridicaId);
+        Optional<NaturalJuridic> naturalJuridicoOptional = naturalJuridicoRepository.findByPersonNaturalIdAndPersonJuridicId(personaNaturalId, personaJuridicaId);
         if (naturalJuridicoOptional.isEmpty())
             throw new ResourceNotFoundException("No existe relación entre la persona natural " + personaNaturalId + " y la persona jurídica " + personaJuridicaId);      
-        naturalJuridicoRepository.deleteByPersonaNaturalIdAndPersonaJuridicaId(personaNaturalId, personaJuridicaId);
+        naturalJuridicoRepository.deleteByPersonNaturalIdAndPersonJuridicId(personaNaturalId, personaJuridicaId);
     }
 
     @Override
@@ -126,7 +126,7 @@ public class NaturalJuridicoServiceImpl implements NaturalJuridicoService {
         if (naturalJuridicoPatchDTO.getRemove() != null && !naturalJuridicoPatchDTO.getRemove().isEmpty()) {
             for (Integer personaJuridicaId : naturalJuridicoPatchDTO.getRemove()) {
                 Optional<NaturalJuridic> relacionExistente = naturalJuridicoRepository
-                        .findByPersonaNaturalIdAndPersonaJuridicaId(personaNaturalId, personaJuridicaId);
+                        .findByPersonNaturalIdAndPersonJuridicId(personaNaturalId, personaJuridicaId);
 
                 if (relacionExistente.isPresent()) naturalJuridicoRepository.deleteById(relacionExistente.get().getId());
             }
@@ -138,7 +138,7 @@ public class NaturalJuridicoServiceImpl implements NaturalJuridicoService {
             
             for (Integer personaJuridicaId : naturalJuridicoPatchDTO.getAdd()) {
                 Optional<NaturalJuridic> relacionExistente = naturalJuridicoRepository
-                        .findByPersonaNaturalIdAndPersonaJuridicaId(personaNaturalId, personaJuridicaId);
+                        .findByPersonNaturalIdAndPersonJuridicId(personaNaturalId, personaJuridicaId);
                 
                 if (relacionExistente.isEmpty()) {
                     PersonJuridic personaJuridica = personaJuridicaRepository.findById(personaJuridicaId).get();

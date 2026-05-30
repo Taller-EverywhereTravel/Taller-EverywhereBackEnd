@@ -214,7 +214,7 @@ public class CotizacionServiceImpl implements CotizacionService {
 
     @Override
     public List<QuotationResponseDto> findCotizacionesSinLiquidacion() {
-        return mapToResponseList(cotizacionRepository.findCotizacionesSinLiquidacion());
+        return mapToResponseList(cotizacionRepository.findQuotationWithoutLiquidation());
     }
 
     private List<QuotationResponseDto> mapToResponseList(List<Quotation> cotizaciones) {
@@ -451,7 +451,7 @@ public class CotizacionServiceImpl implements CotizacionService {
         if (cotizacion.getPerson() != null) {
             try {
                 PersonNatural personaNatural = personaNaturalRepository
-                        .findByPersonasId(cotizacion.getPerson().getId()).orElse(null);
+                        .findByPersonId(cotizacion.getPerson().getId()).orElse(null);
                 if (personaNatural != null) {
                     StringBuilder nombreCompleto = new StringBuilder();
                     if (personaNatural.getName() != null) {
@@ -1133,12 +1133,12 @@ public class CotizacionServiceImpl implements CotizacionService {
         if (!carpetaRepository.existsById(carpetaId))
             throw new ResourceNotFoundException("Carpeta no encontrada con ID: " + carpetaId);
 
-        return mapToResponseList(cotizacionRepository.findByCarpetaId(carpetaId));
+        return mapToResponseList(cotizacionRepository.findByFolderId(carpetaId));
     }
 
     @Override
     public List<QuotationResponseDto> findSinCarpeta() {
-        return mapToResponseList(cotizacionRepository.findByCarpetaIsNull());
+        return mapToResponseList(cotizacionRepository.findByFolderIsNull());
     }
 
     @Override

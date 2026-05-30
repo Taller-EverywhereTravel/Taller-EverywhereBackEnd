@@ -85,7 +85,7 @@ public class DocumentCollection {
     @JoinColumn(name = "dtdoc_id_int")
     private DetailDocument detailDocument;
 
-    @OneToMany(mappedBy = "documentoCobranza", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "documentCollection", cascade = CascadeType.ALL)
     @JsonManagedReference
     private List<DetailDocumentCollection> detail;
     

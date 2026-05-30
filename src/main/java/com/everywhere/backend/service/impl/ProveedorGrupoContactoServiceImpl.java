@@ -35,7 +35,7 @@ public class ProveedorGrupoContactoServiceImpl implements ProveedorGrupoContacto
 
     @Override
     public List<SupplierGroupContactResponseDTO> findByNombre(String nombre) {
-        return repository.findByNombreContainingIgnoreCase(nombre).stream()
+        return repository.findByNameContainingIgnoreCase(nombre).stream()
                 .map(mapper::toResponseDTO)
                 .toList();
     }

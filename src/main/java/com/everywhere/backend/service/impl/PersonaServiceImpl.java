@@ -38,7 +38,7 @@ public class PersonaServiceImpl implements PersonaService {
 
     @Override
     public List<PersonResponseDTO> findByEmail(String email) {
-        List<Person> personas = personaRepository.findByEmailContainingIgnoreCase(email);
+        List<Person> personas = personaRepository.findByMailPrimaryContainingIgnoreCase(email);
         return personas.stream().map(personaMapper::toResponseDTO).toList();
     }
 
@@ -77,9 +77,9 @@ public class PersonaServiceImpl implements PersonaService {
     personaRepository.findById(id)
         .orElseThrow(() -> new ResourceNotFoundException("Persona no encontrada con ID " + id));
 
-    return personaNaturalRepository.findByPersonasId(id)
+    return personaNaturalRepository.findByPersonId(id)
         .map(personaMapper::toDisplayDTO)
-        .or(() -> personaJuridicaRepository.findByPersonasId(id).map(personaMapper::toDisplayDTO))
+        .or(() -> personaJuridicaRepository.findByPersonId(id).map(personaMapper::toDisplayDTO))
         .orElseThrow(() -> new ResourceNotFoundException(
             "No se encontró información adicional (natural o jurídica) para la persona con ID: " + id));
     }

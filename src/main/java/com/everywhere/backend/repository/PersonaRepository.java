@@ -11,15 +11,23 @@ import java.util.Optional;
 
 @Repository
 public interface PersonaRepository extends JpaRepository<Person, Integer> {
-    List<Person> findByEmailContainingIgnoreCase(String email);
+    List<Person> findByMailPrimaryContainingIgnoreCase(String email);
     @Query("""
-       SELECT p 
-       FROM Personas p 
-       JOIN p.telefonos t 
-       WHERE LOWER(t.numero) LIKE LOWER(CONCAT('%', :telefono, '%'))
-       """)
-    List<Person> findByTelefonoContainingIgnoreCase(@Param("telefono") String telefono);
+           SELECT p 
+           FROM Person p 
+           JOIN p.phone t 
+           WHERE LOWER(t.number) LIKE LOWER(CONCAT('%', ?1, '%'))
+           """)
+    List<Person> findByTelefonoContainingIgnoreCase(String telefono);
 
-    @Query("SELECT p FROM Personas p LEFT JOIN FETCH p.telefonos WHERE p.id = :id")
-    Optional<Person> findByIdWithTelefonos(@Param("id") Integer id);
+    @Query("""
+           SELECT p 
+           FROM Person p 
+           JOIN p.mail m 
+           WHERE LOWER(m.mail) LIKE LOWER(CONCAT('%', ?1, '%'))
+           """)
+    List<Person> findByMailAddressContainingIgnoreCase(String mailAddress);
+
+    @Query("SELECT p FROM Person p LEFT JOIN FETCH p.phone WHERE p.id = ?1")
+    Optional<Person> findByIdWithTelefonos(Integer id);
 }

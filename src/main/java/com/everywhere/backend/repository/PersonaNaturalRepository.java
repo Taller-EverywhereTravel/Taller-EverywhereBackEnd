@@ -11,20 +11,19 @@ import java.util.Optional;
 
 @Repository
 public interface PersonaNaturalRepository extends JpaRepository<PersonNatural, Integer> {
-    Optional<PersonNatural> findByDocumentoIgnoreCase(String documento);
-    Optional<PersonNatural> findByPersonasId(Integer personaId);
+    Optional<PersonNatural> findByDocumentIgnoreCase(String documento);
+    Optional<PersonNatural> findByPersonId(Integer personaId);
 
-    @Query(value = "SELECT * FROM persona_natural WHERE UPPER(TRANSLATE(per_nat_nomb_vac, 'ÁÉÍÓÚáéíóú', 'AEIOUaeiou')) LIKE UPPER(TRANSLATE(:nombres, 'ÁÉÍÓÚáéíóú', 'AEIOUaeiou'))", nativeQuery = true)
-    List<PersonNatural> findByNombresIgnoreAccents(@Param("nombres") String nombres);
+    @Query(value = "SELECT * FROM persona_natural WHERE UPPER(TRANSLATE(per_nat_nomb_vac, 'ÁÉÍÓÚáéíóú', 'AEIOUaeiou')) LIKE UPPER(TRANSLATE(?1, 'ÁÉÍÓÚáéíóú', 'AEIOUaeiou'))", nativeQuery = true)
+    List<PersonNatural> findByNombresIgnoreAccents(String nombres);
 
-    @Query(value = "SELECT * FROM persona_natural WHERE UPPER(TRANSLATE(per_nat_apell_pat_vac, 'ÁÉÍÓÚáéíóú', 'AEIOUaeiou')) LIKE UPPER(TRANSLATE(:apellidosPaterno, 'ÁÉÍÓÚáéíóú', 'AEIOUaeiou'))", nativeQuery = true)
-    List<PersonNatural> findByApellidosPaternoIgnoreAccents(@Param("apellidosPaterno") String apellidosPaterno);
+    @Query(value = "SELECT * FROM persona_natural WHERE UPPER(TRANSLATE(per_nat_apell_pat_vac, 'ÁÉÍÓÚáéíóú', 'AEIOUaeiou')) LIKE UPPER(TRANSLATE(?1, 'ÁÉÍÓÚáéíóú', 'AEIOUaeiou'))", nativeQuery = true)
+    List<PersonNatural> findByApellidosPaternoIgnoreAccents(String apellidosPaterno);
 
-    @Query(value = "SELECT * FROM persona_natural WHERE UPPER(TRANSLATE(per_nat_apell_mat_vac, 'ÁÉÍÓÚáéíóú', 'AEIOUaeiou')) LIKE UPPER(TRANSLATE(:apellidosMaterno, 'ÁÉÍÓÚáéíóú', 'AEIOUaeiou'))", nativeQuery = true)
-    List<PersonNatural> findByApellidosMaternoIgnoreAccents(@Param("apellidosMaterno") String apellidosMaterno);
+    @Query(value = "SELECT * FROM persona_natural WHERE UPPER(TRANSLATE(per_nat_apell_mat_vac, 'ÁÉÍÓÚáéíóú', 'AEIOUaeiou')) LIKE UPPER(TRANSLATE(?1, 'ÁÉÍÓÚáéíóú', 'AEIOUaeiou'))", nativeQuery = true)
+    List<PersonNatural> findByApellidosMaternoIgnoreAccents(String apellidosMaterno);
 
-    List<PersonNatural> findByCategoriaPersonaId(Integer categoriaId);
-    Optional<PersonNatural> findByDocumentoIgnoreCaseAndIdNot(String documento, Integer id);
-    @Query("SELECT COUNT(pn) FROM PersonaNatural pn WHERE pn.categoriaPersona.id = :categoriaId")
-    long countByCategoriaPersonaId(@Param("categoriaId") Integer categoriaId);
+    List<PersonNatural> findByCategoryPersonId(Integer categoriaId);
+    Optional<PersonNatural> findByDocumentIgnoreCaseAndIdNot(String documento, Integer id);
+    long countByCategoryPersonId(Integer categoriaId);
 }

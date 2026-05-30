@@ -85,7 +85,7 @@ public class Receipt {
     @JoinColumn(name = "dtdoc_id_int")
     private DetailDocument detailDocument;
 
-    @OneToMany(mappedBy = "recibo", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "receipt", cascade = CascadeType.ALL)
     @JsonManagedReference
     private List<DetailReceipt> detailReceipt;
 

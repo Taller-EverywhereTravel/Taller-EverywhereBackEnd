@@ -48,7 +48,7 @@ public class Liquidation {
     @JoinColumn(name = "prod_id_int", nullable = true)
     private Product product;
 
-    @OneToMany(mappedBy = "liquidacion")
+    @OneToMany(mappedBy = "liquidation")
     private List<ObservationLiquidation> observacionesLiquidacion;
 
     @ManyToOne
