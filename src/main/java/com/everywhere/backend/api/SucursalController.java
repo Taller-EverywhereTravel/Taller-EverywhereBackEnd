@@ -1,7 +1,7 @@
 package com.everywhere.backend.api;
 
-import com.everywhere.backend.model.dto.SucursalRequestDTO;
-import com.everywhere.backend.model.dto.SucursalResponseDTO;
+import com.everywhere.backend.model.dto.BranchRequestDTO;
+import com.everywhere.backend.model.dto.BranchResponseDTO;
 import com.everywhere.backend.security.RequirePermission;
 import com.everywhere.backend.service.SucursalService;
 import lombok.RequiredArgsConstructor;
@@ -13,7 +13,7 @@ import jakarta.validation.Valid;
 import java.util.List;
 
 @RestController
-@RequestMapping("/sucursales")
+@RequestMapping("/branch")
 @RequiredArgsConstructor
 public class SucursalController {
 
@@ -21,39 +21,39 @@ public class SucursalController {
 
     @GetMapping
     @RequirePermission(module = "SUCURSALES", permission = "READ")
-    public ResponseEntity<List<SucursalResponseDTO>> getAllSucursales() { 
+    public ResponseEntity<List<BranchResponseDTO>> getAllSucursales() { 
         return ResponseEntity.ok(sucursalService.findAll());
     }
 
     @GetMapping("/{id}")
     @RequirePermission(module = "SUCURSALES", permission = "READ")
-    public ResponseEntity<SucursalResponseDTO> getSucursalById(@PathVariable Integer id) { 
+    public ResponseEntity<BranchResponseDTO> getSucursalById(@PathVariable Integer id) { 
         return ResponseEntity.ok(sucursalService.findById(id));
     }
 
-    @GetMapping("/estado/{estado}")
+    @GetMapping("/status/{estado}")
     @RequirePermission(module = "SUCURSALES", permission = "READ")
-    public ResponseEntity<List<SucursalResponseDTO>> getSucursalesByEstado(@PathVariable Boolean estado) { 
+    public ResponseEntity<List<BranchResponseDTO>> getSucursalesByEstado(@PathVariable Boolean estado) { 
         return ResponseEntity.ok(sucursalService.findByEstado(estado));
     }
 
     @PostMapping
     @RequirePermission(module = "SUCURSALES", permission = "CREATE")
-    public ResponseEntity<SucursalResponseDTO> createSucursal(@Valid @RequestBody SucursalRequestDTO sucursalRequestDTO) { 
+    public ResponseEntity<BranchResponseDTO> createSucursal(@Valid @RequestBody BranchRequestDTO sucursalRequestDTO) { 
         return ResponseEntity.status(HttpStatus.CREATED).body(sucursalService.save(sucursalRequestDTO));
     }
 
     @PatchMapping("/{id}")
     @RequirePermission(module = "SUCURSALES", permission = "UPDATE")
-    public ResponseEntity<SucursalResponseDTO> updateSucursal(
+    public ResponseEntity<BranchResponseDTO> updateSucursal(
             @PathVariable Integer id,
-            @Valid @RequestBody SucursalRequestDTO sucursalRequestDTO) { 
+            @Valid @RequestBody BranchRequestDTO sucursalRequestDTO) { 
         return ResponseEntity.ok(sucursalService.update(id, sucursalRequestDTO));
     }
 
-    @PatchMapping("/{id}/estado")
+    @PatchMapping("/{id}/status")
     @RequirePermission(module = "SUCURSALES", permission = "UPDATE")
-    public ResponseEntity<SucursalResponseDTO> cambiarEstadoSucursal(
+    public ResponseEntity<BranchResponseDTO> cambiarEstadoSucursal(
             @PathVariable Integer id,
             @RequestParam Boolean estado) { 
         return ResponseEntity.ok(sucursalService.cambiarEstado(id, estado));

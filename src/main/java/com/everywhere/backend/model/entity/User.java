@@ -17,21 +17,21 @@ public class User {
     private Integer id;
 
     @Column(name = "rol_nam_vc", length = 100)
-    private String nombre;
+    private String name;
 
     @Column(name="usr_email_vc", length = 150)
-    private String email;
+    private String mail;
 
     @Column(name = "usr_pass_vc", length = 255)
     private String password;
 
     @CreationTimestamp
     @Column(name = "prov_cre_tmp", updatable = false)
-    private LocalDateTime creado;
+    private LocalDateTime created;
 
     @UpdateTimestamp
     @Column(name = "prov_upd_tmp")
-    private LocalDateTime actualizado;
+    private LocalDateTime updated;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "rol_id", nullable = false)
@@ -39,6 +39,6 @@ public class User {
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "suc_id_int", nullable = true)
-    private Sucursal sucursal;
+    private Branch branch;
 
 }

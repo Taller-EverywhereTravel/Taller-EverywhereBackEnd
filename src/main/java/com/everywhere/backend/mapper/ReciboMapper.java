@@ -2,17 +2,17 @@ package com.everywhere.backend.mapper;
 
 import org.springframework.stereotype.Component;
 
-import com.everywhere.backend.model.dto.CotizacionConDetallesResponseDTO;
-import com.everywhere.backend.model.dto.DetalleReciboResponseDTO;
-import com.everywhere.backend.model.dto.ReciboResponseDTO;
-import com.everywhere.backend.model.dto.ReciboUpdateDTO;
-import com.everywhere.backend.model.entity.Cotizacion;
-import com.everywhere.backend.model.entity.FormaPago;
-import com.everywhere.backend.model.entity.PersonaJuridica;
-import com.everywhere.backend.model.entity.PersonaNatural;
-import com.everywhere.backend.model.entity.Personas;
-import com.everywhere.backend.model.entity.Recibo;
-import com.everywhere.backend.model.entity.Sucursal;
+import com.everywhere.backend.model.dto.QuotationWithDetailResponseDTO;
+import com.everywhere.backend.model.dto.DetailReceiptResponseDTO;
+import com.everywhere.backend.model.dto.ReceiptResponseDTO;
+import com.everywhere.backend.model.dto.ReceiptUpdateDTO;
+import com.everywhere.backend.model.entity.Quotation;
+import com.everywhere.backend.model.entity.MethodPayment;
+import com.everywhere.backend.model.entity.PersonJuridic;
+import com.everywhere.backend.model.entity.PersonNatural;
+import com.everywhere.backend.model.entity.Person;
+import com.everywhere.backend.model.entity.Receipt;
+import com.everywhere.backend.model.entity.Branch;
 import com.everywhere.backend.repository.PersonaJuridicaRepository;
 import com.everywhere.backend.repository.PersonaNaturalRepository;
 
@@ -33,130 +33,130 @@ public class ReciboMapper {
 
     @PostConstruct
     public void configureMapping() {
-        modelMapper.typeMap(ReciboUpdateDTO.class, Recibo.class).addMappings(mapper -> {
-            mapper.skip(Recibo::setDetalleDocumento);
-            mapper.skip(Recibo::setSucursal);
-            mapper.skip(Recibo::setPersonaJuridica);
+        modelMapper.typeMap(ReceiptUpdateDTO.class, Receipt.class).addMappings(mapper -> {
+            mapper.skip(Receipt::setDetailDocument);
+            mapper.skip(Receipt::setBranch);
+            mapper.skip(Receipt::setPersonJuridic);
         });
     }
 
     // Mapea desde cotización a recibo
-    public Recibo fromCotizacion(CotizacionConDetallesResponseDTO cotizacionConDetallesResponseDTO,
+    public Receipt fromCotizacion(QuotationWithDetailResponseDTO cotizacionConDetallesResponseDTO,
             String serie, Integer correlativo) {
-        Recibo recibo = new Recibo();
+        Receipt recibo = new Receipt();
 
         recibo.setSerie(serie);
-        recibo.setCorrelativo(correlativo);
-        recibo.setMoneda(cotizacionConDetallesResponseDTO.getMoneda());
+        recibo.setCorrelative(correlativo);
+        recibo.setCurrency(cotizacionConDetallesResponseDTO.getCurrency());
 
-        Cotizacion cotizacionEntity = new Cotizacion();
+        Quotation cotizacionEntity = new Quotation();
         cotizacionEntity.setId(cotizacionConDetallesResponseDTO.getId());
-        recibo.setCotizacion(cotizacionEntity);
+        recibo.setQuotation(cotizacionEntity);
 
-        if (cotizacionConDetallesResponseDTO.getPersonas() != null) {
-            Personas persona = new Personas();
-            persona.setId(cotizacionConDetallesResponseDTO.getPersonas().getId());
-            recibo.setPersona(persona);
+        if (cotizacionConDetallesResponseDTO.getPerson() != null) {
+            Person persona = new Person();
+            persona.setId(cotizacionConDetallesResponseDTO.getPerson().getId());
+            recibo.setPerson(persona);
         }
 
-        if (cotizacionConDetallesResponseDTO.getSucursal() != null) {
-            Sucursal sucursal = new Sucursal();
-            sucursal.setId(cotizacionConDetallesResponseDTO.getSucursal().getId());
-            recibo.setSucursal(sucursal);
+        if (cotizacionConDetallesResponseDTO.getBranch() != null) {
+            Branch sucursal = new Branch();
+            sucursal.setId(cotizacionConDetallesResponseDTO.getBranch().getId());
+            recibo.setBranch(sucursal);
         }
 
-        if (cotizacionConDetallesResponseDTO.getFormaPago() != null) {
-            FormaPago formaPago = new FormaPago();
-            formaPago.setId(cotizacionConDetallesResponseDTO.getFormaPago().getId());
-            recibo.setFormaPago(formaPago);
+        if (cotizacionConDetallesResponseDTO.getMethodPayment() != null) {
+            MethodPayment formaPago = new MethodPayment();
+            formaPago.setId(cotizacionConDetallesResponseDTO.getMethodPayment().getId());
+            recibo.setMethodPayment(formaPago);
         }
         return recibo;
     }
 
-    public void updateEntityFromUpdateDTO(Recibo recibo, ReciboUpdateDTO reciboUpdateDTO) {
+    public void updateEntityFromUpdateDTO(Receipt recibo, ReceiptUpdateDTO reciboUpdateDTO) {
         modelMapper.map(reciboUpdateDTO, recibo);
     }
 
-    public ReciboResponseDTO toResponseDTO(Recibo recibo) {
-        ReciboResponseDTO reciboResponseDTO = modelMapper.map(recibo, ReciboResponseDTO.class);
+    public ReceiptResponseDTO toResponseDTO(Receipt recibo) {
+        ReceiptResponseDTO reciboResponseDTO = modelMapper.map(recibo, ReceiptResponseDTO.class);
 
         // Mapear código de cotización
-        if (recibo.getCotizacion() != null) {
-            reciboResponseDTO.setCotizacionId(recibo.getCotizacion().getId());
-            if (recibo.getCotizacion().getCodigoCotizacion() != null) {
-                reciboResponseDTO.setCodigoCotizacion(recibo.getCotizacion().getCodigoCotizacion());
+        if (recibo.getQuotation() != null) {
+            reciboResponseDTO.setQuotationId(recibo.getQuotation().getId());
+            if (recibo.getQuotation().getCodeQuotation() != null) {
+                reciboResponseDTO.setCodeQuotation(recibo.getQuotation().getCodeQuotation());
             }
         }
 
-        if (recibo.getDetalleDocumento() != null) {
-            reciboResponseDTO.setDetalleDocumentoId(recibo.getDetalleDocumento().getId());
-            reciboResponseDTO.setClienteDocumento(recibo.getDetalleDocumento().getNumero());
-            if (recibo.getDetalleDocumento().getDocumento() != null)
-                reciboResponseDTO.setTipoDocumentoCliente(recibo.getDetalleDocumento().getDocumento().getTipo());
+        if (recibo.getDetailDocument() != null) {
+            reciboResponseDTO.setDetailDocumentId(recibo.getDetailDocument().getId());
+            reciboResponseDTO.setClientDocument(recibo.getDetailDocument().getNumber());
+            if (recibo.getDetailDocument().getDocument() != null)
+                reciboResponseDTO.setTypeDocumentClient(recibo.getDetailDocument().getDocument().getType());
         }
 
         // Siempre setear personaId si existe
-        if (recibo.getPersona() != null) {
-            reciboResponseDTO.setPersonaId(recibo.getPersona().getId());
+        if (recibo.getPerson() != null) {
+            reciboResponseDTO.setPersonId(recibo.getPerson().getId());
         }
 
         // PRIORIDAD 1: Si hay PersonaJuridica seleccionada, usar sus datos
-        if (recibo.getPersonaJuridica() != null) {
-            PersonaJuridica pj = recibo.getPersonaJuridica();
-            reciboResponseDTO.setPersonaJuridicaId(pj.getId());
-            reciboResponseDTO.setPersonaJuridicaRuc(pj.getRuc());
-            reciboResponseDTO.setPersonaJuridicaRazonSocial(pj.getRazonSocial());
+        if (recibo.getPersonJuridic() != null) {
+            PersonJuridic pj = recibo.getPersonJuridic();
+            reciboResponseDTO.setPersonJuridicId(pj.getId());
+            reciboResponseDTO.setPersonJuridicRuc(pj.getRuc());
+            reciboResponseDTO.setPersonJuridicCompanyName(pj.getNameCompany());
 
             // Usar datos de PersonaJuridica para el cliente
-            reciboResponseDTO.setClienteNombre(pj.getRazonSocial());
-            reciboResponseDTO.setClienteDocumento(pj.getRuc());
-            reciboResponseDTO.setTipoDocumentoCliente("RUC");
+            reciboResponseDTO.setClientName(pj.getNameCompany());
+            reciboResponseDTO.setClientDocument(pj.getRuc());
+            reciboResponseDTO.setTypeDocumentClient("RUC");
         }
         // PRIORIDAD 2: Si no hay PersonaJuridica, usar datos de Persona
-        else if (recibo.getPersona() != null) {
-            Integer personaId = recibo.getPersona().getId();
+        else if (recibo.getPerson() != null) {
+            Integer personaId = recibo.getPerson().getId();
 
-            PersonaNatural personaNatural = personaNaturalRepository.findByPersonasId(personaId).orElse(null);
+            PersonNatural personaNatural = personaNaturalRepository.findByPersonasId(personaId).orElse(null);
             if (personaNatural != null) {
                 String nombreCompleto = String.join(" ",
-                        personaNatural.getNombres() != null ? personaNatural.getNombres().trim() : "",
-                        personaNatural.getApellidosPaterno() != null ? personaNatural.getApellidosPaterno().trim() : "",
-                        personaNatural.getApellidosMaterno() != null ? personaNatural.getApellidosMaterno().trim() : "")
+                        personaNatural.getName() != null ? personaNatural.getName().trim() : "",
+                        personaNatural.getSurnamePaternal() != null ? personaNatural.getSurnamePaternal().trim() : "",
+                        personaNatural.getSurnameMaternal() != null ? personaNatural.getSurnameMaternal().trim() : "")
                         .trim();
-                reciboResponseDTO.setClienteNombre(nombreCompleto.isEmpty() ? "Sin nombre" : nombreCompleto);
+                reciboResponseDTO.setClientName(nombreCompleto.isEmpty() ? "Sin nombre" : nombreCompleto);
 
-                if (recibo.getDetalleDocumento() == null) {
-                    reciboResponseDTO.setClienteDocumento(personaNatural.getDocumento());
-                    reciboResponseDTO.setTipoDocumentoCliente("DNI");
+                if (recibo.getDetailDocument() == null) {
+                    reciboResponseDTO.setClientDocument(personaNatural.getDocument());
+                    reciboResponseDTO.setTypeDocumentClient("DNI");
                 }
             } else {
-                PersonaJuridica personaJuridica = personaJuridicaRepository.findByPersonasId(personaId).orElse(null);
+                PersonJuridic personaJuridica = personaJuridicaRepository.findByPersonasId(personaId).orElse(null);
                 if (personaJuridica != null) {
-                    reciboResponseDTO.setPersonaJuridicaId(personaJuridica.getId());
-                    reciboResponseDTO.setPersonaJuridicaRuc(personaJuridica.getRuc());
-                    reciboResponseDTO.setPersonaJuridicaRazonSocial(personaJuridica.getRazonSocial());
+                    reciboResponseDTO.setPersonJuridicId(personaJuridica.getId());
+                    reciboResponseDTO.setPersonJuridicRuc(personaJuridica.getRuc());
+                    reciboResponseDTO.setPersonJuridicCompanyName(personaJuridica.getNameCompany());
 
-                    reciboResponseDTO.setClienteNombre(personaJuridica.getRazonSocial());
-                    reciboResponseDTO.setClienteDocumento(personaJuridica.getRuc());
-                    reciboResponseDTO.setTipoDocumentoCliente("RUC");
+                    reciboResponseDTO.setClientName(personaJuridica.getNameCompany());
+                    reciboResponseDTO.setClientDocument(personaJuridica.getRuc());
+                    reciboResponseDTO.setTypeDocumentClient("RUC");
                 }
             }
         }
 
-        if (recibo.getSucursal() != null) {
-            reciboResponseDTO.setSucursalId(recibo.getSucursal().getId());
-            reciboResponseDTO.setSucursalDescripcion(recibo.getSucursal().getDescripcion());
+        if (recibo.getBranch() != null) {
+            reciboResponseDTO.setBranchId(recibo.getBranch().getId());
+            reciboResponseDTO.setBranchDescription(recibo.getBranch().getDescription());
         }
-        if (recibo.getFormaPago() != null) {
-            reciboResponseDTO.setFormaPagoId(recibo.getFormaPago().getId());
-            reciboResponseDTO.setFormaPagoDescripcion(recibo.getFormaPago().getDescripcion());
+        if (recibo.getMethodPayment() != null) {
+            reciboResponseDTO.setMethodPaymentId(recibo.getMethodPayment().getId());
+            reciboResponseDTO.setMethodPaymentDescription(recibo.getMethodPayment().getDescription());
         }
 
         // Mapear los detalles
-        if (recibo.getDetalleRecibo() != null && !recibo.getDetalleRecibo().isEmpty()) {
-            List<DetalleReciboResponseDTO> detallesDTO = recibo.getDetalleRecibo().stream()
+        if (recibo.getDetailReceipt() != null && !recibo.getDetailReceipt().isEmpty()) {
+            List<DetailReceiptResponseDTO> detallesDTO = recibo.getDetailReceipt().stream()
                     .map(detalleReciboMapper::toResponseDTO).toList();
-            reciboResponseDTO.setDetalles(detallesDTO);
+            reciboResponseDTO.setDetail(detallesDTO);
         }
         
         return reciboResponseDTO;

@@ -6,14 +6,14 @@ import java.util.List;
 
 import org.springframework.stereotype.Component;
 
-import com.everywhere.backend.model.dto.DetalleReciboResponseDTO;
-import com.everywhere.backend.model.dto.ReciboResponseDTO;
+import com.everywhere.backend.model.dto.DetailReceiptResponseDTO;
+import com.everywhere.backend.model.dto.ReceiptResponseDTO;
 
 /**
  * Generador de PDF para Recibo - Extiende PdfGenerator
  */
 @Component
-public class ReciboPdfGenerator extends PdfGenerator<ReciboResponseDTO, DetalleReciboResponseDTO> {
+public class ReciboPdfGenerator extends PdfGenerator<ReceiptResponseDTO, DetailReceiptResponseDTO> {
 
     public ReciboPdfGenerator(NumberToTextConverter numberToTextConverter) {
         super(numberToTextConverter);
@@ -30,69 +30,69 @@ public class ReciboPdfGenerator extends PdfGenerator<ReciboResponseDTO, DetalleR
     }
 
     @Override
-    protected List<DetalleReciboResponseDTO> getDetalles(ReciboResponseDTO documentoDTO) {
-        return documentoDTO.getDetalles();
+    protected List<DetailReceiptResponseDTO> getDetalles(ReceiptResponseDTO documentoDTO) {
+        return documentoDTO.getDetail();
     }
 
     @Override
-    protected String getNumeroDocumento(ReciboResponseDTO documentoDTO) {
+    protected String getNumeroDocumento(ReceiptResponseDTO documentoDTO) {
         // Concatenar serie y correlativo para formar el número completo (ej:
         // R01-000000001)
-        if (documentoDTO.getSerie() != null && documentoDTO.getCorrelativo() != null) {
-            return String.format("%s-%09d", documentoDTO.getSerie(), documentoDTO.getCorrelativo());
+        if (documentoDTO.getSerie() != null && documentoDTO.getCorrelative() != null) {
+            return String.format("%s-%09d", documentoDTO.getSerie(), documentoDTO.getCorrelative());
         }
         return null;
     }
 
     @Override
-    protected String getFechaEmision(ReciboResponseDTO documentoDTO) {
-        return documentoDTO.getFechaEmision() != null
-                ? documentoDTO.getFechaEmision().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"))
+    protected String getFechaEmision(ReceiptResponseDTO documentoDTO) {
+        return documentoDTO.getDateIssue() != null
+                ? documentoDTO.getDateIssue().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"))
                 : null;
     }
 
     @Override
-    protected String getClienteNombre(ReciboResponseDTO documentoDTO) {
-        return documentoDTO.getClienteNombre();
+    protected String getClienteNombre(ReceiptResponseDTO documentoDTO) {
+        return documentoDTO.getClientName();
     }
 
     @Override
-    protected String getClienteDocumento(ReciboResponseDTO documentoDTO) {
-        return documentoDTO.getClienteDocumento();
+    protected String getClienteDocumento(ReceiptResponseDTO documentoDTO) {
+        return documentoDTO.getClientDocument();
     }
 
     @Override
-    protected String getTipoDocumentoCliente(ReciboResponseDTO documentoDTO) {
-        return documentoDTO.getTipoDocumentoCliente();
+    protected String getTipoDocumentoCliente(ReceiptResponseDTO documentoDTO) {
+        return documentoDTO.getTypeDocumentClient();
     }
 
     @Override
-    protected String getSucursalDescripcion(ReciboResponseDTO documentoDTO) {
-        return documentoDTO.getSucursalDescripcion();
+    protected String getSucursalDescripcion(ReceiptResponseDTO documentoDTO) {
+        return documentoDTO.getBranchDescription();
     }
 
     @Override
-    protected String getMoneda(ReciboResponseDTO documentoDTO) {
-        return documentoDTO.getMoneda();
+    protected String getMoneda(ReceiptResponseDTO documentoDTO) {
+        return documentoDTO.getCurrency();
     }
 
     @Override
-    protected String getFileVenta(ReciboResponseDTO documentoDTO) {
+    protected String getFileVenta(ReceiptResponseDTO documentoDTO) {
         return documentoDTO.getFileVenta();
     }
 
     @Override
-    protected String getFormaPagoDescripcion(ReciboResponseDTO documentoDTO) {
-        return documentoDTO.getFormaPagoDescripcion();
+    protected String getFormaPagoDescripcion(ReceiptResponseDTO documentoDTO) {
+        return documentoDTO.getMethodPaymentDescription();
     }
 
     @Override
-    protected String getObservaciones(ReciboResponseDTO documentoDTO) {
-        return documentoDTO.getObservaciones();
+    protected String getObservaciones(ReceiptResponseDTO documentoDTO) {
+        return documentoDTO.getObservation();
     }
 
     @Override
-    protected BigDecimal getCostoEnvio(ReciboResponseDTO documentoDTO) {
+    protected BigDecimal getCostoEnvio(ReceiptResponseDTO documentoDTO) {
         // Recibo no tiene costo de envío, retorna 0
         return BigDecimal.ZERO;
     }
@@ -110,34 +110,34 @@ public class ReciboPdfGenerator extends PdfGenerator<ReciboResponseDTO, DetalleR
     }
 
     @Override
-    protected String getFechaVencimiento(ReciboResponseDTO documentoDTO) {
-        return documentoDTO.getFechaVencimiento() != null
-                ? documentoDTO.getFechaVencimiento().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"))
+    protected String getFechaVencimiento(ReceiptResponseDTO documentoDTO) {
+        return documentoDTO.getDateExpiration() != null
+                ? documentoDTO.getDateExpiration().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"))
                 : null;
     }
 
     @Override
-    protected Integer getCantidad(DetalleReciboResponseDTO detalle) {
-        return detalle.getCantidad();
+    protected Integer getCantidad(DetailReceiptResponseDTO detalle) {
+        return detalle.getAmount();
     }
 
     @Override
-    protected String getProductoDescripcion(DetalleReciboResponseDTO detalle) {
-        return detalle.getProductoDescripcion();
+    protected String getProductoDescripcion(DetailReceiptResponseDTO detalle) {
+        return detalle.getProductDescription();
     }
 
     @Override
-    protected String getDescripcionDetalle(DetalleReciboResponseDTO detalle) {
-        return detalle.getDescripcion();
+    protected String getDescripcionDetalle(DetailReceiptResponseDTO detalle) {
+        return detalle.getDescription();
     }
 
     @Override
-    protected BigDecimal getPrecio(DetalleReciboResponseDTO detalle) {
-        return detalle.getPrecio();
+    protected BigDecimal getPrecio(DetailReceiptResponseDTO detalle) {
+        return detalle.getPrice();
     }
 
     @Override
-    protected Long getDetalleId(DetalleReciboResponseDTO detalle) {
+    protected Long getDetalleId(DetailReceiptResponseDTO detalle) {
         return detalle.getId();
     }
 }

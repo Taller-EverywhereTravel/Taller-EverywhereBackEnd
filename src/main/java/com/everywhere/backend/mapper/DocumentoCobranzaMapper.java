@@ -1,16 +1,16 @@
 package com.everywhere.backend.mapper;
 
-import com.everywhere.backend.model.dto.CotizacionConDetallesResponseDTO;
-import com.everywhere.backend.model.dto.DetalleDocumentoCobranzaResponseDTO;
-import com.everywhere.backend.model.dto.DocumentoCobranzaResponseDTO;
-import com.everywhere.backend.model.dto.DocumentoCobranzaUpdateDTO;
-import com.everywhere.backend.model.entity.Cotizacion;
-import com.everywhere.backend.model.entity.DocumentoCobranza;
-import com.everywhere.backend.model.entity.FormaPago;
-import com.everywhere.backend.model.entity.PersonaJuridica;
-import com.everywhere.backend.model.entity.PersonaNatural;
-import com.everywhere.backend.model.entity.Personas;
-import com.everywhere.backend.model.entity.Sucursal;
+import com.everywhere.backend.model.dto.QuotationWithDetailResponseDTO;
+import com.everywhere.backend.model.dto.DetailDocumentCollectionResponseDTO;
+import com.everywhere.backend.model.dto.DocumentCollectionResponseDTO;
+import com.everywhere.backend.model.dto.DocumentCollectionUpdateDTO;
+import com.everywhere.backend.model.entity.Quotation;
+import com.everywhere.backend.model.entity.DocumentCollection;
+import com.everywhere.backend.model.entity.MethodPayment;
+import com.everywhere.backend.model.entity.PersonJuridic;
+import com.everywhere.backend.model.entity.PersonNatural;
+import com.everywhere.backend.model.entity.Person;
+import com.everywhere.backend.model.entity.Branch;
 import com.everywhere.backend.repository.PersonaJuridicaRepository;
 import com.everywhere.backend.repository.PersonaNaturalRepository;
 import lombok.RequiredArgsConstructor;
@@ -31,138 +31,138 @@ public class DocumentoCobranzaMapper {
 
     @PostConstruct
     public void configureMapping() {
-        modelMapper.typeMap(DocumentoCobranzaUpdateDTO.class, DocumentoCobranza.class).addMappings(mapper -> {
-            mapper.skip(DocumentoCobranza::setDetalleDocumento);
-            mapper.skip(DocumentoCobranza::setSucursal);
-            mapper.skip(DocumentoCobranza::setPersonaJuridica);
+        modelMapper.typeMap(DocumentCollectionUpdateDTO.class, DocumentCollection.class).addMappings(mapper -> {
+            mapper.skip(DocumentCollection::setDetailDocument);
+            mapper.skip(DocumentCollection::setBranch);
+            mapper.skip(DocumentCollection::setPersonJuridic);
         });
     }
 
     // maneja la lógica de mapeo desde cotización a documento de cobranza
-    public DocumentoCobranza fromCotizacion(CotizacionConDetallesResponseDTO cotizacionConDetallesResponseDTO,
+    public DocumentCollection fromCotizacion(QuotationWithDetailResponseDTO cotizacionConDetallesResponseDTO,
             String serie, Integer correlativo) {
-        DocumentoCobranza documentoCobranza = new DocumentoCobranza();
+        DocumentCollection documentoCobranza = new DocumentCollection();
 
         documentoCobranza.setSerie(serie);
-        documentoCobranza.setCorrelativo(correlativo);
-        documentoCobranza.setMoneda(cotizacionConDetallesResponseDTO.getMoneda());
+        documentoCobranza.setCorrelative(correlativo);
+        documentoCobranza.setCurrency(cotizacionConDetallesResponseDTO.getCurrency());
 
-        Cotizacion cotizacionEntity = new Cotizacion();
+        Quotation cotizacionEntity = new Quotation();
         cotizacionEntity.setId(cotizacionConDetallesResponseDTO.getId());
-        documentoCobranza.setCotizacion(cotizacionEntity);
+        documentoCobranza.setQuotation(cotizacionEntity);
 
-        if (cotizacionConDetallesResponseDTO.getPersonas() != null) {
-            Personas persona = new Personas();
-            persona.setId(cotizacionConDetallesResponseDTO.getPersonas().getId());
-            documentoCobranza.setPersona(persona);
+        if (cotizacionConDetallesResponseDTO.getPerson() != null) {
+            Person persona = new Person();
+            persona.setId(cotizacionConDetallesResponseDTO.getPerson().getId());
+            documentoCobranza.setPerson(persona);
         }
 
-        if (cotizacionConDetallesResponseDTO.getSucursal() != null) {
-            Sucursal sucursal = new Sucursal();
-            sucursal.setId(cotizacionConDetallesResponseDTO.getSucursal().getId());
-            documentoCobranza.setSucursal(sucursal);
+        if (cotizacionConDetallesResponseDTO.getBranch() != null) {
+            Branch sucursal = new Branch();
+            sucursal.setId(cotizacionConDetallesResponseDTO.getBranch().getId());
+            documentoCobranza.setBranch(sucursal);
         }
 
-        if (cotizacionConDetallesResponseDTO.getFormaPago() != null) {
-            FormaPago formaPago = new FormaPago();
-            formaPago.setId(cotizacionConDetallesResponseDTO.getFormaPago().getId());
-            documentoCobranza.setFormaPago(formaPago);
+        if (cotizacionConDetallesResponseDTO.getMethodPayment() != null) {
+            MethodPayment formaPago = new MethodPayment();
+            formaPago.setId(cotizacionConDetallesResponseDTO.getMethodPayment().getId());
+            documentoCobranza.setMethodPayment(formaPago);
         }
         return documentoCobranza;
     }
 
-    public void updateEntityFromUpdateDTO(DocumentoCobranza documentoCobranza,
-            DocumentoCobranzaUpdateDTO documentoCobranzaUpdateDTO) {
+    public void updateEntityFromUpdateDTO(DocumentCollection documentoCobranza,
+            DocumentCollectionUpdateDTO documentoCobranzaUpdateDTO) {
         modelMapper.map(documentoCobranzaUpdateDTO, documentoCobranza);
     }
 
-    public DocumentoCobranzaResponseDTO toResponseDTO(DocumentoCobranza documentoCobranza) {
-        DocumentoCobranzaResponseDTO documentoCobranzaResponseDTO = modelMapper.map(documentoCobranza,
-                DocumentoCobranzaResponseDTO.class);
+    public DocumentCollectionResponseDTO toResponseDTO(DocumentCollection documentoCobranza) {
+        DocumentCollectionResponseDTO documentoCobranzaResponseDTO = modelMapper.map(documentoCobranza,
+                DocumentCollectionResponseDTO.class);
 
         // Mapear código de cotización
-        if (documentoCobranza.getCotizacion() != null) {
-            documentoCobranzaResponseDTO.setCotizacionId(documentoCobranza.getCotizacion().getId());
-            if (documentoCobranza.getCotizacion().getCodigoCotizacion() != null) {
+        if (documentoCobranza.getQuotation() != null) {
+            documentoCobranzaResponseDTO.setQuotationId(documentoCobranza.getQuotation().getId());
+            if (documentoCobranza.getQuotation().getCodeQuotation() != null) {
                 documentoCobranzaResponseDTO
-                        .setCodigoCotizacion(documentoCobranza.getCotizacion().getCodigoCotizacion());
+                        .setCodeQuotation(documentoCobranza.getQuotation().getCodeQuotation());
             }
         }
 
-        if (documentoCobranza.getDetalleDocumento() != null) {
-            documentoCobranzaResponseDTO.setDetalleDocumentoId(documentoCobranza.getDetalleDocumento().getId());
-            documentoCobranzaResponseDTO.setClienteDocumento(documentoCobranza.getDetalleDocumento().getNumero());
-            if (documentoCobranza.getDetalleDocumento().getDocumento() != null)
+        if (documentoCobranza.getDetailDocument() != null) {
+            documentoCobranzaResponseDTO.setDetailDocumentId(documentoCobranza.getDetailDocument().getId());
+            documentoCobranzaResponseDTO.setClientDocument(documentoCobranza.getDetailDocument().getNumber());
+            if (documentoCobranza.getDetailDocument().getDocument() != null)
                 documentoCobranzaResponseDTO
-                        .setTipoDocumentoCliente(documentoCobranza.getDetalleDocumento().getDocumento().getTipo());
+                        .setTypeDocumentClient(documentoCobranza.getDetailDocument().getDocument().getType());
         }
 
         // Siempre setear personaId si existe
-        if (documentoCobranza.getPersona() != null) {
-            documentoCobranzaResponseDTO.setPersonaId(documentoCobranza.getPersona().getId());
+        if (documentoCobranza.getPerson() != null) {
+            documentoCobranzaResponseDTO.setPersonId(documentoCobranza.getPerson().getId());
         }
 
         // PRIORIDAD 1: Si hay PersonaJuridica seleccionada, usar sus datos
-        if (documentoCobranza.getPersonaJuridica() != null) {
-            PersonaJuridica pj = documentoCobranza.getPersonaJuridica();
-            documentoCobranzaResponseDTO.setPersonaJuridicaId(pj.getId());
-            documentoCobranzaResponseDTO.setPersonaJuridicaRuc(pj.getRuc());
-            documentoCobranzaResponseDTO.setPersonaJuridicaRazonSocial(pj.getRazonSocial());
+        if (documentoCobranza.getPersonJuridic() != null) {
+            PersonJuridic pj = documentoCobranza.getPersonJuridic();
+            documentoCobranzaResponseDTO.setPersonJuridicId(pj.getId());
+            documentoCobranzaResponseDTO.setPersonJuridicRuc(pj.getRuc());
+            documentoCobranzaResponseDTO.setPersonJuridicNameCompany(pj.getNameCompany());
 
             // Usar datos de PersonaJuridica para el cliente
-            documentoCobranzaResponseDTO.setClienteNombre(pj.getRazonSocial()); // Señores: razón social de la empresa
-            documentoCobranzaResponseDTO.setClienteDocumento(pj.getRuc()); // Documento: RUC de la empresa
-            documentoCobranzaResponseDTO.setTipoDocumentoCliente("RUC");
+            documentoCobranzaResponseDTO.setClientName(pj.getNameCompany()); // Señores: razón social de la empresa
+            documentoCobranzaResponseDTO.setClientDocument(pj.getRuc()); // Documento: RUC de la empresa
+            documentoCobranzaResponseDTO.setTypeDocumentClient("RUC");
         }
         // PRIORIDAD 2: Si no hay PersonaJuridica, usar datos de Persona (Natural o
         // Jurídica base)
-        else if (documentoCobranza.getPersona() != null) {
-            Integer personaId = documentoCobranza.getPersona().getId();
+        else if (documentoCobranza.getPerson() != null) {
+            Integer personaId = documentoCobranza.getPerson().getId();
 
-            PersonaNatural personaNatural = personaNaturalRepository.findByPersonasId(personaId).orElse(null);
+            PersonNatural personaNatural = personaNaturalRepository.findByPersonasId(personaId).orElse(null);
             if (personaNatural != null) {
                 // Concatenación null-safe para evitar mostrar "null" en el nombre
                 String nombreCompleto = String.join(" ",
-                        personaNatural.getNombres() != null ? personaNatural.getNombres().trim() : "",
-                        personaNatural.getApellidosPaterno() != null ? personaNatural.getApellidosPaterno().trim() : "",
-                        personaNatural.getApellidosMaterno() != null ? personaNatural.getApellidosMaterno().trim() : "")
+                        personaNatural.getName() != null ? personaNatural.getName().trim() : "",
+                        personaNatural.getSurnamePaternal() != null ? personaNatural.getSurnamePaternal().trim() : "",
+                        personaNatural.getSurnameMaternal() != null ? personaNatural.getSurnameMaternal().trim() : "")
                         .trim();
-                documentoCobranzaResponseDTO.setClienteNombre(nombreCompleto.isEmpty() ? "Sin nombre" : nombreCompleto);
+                documentoCobranzaResponseDTO.setClientName(nombreCompleto.isEmpty() ? "Sin nombre" : nombreCompleto);
 
                 // Si no hay detalleDocumento seleccionado, usar el campo documento de
                 // PersonaNatural (legacy)
-                if (documentoCobranza.getDetalleDocumento() == null) {
-                    documentoCobranzaResponseDTO.setClienteDocumento(personaNatural.getDocumento());
-                    documentoCobranzaResponseDTO.setTipoDocumentoCliente("DNI");
+                if (documentoCobranza.getDetailDocument() == null) {
+                    documentoCobranzaResponseDTO.setClientDocument(personaNatural.getDocument());
+                    documentoCobranzaResponseDTO.setTypeDocumentClient("DNI");
                 }
             } else {
-                PersonaJuridica personaJuridica = personaJuridicaRepository.findByPersonasId(personaId).orElse(null);
+                PersonJuridic personaJuridica = personaJuridicaRepository.findByPersonasId(personaId).orElse(null);
                 if (personaJuridica != null) {
-                    documentoCobranzaResponseDTO.setPersonaJuridicaId(personaJuridica.getId());
-                    documentoCobranzaResponseDTO.setPersonaJuridicaRuc(personaJuridica.getRuc());
-                    documentoCobranzaResponseDTO.setPersonaJuridicaRazonSocial(personaJuridica.getRazonSocial());
+                    documentoCobranzaResponseDTO.setPersonJuridicId(personaJuridica.getId());
+                    documentoCobranzaResponseDTO.setPersonJuridicRuc(personaJuridica.getRuc());
+                    documentoCobranzaResponseDTO.setPersonJuridicNameCompany(personaJuridica.getNameCompany());
 
-                    documentoCobranzaResponseDTO.setClienteNombre(personaJuridica.getRazonSocial()); // Señores: razón  social de la empresa
-                    documentoCobranzaResponseDTO.setClienteDocumento(personaJuridica.getRuc()); // Documento: RUC de la empresa
-                    documentoCobranzaResponseDTO.setTipoDocumentoCliente("RUC");
+                    documentoCobranzaResponseDTO.setClientName(personaJuridica.getNameCompany()); // Señores: razón  social de la empresa
+                    documentoCobranzaResponseDTO.setClientDocument(personaJuridica.getRuc()); // Documento: RUC de la empresa
+                    documentoCobranzaResponseDTO.setTypeDocumentClient("RUC");
                 }
             }
         }
 
-        if (documentoCobranza.getSucursal() != null) {
-            documentoCobranzaResponseDTO.setSucursalId(documentoCobranza.getSucursal().getId());
-            documentoCobranzaResponseDTO.setSucursalDescripcion(documentoCobranza.getSucursal().getDescripcion());
+        if (documentoCobranza.getBranch() != null) {
+            documentoCobranzaResponseDTO.setBranchId(documentoCobranza.getBranch().getId());
+            documentoCobranzaResponseDTO.setBranchDescription(documentoCobranza.getBranch().getDescription());
         }
-        if (documentoCobranza.getFormaPago() != null) {
-            documentoCobranzaResponseDTO.setFormaPagoId(documentoCobranza.getFormaPago().getId());
-            documentoCobranzaResponseDTO.setFormaPagoDescripcion(documentoCobranza.getFormaPago().getDescripcion());
+        if (documentoCobranza.getMethodPayment() != null) {
+            documentoCobranzaResponseDTO.setMethodPaymentId(documentoCobranza.getMethodPayment().getId());
+            documentoCobranzaResponseDTO.setMethodPaymentDescription(documentoCobranza.getMethodPayment().getDescription());
         }
 
         // Mapear los detalles con el DetalleDocumentoCobranzaMapper
-        if (documentoCobranza.getDetalles() != null && !documentoCobranza.getDetalles().isEmpty()) {
-            List<DetalleDocumentoCobranzaResponseDTO> detallesDTO = documentoCobranza.getDetalles().stream()
+        if (documentoCobranza.getDetail() != null && !documentoCobranza.getDetail().isEmpty()) {
+            List<DetailDocumentCollectionResponseDTO> detallesDTO = documentoCobranza.getDetail().stream()
                     .map(detalleDocumentoCobranzaMapper::toResponseDTO).toList();
-            documentoCobranzaResponseDTO.setDetalles(detallesDTO);
+            documentoCobranzaResponseDTO.setDetail(detallesDTO);
 
             System.out.println("Mapeados " + detallesDTO.size() + " detalles para documento " + documentoCobranza.getId());
         }

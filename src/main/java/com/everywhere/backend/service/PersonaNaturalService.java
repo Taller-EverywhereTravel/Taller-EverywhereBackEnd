@@ -1,20 +1,20 @@
 package com.everywhere.backend.service;
 
-import com.everywhere.backend.model.dto.PersonaNaturalRequestDTO;
-import com.everywhere.backend.model.dto.PersonaNaturalResponseDTO;
+import com.everywhere.backend.model.dto.PersonNaturalRequestDTO;
+import com.everywhere.backend.model.dto.PersonNaturalResponseDTO;
 
 import java.util.List; 
 
 public interface PersonaNaturalService {
-    List<PersonaNaturalResponseDTO> findAll();
-    PersonaNaturalResponseDTO findById(Integer id);
-    List<PersonaNaturalResponseDTO> findByDocumento(String documento);
-    List<PersonaNaturalResponseDTO> findByNombres(String nombres);
-    List<PersonaNaturalResponseDTO> findByApellidosPaternos(String apellidosPaternos);
-    List<PersonaNaturalResponseDTO> findByApellidosMaternos(String apellidosMaternos);
-    PersonaNaturalResponseDTO save(PersonaNaturalRequestDTO personaNaturalRequestDTO); 
-    PersonaNaturalResponseDTO patch(Integer id, PersonaNaturalRequestDTO personaNaturalRequestDTO);
+    List<PersonNaturalResponseDTO> findAll();
+    PersonNaturalResponseDTO findById(Integer id);
+    List<PersonNaturalResponseDTO> findByDocumento(String documento);
+    List<PersonNaturalResponseDTO> findByNombres(String nombres);
+    List<PersonNaturalResponseDTO> findByApellidosPaternos(String apellidosPaternos);
+    List<PersonNaturalResponseDTO> findByApellidosMaternos(String apellidosMaternos);
+    PersonNaturalResponseDTO save(PersonNaturalRequestDTO personaNaturalRequestDTO); 
+    PersonNaturalResponseDTO patch(Integer id, PersonNaturalRequestDTO personaNaturalRequestDTO);
     void deleteById(Integer id);
-    PersonaNaturalResponseDTO asociarViajero(Integer personaNaturalId, Integer viajeroId);
-    PersonaNaturalResponseDTO desasociarViajero(Integer personaNaturalId);
+    PersonNaturalResponseDTO asociarViajero(Integer personaNaturalId, Integer viajeroId);
+    PersonNaturalResponseDTO desasociarViajero(Integer personaNaturalId);
 }

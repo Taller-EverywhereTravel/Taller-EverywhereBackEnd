@@ -1,8 +1,8 @@
 package com.everywhere.backend.mapper;
 
-import com.everywhere.backend.model.dto.ViajeroRequestDTO;
-import com.everywhere.backend.model.dto.ViajeroResponseDTO;
-import com.everywhere.backend.model.entity.Viajero;
+import com.everywhere.backend.model.dto.TravelerRequestDTO;
+import com.everywhere.backend.model.dto.TravelerResponseDTO;
+import com.everywhere.backend.model.entity.Traveler;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
@@ -13,15 +13,15 @@ public class ViajeroMapper {
 
     private final ModelMapper modelMapper;
 
-    public ViajeroResponseDTO toResponseDTO(Viajero viajero) {
-        return modelMapper.map(viajero, ViajeroResponseDTO.class);
+    public TravelerResponseDTO toResponseDTO(Traveler viajero) {
+        return modelMapper.map(viajero, TravelerResponseDTO.class);
     }
 
-    public Viajero toEntity(ViajeroRequestDTO viajeroRequestDTO) { 
-        return modelMapper.map(viajeroRequestDTO, Viajero.class);
+    public Traveler toEntity(TravelerRequestDTO viajeroRequestDTO) { 
+        return modelMapper.map(viajeroRequestDTO, Traveler.class);
     }
 
-    public void updateEntityFromDTO(ViajeroRequestDTO viajeroRequestDTO, Viajero viajero) {
+    public void updateEntityFromDTO(TravelerRequestDTO viajeroRequestDTO, Traveler viajero) {
         modelMapper.map(viajeroRequestDTO, viajero); 
     }
 }

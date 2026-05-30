@@ -1,7 +1,7 @@
 package com.everywhere.backend.api;
 
-import com.everywhere.backend.model.dto.ReciboResponseDTO;
-import com.everywhere.backend.model.dto.ReciboUpdateDTO;
+import com.everywhere.backend.model.dto.ReceiptResponseDTO;
+import com.everywhere.backend.model.dto.ReceiptUpdateDTO;
 import com.everywhere.backend.security.RequirePermission;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -16,14 +16,14 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/recibos")
+@RequestMapping("/receipt")
 public class ReciboController {
 
     private final ReciboService reciboService;
 
     @PostMapping
     @RequirePermission(module = "RECIBOS", permission = "CREATE")
-    public ResponseEntity<ReciboResponseDTO> createRecibo(
+    public ResponseEntity<ReceiptResponseDTO> createRecibo(
             @RequestParam Integer cotizacionId,
             @RequestParam(required = false) Integer personaJuridicaId,
             @RequestParam(required = false) Integer sucursalId) {
@@ -33,7 +33,7 @@ public class ReciboController {
 
     @GetMapping
     @RequirePermission(module = "RECIBOS", permission = "READ")
-    public ResponseEntity<List<ReciboResponseDTO>> getAllRecibos() {
+    public ResponseEntity<List<ReceiptResponseDTO>> getAllRecibos() {
         return ResponseEntity.ok(reciboService.findAll());
     }
 
@@ -46,27 +46,27 @@ public class ReciboController {
     @PatchMapping("/{id}")
     @RequirePermission(module = "RECIBOS", permission = "UPDATE")
     public ResponseEntity<?> updateRecibo(@PathVariable Integer id,
-            @Valid @RequestBody ReciboUpdateDTO reciboUpdateDTO) {
+            @Valid @RequestBody ReceiptUpdateDTO reciboUpdateDTO) {
         return ResponseEntity.ok(reciboService.patchRecibo(id, reciboUpdateDTO));
     }
 
     // Endpoints para gestión de carpetas
 
-    @GetMapping("/carpeta/{carpetaId}")
+    @GetMapping("/folder/{carpetaId}")
     @RequirePermission(module = "RECIBOS", permission = "READ")
-    public ResponseEntity<List<ReciboResponseDTO>> findByCarpeta(@PathVariable Integer carpetaId) {
+    public ResponseEntity<List<ReceiptResponseDTO>> findByCarpeta(@PathVariable Integer carpetaId) {
         return ResponseEntity.ok(reciboService.findByCarpeta(carpetaId));
     }
 
-    @GetMapping("/sin-carpeta")
+    @GetMapping("/without-folder")
     @RequirePermission(module = "RECIBOS", permission = "READ")
-    public ResponseEntity<List<ReciboResponseDTO>> findSinCarpeta() {
+    public ResponseEntity<List<ReceiptResponseDTO>> findSinCarpeta() {
         return ResponseEntity.ok(reciboService.findSinCarpeta());
     }
 
-    @PatchMapping("/{id}/carpeta")
+    @PatchMapping("/{id}/folder")
     @RequirePermission(module = "RECIBOS", permission = "UPDATE")
-    public ResponseEntity<ReciboResponseDTO> updateCarpeta(
+    public ResponseEntity<ReceiptResponseDTO> updateCarpeta(
             @PathVariable Integer id,
             @RequestParam(required = false) Integer carpetaId) {
         return ResponseEntity.ok(reciboService.updateCarpeta(id, carpetaId));

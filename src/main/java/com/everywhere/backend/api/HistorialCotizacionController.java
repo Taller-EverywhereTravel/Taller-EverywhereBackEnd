@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/historial-cotizaciones")
+@RequestMapping("/historial-quotation")
 @RequiredArgsConstructor
 public class HistorialCotizacionController {
 
@@ -31,7 +31,7 @@ public class HistorialCotizacionController {
         return ResponseEntity.ok(historialCotizacionService.findById(id));
     }
 
-    @GetMapping("/cotizacion/{cotizacionId}")
+    @GetMapping("/quotation/{cotizacionId}")
     @RequirePermission(module = "COTIZACIONES", permission = "READ")
     public ResponseEntity<List<HistorialCotizacionSimpleDTO>> findByCotizacionId(@PathVariable Integer cotizacionId) {
         return ResponseEntity.ok(historialCotizacionService.findByCotizacionId(cotizacionId));

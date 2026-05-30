@@ -1,8 +1,8 @@
 package com.everywhere.backend.api;
 
 import com.everywhere.backend.exceptions.BadRequestException;
-import com.everywhere.backend.model.dto.CarpetaRequestDto;
-import com.everywhere.backend.model.dto.CarpetaResponseDto;
+import com.everywhere.backend.model.dto.FolderRequestDto;
+import com.everywhere.backend.model.dto.FolderResponseDto;
 import com.everywhere.backend.security.RequirePermission;
 import com.everywhere.backend.service.CarpetaService;
 
@@ -18,15 +18,15 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/carpeta")
+@RequestMapping("/folder")
 public class CarpetaController {
 
     private final CarpetaService carpetaService;
 
     @PostMapping
     @RequirePermission(module = "CARPETA", permission = "CREATE")
-    public ResponseEntity<CarpetaResponseDto> create(
-            @RequestBody CarpetaRequestDto carpetaRequestDto,
+    public ResponseEntity<FolderResponseDto> create(
+            @RequestBody FolderRequestDto carpetaRequestDto,
             @RequestParam(required = false) Integer carpetaPadreId,
             HttpServletRequest request) {
                 
@@ -38,19 +38,19 @@ public class CarpetaController {
 
     @GetMapping("/{id}")
     @RequirePermission(module = "CARPETA", permission = "READ")
-    public ResponseEntity<CarpetaResponseDto> findById(@PathVariable Integer id) {
+    public ResponseEntity<FolderResponseDto> findById(@PathVariable Integer id) {
         return ResponseEntity.ok(carpetaService.findById(id));
     }
 
     @GetMapping
     @RequirePermission(module = "CARPETA", permission = "READ")
-    public ResponseEntity<List<CarpetaResponseDto>> findAll() {
+    public ResponseEntity<List<FolderResponseDto>> findAll() {
         return ResponseEntity.ok(carpetaService.findAll());
     }
 
     @PatchMapping("/{id}")
     @RequirePermission(module = "CARPETA", permission = "UPDATE")
-    public ResponseEntity<CarpetaResponseDto> update(@PathVariable Integer id, @RequestBody CarpetaRequestDto carpetaRequestDto) {
+    public ResponseEntity<FolderResponseDto> update(@PathVariable Integer id, @RequestBody FolderRequestDto carpetaRequestDto) {
         return ResponseEntity.ok(carpetaService.update(id, carpetaRequestDto));
     }
 
@@ -61,57 +61,57 @@ public class CarpetaController {
         return ResponseEntity.noContent().build();
     }
 
-    @GetMapping("/padre/{carpetaPadreId}")
+    @GetMapping("/father/{carpetaPadreId}")
     @RequirePermission(module = "CARPETA", permission = "READ")
-    public ResponseEntity<List<CarpetaResponseDto>> findByCarpetaPadre(@PathVariable Integer carpetaPadreId) {
+    public ResponseEntity<List<FolderResponseDto>> findByCarpetaPadre(@PathVariable Integer carpetaPadreId) {
         return ResponseEntity.ok(carpetaService.findByCarpetaPadreId(carpetaPadreId));
     }
 
-    @GetMapping("/nivel/{nivel}")
+    @GetMapping("/level/{nivel}")
     @RequirePermission(module = "CARPETA", permission = "READ")
-    public ResponseEntity<List<CarpetaResponseDto>> findByNivel(@PathVariable Integer nivel) {
+    public ResponseEntity<List<FolderResponseDto>> findByNivel(@PathVariable Integer nivel) {
         return ResponseEntity.ok(carpetaService.findByNivel(nivel));
     }
 
-    @GetMapping("/buscar")
+    @GetMapping("/search")
     @RequirePermission(module = "CARPETA", permission = "READ")
-    public ResponseEntity<List<CarpetaResponseDto>> findByNombre(@RequestParam String nombre) {
+    public ResponseEntity<List<FolderResponseDto>> findByNombre(@RequestParam String nombre) {
         return ResponseEntity.ok(carpetaService.findByNombre(nombre));
     }
 
-    @GetMapping("/fecha/{mes}")
+    @GetMapping("/date/{mes}")
     @RequirePermission(module = "CARPETA", permission = "READ")
-    public ResponseEntity<List<CarpetaResponseDto>> findByMes(@PathVariable int mes) {
+    public ResponseEntity<List<FolderResponseDto>> findByMes(@PathVariable int mes) {
         return ResponseEntity.ok(carpetaService.findByMes(mes));
     }
 
-    @GetMapping("/fecha")
+    @GetMapping("/date")
     @RequirePermission(module = "CARPETA", permission = "READ")
-    public ResponseEntity<List<CarpetaResponseDto>> findByRango(@RequestParam LocalDate inicio, @RequestParam LocalDate fin) {
+    public ResponseEntity<List<FolderResponseDto>> findByRango(@RequestParam LocalDate inicio, @RequestParam LocalDate fin) {
         return ResponseEntity.ok(carpetaService.findByFechaCreacionBetween(inicio, fin));
     }
 
-    @GetMapping("/recientes")
+    @GetMapping("/recent")
     @RequirePermission(module = "CARPETA", permission = "READ")
-    public ResponseEntity<List<CarpetaResponseDto>> findRecent(@RequestParam(defaultValue = "5") int limit) {
+    public ResponseEntity<List<FolderResponseDto>> findRecent(@RequestParam(defaultValue = "5") int limit) {
         return ResponseEntity.ok(carpetaService.findRecent(limit));
     }
 
-    @GetMapping("/raices") // Listar raíces (sin padre)
+    @GetMapping("/roots") // Listar raíces (sin padre)
     @RequirePermission(module = "CARPETA", permission = "READ")
-    public ResponseEntity<List<CarpetaResponseDto>> findRaices() {
+    public ResponseEntity<List<FolderResponseDto>> findRaices() {
         return ResponseEntity.ok(carpetaService.findRaices());
     }
 
-    @GetMapping("/{id}/camino")
+    @GetMapping("/{id}/way")
     @RequirePermission(module = "CARPETA", permission = "READ")
-    public ResponseEntity<List<CarpetaResponseDto>> findCamino(@PathVariable Integer id) {
+    public ResponseEntity<List<FolderResponseDto>> findCamino(@PathVariable Integer id) {
         return ResponseEntity.ok(carpetaService.findCamino(id));
     }
 
-    @GetMapping("/hijos/{id}")
+    @GetMapping("/children/{id}")
     @RequirePermission(module = "CARPETA", permission = "READ")
-    public ResponseEntity<List<CarpetaResponseDto>> findHijos(@PathVariable Integer id) {
+    public ResponseEntity<List<FolderResponseDto>> findHijos(@PathVariable Integer id) {
         return ResponseEntity.ok(carpetaService.findByCarpetaPadreId(id));
     }
 

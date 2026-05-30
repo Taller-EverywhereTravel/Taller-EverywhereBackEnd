@@ -1,8 +1,8 @@
 package com.everywhere.backend.repository;
 
-import com.everywhere.backend.model.entity.Producto;
+import com.everywhere.backend.model.entity.Product;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface ProductoRepository extends JpaRepository<Producto, Integer> {
+public interface ProductoRepository extends JpaRepository<Product, Integer> {
     boolean existsProductosByTipo(String tipo);
 }

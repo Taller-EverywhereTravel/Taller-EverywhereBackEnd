@@ -1,8 +1,8 @@
 package com.everywhere.backend.api;
 
-import com.everywhere.backend.model.dto.CotizacionRequestDto;
-import com.everywhere.backend.model.dto.CotizacionResponseDto;
-import com.everywhere.backend.model.dto.CotizacionConDetallesResponseDTO;
+import com.everywhere.backend.model.dto.QuotationRequestDto;
+import com.everywhere.backend.model.dto.QuotationResponseDto;
+import com.everywhere.backend.model.dto.QuotationWithDetailResponseDTO;
 import com.everywhere.backend.security.RequirePermission;
 import com.everywhere.backend.service.CotizacionService;
 
@@ -21,41 +21,41 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/cotizaciones")
+@RequestMapping("/quotation")
 public class CotizacionController {
 
     private final CotizacionService cotizacionService;
 
-    @PostMapping("/persona/{personaId}")
+    @PostMapping("/person/{personaId}")
     @RequirePermission(module = "COTIZACIONES", permission = "CREATE")
-    public ResponseEntity<CotizacionResponseDto> createWithPersona(
-            @PathVariable Integer personaId, @RequestBody CotizacionRequestDto cotizacionRequestDto) {
+    public ResponseEntity<QuotationResponseDto> createWithPersona(
+            @PathVariable Integer personaId, @RequestBody QuotationRequestDto cotizacionRequestDto) {
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(cotizacionService.create(cotizacionRequestDto, personaId));
     }
 
     @GetMapping("/{id}")
     @RequirePermission(module = "COTIZACIONES", permission = "READ")
-    public ResponseEntity<CotizacionResponseDto> findById(@PathVariable Integer id) {
+    public ResponseEntity<QuotationResponseDto> findById(@PathVariable Integer id) {
         return ResponseEntity.ok(cotizacionService.findById(id));
     }
 
-    @GetMapping("/{id}/con-detalles")
+    @GetMapping("/{id}/with-detail")
     @RequirePermission(module = "COTIZACIONES", permission = "READ")
-    public ResponseEntity<CotizacionConDetallesResponseDTO> getCotizacionConDetalles(@PathVariable Integer id) {
+    public ResponseEntity<QuotationWithDetailResponseDTO> getCotizacionConDetalles(@PathVariable Integer id) {
         return ResponseEntity.ok(cotizacionService.findByIdWithDetalles(id));
     }
 
     @GetMapping
     @RequirePermission(module = "COTIZACIONES", permission = "READ")
-    public ResponseEntity<List<CotizacionResponseDto>> findAll() {
+    public ResponseEntity<List<QuotationResponseDto>> findAll() {
         return ResponseEntity.ok(cotizacionService.findAll());
     }
 
     @PatchMapping("/{id}")
     @RequirePermission(module = "COTIZACIONES", permission = "UPDATE")
-    public ResponseEntity<CotizacionResponseDto> update(
-            @PathVariable Integer id, @RequestBody CotizacionRequestDto cotizacionRequestDto) {
+    public ResponseEntity<QuotationResponseDto> update(
+            @PathVariable Integer id, @RequestBody QuotationRequestDto cotizacionRequestDto) {
         return ResponseEntity.ok(cotizacionService.update(id, cotizacionRequestDto));
     }
 
@@ -66,9 +66,9 @@ public class CotizacionController {
         return ResponseEntity.noContent().build();
     }
 
-    @GetMapping("/sin-liquidacion")
+    @GetMapping("/without-liquidation")
     @RequirePermission(module = "COTIZACIONES", permission = "READ")
-    public ResponseEntity<List<CotizacionResponseDto>> findCotizacionesSinLiquidacion() {
+    public ResponseEntity<List<QuotationResponseDto>> findCotizacionesSinLiquidacion() {
         return ResponseEntity.ok(cotizacionService.findCotizacionesSinLiquidacion());
     }
 
@@ -76,7 +76,7 @@ public class CotizacionController {
      * Generar documento DOCX de la cotización
      * Acepta GET (sin configuración) o POST (con configuración de vuelos)
      */
-    @GetMapping("/{id}/generar-docx")
+    @GetMapping("/{id}/generate-docx")
     @RequirePermission(module = "COTIZACIONES", permission = "READ")
     public ResponseEntity<Resource> generateDocx(@PathVariable Integer id) {
         ByteArrayInputStream docxStream = cotizacionService.generateDocx(id);
@@ -94,21 +94,21 @@ public class CotizacionController {
 
     // Endpoints para gestión de carpetas
 
-    @GetMapping("/carpeta/{carpetaId}")
+    @GetMapping("/folder/{carpetaId}")
     @RequirePermission(module = "COTIZACIONES", permission = "READ")
-    public ResponseEntity<List<CotizacionResponseDto>> findByCarpeta(@PathVariable Integer carpetaId) {
+    public ResponseEntity<List<QuotationResponseDto>> findByCarpeta(@PathVariable Integer carpetaId) {
         return ResponseEntity.ok(cotizacionService.findByCarpeta(carpetaId));
     }
 
-    @GetMapping("/sin-carpeta")
+    @GetMapping("/without-folder")
     @RequirePermission(module = "COTIZACIONES", permission = "READ")
-    public ResponseEntity<List<CotizacionResponseDto>> findSinCarpeta() {
+    public ResponseEntity<List<QuotationResponseDto>> findSinCarpeta() {
         return ResponseEntity.ok(cotizacionService.findSinCarpeta());
     }
 
-    @PatchMapping("/{id}/carpeta")
+    @PatchMapping("/{id}/folder")
     @RequirePermission(module = "COTIZACIONES", permission = "UPDATE")
-    public ResponseEntity<CotizacionResponseDto> updateCarpeta(
+    public ResponseEntity<QuotationResponseDto> updateCarpeta(
             @PathVariable Integer id,
             @RequestParam(required = false) Integer carpetaId) {
         return ResponseEntity.ok(cotizacionService.updateCarpeta(id, carpetaId));

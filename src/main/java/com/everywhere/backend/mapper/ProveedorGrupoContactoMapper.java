@@ -1,8 +1,8 @@
 package com.everywhere.backend.mapper;
 
-import com.everywhere.backend.model.dto.ProveedorGrupoContactoRequestDTO;
-import com.everywhere.backend.model.dto.ProveedorGrupoContactoResponseDTO;
-import com.everywhere.backend.model.entity.ProveedorGrupoContacto;
+import com.everywhere.backend.model.dto.SupplierGroupContactRequestDTO;
+import com.everywhere.backend.model.dto.SupplierGroupContactResponseDTO;
+import com.everywhere.backend.model.entity.SupplierGroupContact;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
@@ -13,15 +13,15 @@ public class ProveedorGrupoContactoMapper {
 
     private final ModelMapper modelMapper;
 
-    public ProveedorGrupoContactoResponseDTO toResponseDTO(ProveedorGrupoContacto entity) {
-        return modelMapper.map(entity, ProveedorGrupoContactoResponseDTO.class);
+    public SupplierGroupContactResponseDTO toResponseDTO(SupplierGroupContact entity) {
+        return modelMapper.map(entity, SupplierGroupContactResponseDTO.class);
     }
 
-    public ProveedorGrupoContacto toEntity(ProveedorGrupoContactoRequestDTO dto) {
-        return modelMapper.map(dto, ProveedorGrupoContacto.class);
+    public SupplierGroupContact toEntity(SupplierGroupContactRequestDTO dto) {
+        return modelMapper.map(dto, SupplierGroupContact.class);
     }
 
-    public void updateEntityFromDTO(ProveedorGrupoContactoRequestDTO dto, ProveedorGrupoContacto entity) {
+    public void updateEntityFromDTO(SupplierGroupContactRequestDTO dto, SupplierGroupContact entity) {
         modelMapper.map(dto, entity);
     }
 }

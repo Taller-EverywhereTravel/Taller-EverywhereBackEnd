@@ -4,8 +4,8 @@ import lombok.Data;
 
 @Data
 public class HistorialCotizacionRequestDTO {
-    private String observacion;
-    private Integer usuarioId;
-    private Integer cotizacionId;
-    private Integer estadoCotizacionId;
+    private String observation;
+    private Integer userId;
+    private Integer quotationId;
+    private Integer statusQuotationId;
 }

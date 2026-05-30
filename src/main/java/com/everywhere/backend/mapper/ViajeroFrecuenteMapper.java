@@ -1,8 +1,8 @@
 package com.everywhere.backend.mapper;
 
-import com.everywhere.backend.model.dto.ViajeroFrecuenteRequestDto;
-import com.everywhere.backend.model.dto.ViajeroFrecuenteResponseDto;
-import com.everywhere.backend.model.entity.ViajeroFrecuente;
+import com.everywhere.backend.model.dto.TravelerFrequentRequestDto;
+import com.everywhere.backend.model.dto.TravelerFrequentResponseDto;
+import com.everywhere.backend.model.entity.TravelerFrequent;
 
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
@@ -18,20 +18,20 @@ public class ViajeroFrecuenteMapper {
 
     @PostConstruct
     public void configureMappings() {
-        modelMapper.typeMap(ViajeroFrecuenteRequestDto.class, ViajeroFrecuente.class).addMappings(mapper -> {
-            mapper.skip(ViajeroFrecuente::setViajero);
+        modelMapper.typeMap(TravelerFrequentRequestDto.class, TravelerFrequent.class).addMappings(mapper -> {
+            mapper.skip(TravelerFrequent::setTraveler);
         });
     }
 
-    public ViajeroFrecuente toEntity(ViajeroFrecuenteRequestDto viajeroFrecuenteRequestDto) {
-        return modelMapper.map(viajeroFrecuenteRequestDto, ViajeroFrecuente.class);
+    public TravelerFrequent toEntity(TravelerFrequentRequestDto viajeroFrecuenteRequestDto) {
+        return modelMapper.map(viajeroFrecuenteRequestDto, TravelerFrequent.class);
     }
 
-    public ViajeroFrecuenteResponseDto toResponse(ViajeroFrecuente viajeroFrecuente) {
-        return modelMapper.map(viajeroFrecuente, ViajeroFrecuenteResponseDto.class);
+    public TravelerFrequentResponseDto toResponse(TravelerFrequent viajeroFrecuente) {
+        return modelMapper.map(viajeroFrecuente, TravelerFrequentResponseDto.class);
     }
 
-    public void updateEntityFromDto(ViajeroFrecuenteRequestDto viajeroFrecuenteRequestDto, ViajeroFrecuente viajeroFrecuente) {
+    public void updateEntityFromDto(TravelerFrequentRequestDto viajeroFrecuenteRequestDto, TravelerFrequent viajeroFrecuente) {
         modelMapper.map(viajeroFrecuenteRequestDto, viajeroFrecuente);
     }
 }

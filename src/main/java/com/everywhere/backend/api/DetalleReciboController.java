@@ -1,7 +1,7 @@
 package com.everywhere.backend.api;
 
-import com.everywhere.backend.model.dto.DetalleReciboRequestDTO;
-import com.everywhere.backend.model.dto.DetalleReciboResponseDTO;
+import com.everywhere.backend.model.dto.DetailReceiptRequestDTO;
+import com.everywhere.backend.model.dto.DetailReceiptResponseDTO;
 import com.everywhere.backend.security.RequirePermission;
 import com.everywhere.backend.service.DetalleReciboService;
 import jakarta.validation.Valid;
@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/detalle-recibo")
+@RequestMapping("/detail-receipt")
 @RequiredArgsConstructor
 public class DetalleReciboController {
 
@@ -22,32 +22,32 @@ public class DetalleReciboController {
 
     @GetMapping
     @RequirePermission(module = "RECIBOS", permission = "READ")
-    public ResponseEntity<List<DetalleReciboResponseDTO>> getAllDetalles() { 
+    public ResponseEntity<List<DetailReceiptResponseDTO>> getAllDetalles() { 
         return ResponseEntity.ok(detalleService.findAll());
     }
 
     @GetMapping("/{id}")
     @RequirePermission(module = "RECIBOS", permission = "READ")
-    public ResponseEntity<DetalleReciboResponseDTO> getDetalleById(@PathVariable Integer id) {
+    public ResponseEntity<DetailReceiptResponseDTO> getDetalleById(@PathVariable Integer id) {
         return ResponseEntity.ok(detalleService.findById(id));
     }
 
-    @GetMapping("/recibo/{reciboId}")
+    @GetMapping("/receipt/{reciboId}")
     @RequirePermission(module = "RECIBOS", permission = "READ")
-    public ResponseEntity<List<DetalleReciboResponseDTO>> getDetallesByRecibo(@PathVariable Integer reciboId) {
+    public ResponseEntity<List<DetailReceiptResponseDTO>> getDetallesByRecibo(@PathVariable Integer reciboId) {
         return ResponseEntity.ok(detalleService.findByReciboId(reciboId));
     }
 
     @PostMapping
     @RequirePermission(module = "RECIBOS", permission = "CREATE")
-    public ResponseEntity<DetalleReciboResponseDTO> createDetalle(@Valid @RequestBody DetalleReciboRequestDTO dto) {
+    public ResponseEntity<DetailReceiptResponseDTO> createDetalle(@Valid @RequestBody DetailReceiptRequestDTO dto) {
         return ResponseEntity.status(HttpStatus.CREATED).body(detalleService.save(dto));
     }
 
     @PatchMapping("/{id}")
     @RequirePermission(module = "RECIBOS", permission = "UPDATE")
-    public ResponseEntity<DetalleReciboResponseDTO> updateDetalle(
-            @PathVariable Integer id, @Valid @RequestBody DetalleReciboRequestDTO detalleReciboRequestDTO) { 
+    public ResponseEntity<DetailReceiptResponseDTO> updateDetalle(
+            @PathVariable Integer id, @Valid @RequestBody DetailReceiptRequestDTO detalleReciboRequestDTO) { 
         return ResponseEntity.ok(detalleService.patch(id, detalleReciboRequestDTO));
     }
 

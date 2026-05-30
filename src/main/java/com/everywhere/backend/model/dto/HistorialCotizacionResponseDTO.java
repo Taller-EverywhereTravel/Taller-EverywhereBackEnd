@@ -9,16 +9,16 @@ import java.util.UUID;
 public class HistorialCotizacionResponseDTO {
     private Integer id;
     private UUID uuid;
-    private String observacion;
-    private LocalDateTime fechaCreacion;
+    private String observation;
+    private LocalDateTime dateCreated;
 
-    private Integer usuarioId;
-    private String usuarioNombre;
-    private String usuarioEmail;
+    private Integer userId;
+    private String userName;
+    private String userMail;
 
-    private Integer cotizacionId;
-    private String codigoCotizacion;
+    private Integer quotationId;
+    private String codeQuotation;
 
-    private Integer estadoCotizacionId;
-    private String estadoCotizacionDescripcion;
+    private Integer statusQuotationId;
+    private String statusQuotationDescription;
 }

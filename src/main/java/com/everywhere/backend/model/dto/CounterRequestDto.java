@@ -5,6 +5,6 @@ import lombok.Data;
 @Data
 public class CounterRequestDto {
 
-    private String nombre;
-    private String codigo;
+    private String name;
+    private String code;
 }

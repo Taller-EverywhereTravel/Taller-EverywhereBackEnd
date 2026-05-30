@@ -6,14 +6,14 @@ import java.util.List;
 
 import org.springframework.stereotype.Component;
 
-import com.everywhere.backend.model.dto.DetalleDocumentoCobranzaResponseDTO;
-import com.everywhere.backend.model.dto.DocumentoCobranzaResponseDTO;
+import com.everywhere.backend.model.dto.DetailDocumentCollectionResponseDTO;
+import com.everywhere.backend.model.dto.DocumentCollectionResponseDTO;
 
 /**
  * Generador de PDF para DocumentoCobranza - Extiende PdfGenerator
  */
 @Component
-public class DocumentoCobranzaPdfGenerator extends PdfGenerator<DocumentoCobranzaResponseDTO, DetalleDocumentoCobranzaResponseDTO> {
+public class DocumentoCobranzaPdfGenerator extends PdfGenerator<DocumentCollectionResponseDTO, DetailDocumentCollectionResponseDTO> {
 
     public DocumentoCobranzaPdfGenerator(NumberToTextConverter numberToTextConverter) {
         super(numberToTextConverter);
@@ -30,93 +30,93 @@ public class DocumentoCobranzaPdfGenerator extends PdfGenerator<DocumentoCobranz
     }
 
     @Override
-    protected List<DetalleDocumentoCobranzaResponseDTO> getDetalles(DocumentoCobranzaResponseDTO documentoDTO) {
-        return documentoDTO.getDetalles();
+    protected List<DetailDocumentCollectionResponseDTO> getDetalles(DocumentCollectionResponseDTO documentoDTO) {
+        return documentoDTO.getDetail();
     }
 
     @Override
-    protected String getNumeroDocumento(DocumentoCobranzaResponseDTO documentoDTO) {
+    protected String getNumeroDocumento(DocumentCollectionResponseDTO documentoDTO) {
         // Concatenar serie y correlativo para formar el número completo (ej: DC01-000000001)
-        if (documentoDTO.getSerie() != null && documentoDTO.getCorrelativo() != null) {
-            return String.format("%s-%09d", documentoDTO.getSerie(), documentoDTO.getCorrelativo());
+        if (documentoDTO.getSerie() != null && documentoDTO.getCorrelative() != null) {
+            return String.format("%s-%09d", documentoDTO.getSerie(), documentoDTO.getCorrelative());
         }
         return null;
     }
 
     @Override
-    protected String getFechaEmision(DocumentoCobranzaResponseDTO documentoDTO) {
-        return documentoDTO.getFechaEmision() != null 
-            ? documentoDTO.getFechaEmision().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")) 
+    protected String getFechaEmision(DocumentCollectionResponseDTO documentoDTO) {
+        return documentoDTO.getDateIssue() != null 
+            ? documentoDTO.getDateIssue().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")) 
             : null;
     }
 
     @Override
-    protected String getClienteNombre(DocumentoCobranzaResponseDTO documentoDTO) {
-        return documentoDTO.getClienteNombre();
+    protected String getClienteNombre(DocumentCollectionResponseDTO documentoDTO) {
+        return documentoDTO.getClientName();
     }
 
     @Override
-    protected String getClienteDocumento(DocumentoCobranzaResponseDTO documentoDTO) {
-        return documentoDTO.getClienteDocumento();
+    protected String getClienteDocumento(DocumentCollectionResponseDTO documentoDTO) {
+        return documentoDTO.getClientDocument();
     }
 
     @Override
-    protected String getTipoDocumentoCliente(DocumentoCobranzaResponseDTO documentoDTO) {
-        return documentoDTO.getTipoDocumentoCliente();
+    protected String getTipoDocumentoCliente(DocumentCollectionResponseDTO documentoDTO) {
+        return documentoDTO.getTypeDocumentClient();
     }
 
     @Override
-    protected String getSucursalDescripcion(DocumentoCobranzaResponseDTO documentoDTO) {
-        return documentoDTO.getSucursalDescripcion();
+    protected String getSucursalDescripcion(DocumentCollectionResponseDTO documentoDTO) {
+        return documentoDTO.getBranchDescription();
     }
 
     @Override
-    protected String getMoneda(DocumentoCobranzaResponseDTO documentoDTO) {
-        return documentoDTO.getMoneda();
+    protected String getMoneda(DocumentCollectionResponseDTO documentoDTO) {
+        return documentoDTO.getCurrency();
     }
 
     @Override
-    protected String getFileVenta(DocumentoCobranzaResponseDTO documentoDTO) {
+    protected String getFileVenta(DocumentCollectionResponseDTO documentoDTO) {
         return documentoDTO.getFileVenta();
     }
 
     @Override
-    protected String getFormaPagoDescripcion(DocumentoCobranzaResponseDTO documentoDTO) {
-        return documentoDTO.getFormaPagoDescripcion();
+    protected String getFormaPagoDescripcion(DocumentCollectionResponseDTO documentoDTO) {
+        return documentoDTO.getMethodPaymentDescription();
     }
 
     @Override
-    protected String getObservaciones(DocumentoCobranzaResponseDTO documentoDTO) {
-        return documentoDTO.getObservaciones();
+    protected String getObservaciones(DocumentCollectionResponseDTO documentoDTO) {
+        return documentoDTO.getObservationes();
     }
 
     @Override
-    protected BigDecimal getCostoEnvio(DocumentoCobranzaResponseDTO documentoDTO) {
-        return documentoDTO.getCostoEnvio();
+    protected BigDecimal getCostoEnvio(DocumentCollectionResponseDTO documentoDTO) {
+        return documentoDTO.getCostShipping();
     }
 
     @Override
-    protected Integer getCantidad(DetalleDocumentoCobranzaResponseDTO detalle) {
-        return detalle.getCantidad();
+    protected Integer getCantidad(DetailDocumentCollectionResponseDTO detalle) {
+        return detalle.getQuantity();
     }
 
     @Override
-    protected String getProductoDescripcion(DetalleDocumentoCobranzaResponseDTO detalle) {
-        return detalle.getProductoDescripcion();
+    protected String getProductoDescripcion(DetailDocumentCollectionResponseDTO detalle) {
+        return detalle.getProductDescription();
     }
 
     @Override
-    protected String getDescripcionDetalle(DetalleDocumentoCobranzaResponseDTO detalle) {
-        return detalle.getDescripcion();
+    protected String getDescripcionDetalle(DetailDocumentCollectionResponseDTO detalle) {
+        return detalle.getDescription();
     }
 
     @Override
-    protected BigDecimal getPrecio(DetalleDocumentoCobranzaResponseDTO detalle) {
-        return detalle.getPrecio();
+    protected BigDecimal getPrecio(DetailDocumentCollectionResponseDTO detalle) {
+        return detalle.getPrice();
     }
 
     @Override
-    protected Long getDetalleId(DetalleDocumentoCobranzaResponseDTO detalle) {
+    protected Long getDetalleId(DetailDocumentCollectionResponseDTO detalle) {
         return detalle.getId();
     }
 }

@@ -1,8 +1,8 @@
 package com.everywhere.backend.mapper;
 
-import com.everywhere.backend.model.dto.DocumentoRequestDto;
-import com.everywhere.backend.model.dto.DocumentoResponseDto;
-import com.everywhere.backend.model.entity.Documento;
+import com.everywhere.backend.model.dto.DocumentRequestDto;
+import com.everywhere.backend.model.dto.DocumentResponseDto;
+import com.everywhere.backend.model.entity.Document;
 
 import lombok.RequiredArgsConstructor;
 
@@ -15,17 +15,17 @@ public class DocumentoMapper {
 
     private final ModelMapper modelMapper;
 
-    public Documento toEntity(DocumentoRequestDto documentoRequestDto) {
-        Documento documento = modelMapper.map(documentoRequestDto, Documento.class);
+    public Document toEntity(DocumentRequestDto documentoRequestDto) {
+        Document documento = modelMapper.map(documentoRequestDto, Document.class);
         return documento;
     }
 
-    public DocumentoResponseDto toResponseDTO(Documento documento) {
-        DocumentoResponseDto documentoResponseDto = modelMapper.map(documento, DocumentoResponseDto.class);
+    public DocumentResponseDto toResponseDTO(Document documento) {
+        DocumentResponseDto documentoResponseDto = modelMapper.map(documento, DocumentResponseDto.class);
         return documentoResponseDto;
     }
 
-    public void updateEntityFromDto(DocumentoRequestDto documentoRequestDto, Documento documento) {
+    public void updateEntityFromDto(DocumentRequestDto documentoRequestDto, Document documento) {
         modelMapper.map(documentoRequestDto, documento);
     }
 }

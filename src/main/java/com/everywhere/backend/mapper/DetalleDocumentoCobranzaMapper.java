@@ -1,11 +1,11 @@
 package com.everywhere.backend.mapper;
 
-import com.everywhere.backend.model.dto.DetalleCotizacionSimpleDTO;
-import com.everywhere.backend.model.dto.DetalleDocumentoCobranzaRequestDTO;
-import com.everywhere.backend.model.dto.DetalleDocumentoCobranzaResponseDTO;
-import com.everywhere.backend.model.entity.DetalleDocumentoCobranza;
-import com.everywhere.backend.model.entity.DocumentoCobranza;
-import com.everywhere.backend.model.entity.Producto;
+import com.everywhere.backend.model.dto.DetailQuotationSimpleDTO;
+import com.everywhere.backend.model.dto.DetailDocumentCollectionRequestDTO;
+import com.everywhere.backend.model.dto.DetailDocumentCollectionResponseDTO;
+import com.everywhere.backend.model.entity.DetailDocumentCollection;
+import com.everywhere.backend.model.entity.DocumentCollection;
+import com.everywhere.backend.model.entity.Product;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
@@ -20,49 +20,49 @@ public class DetalleDocumentoCobranzaMapper {
 
     private final ModelMapper modelMapper;
 
-    public DetalleDocumentoCobranza toEntity(DetalleDocumentoCobranzaRequestDTO detalleDocumentoCobranzaRequestDTO) {
-        return modelMapper.map(detalleDocumentoCobranzaRequestDTO, DetalleDocumentoCobranza.class);
+    public DetailDocumentCollection toEntity(DetailDocumentCollectionRequestDTO detalleDocumentoCobranzaRequestDTO) {
+        return modelMapper.map(detalleDocumentoCobranzaRequestDTO, DetailDocumentCollection.class);
     }
 
-    public DetalleDocumentoCobranzaResponseDTO toResponseDTO(DetalleDocumentoCobranza detalleDocumentoCobranza) {
-         DetalleDocumentoCobranzaResponseDTO dto = modelMapper.map(detalleDocumentoCobranza, DetalleDocumentoCobranzaResponseDTO.class);
+    public DetailDocumentCollectionResponseDTO toResponseDTO(DetailDocumentCollection detalleDocumentoCobranza) {
+         DetailDocumentCollectionResponseDTO dto = modelMapper.map(detalleDocumentoCobranza, DetailDocumentCollectionResponseDTO.class);
          
-        if (detalleDocumentoCobranza.getProducto() != null) {
-            dto.setProductoId(detalleDocumentoCobranza.getProducto().getId());
-            dto.setProductoDescripcion(detalleDocumentoCobranza.getProducto().getTipo());
+        if (detalleDocumentoCobranza.getProduct() != null) {
+            dto.setProductId(detalleDocumentoCobranza.getProduct().getId());
+            dto.setProductDescription(detalleDocumentoCobranza.getProduct().getType());
         } 
-        if (detalleDocumentoCobranza.getDocumentoCobranza() != null) {
-            dto.setDocumentoCobranzaId(detalleDocumentoCobranza.getDocumentoCobranza().getId());
-            dto.setDocumentoCobranzaNumero(
+        if (detalleDocumentoCobranza.getDocumentCollection() != null) {
+            dto.setDocumentCollectionId(detalleDocumentoCobranza.getDocumentCollection().getId());
+            dto.setDocumentCollectionNumber(
                 String.format("%s-%09d", 
-                    detalleDocumentoCobranza.getDocumentoCobranza().getSerie(),
-                    detalleDocumentoCobranza.getDocumentoCobranza().getCorrelativo()));
+                    detalleDocumentoCobranza.getDocumentCollection().getSerie(),
+                    detalleDocumentoCobranza.getDocumentCollection().getCorrelative()));
         }
         
         return dto;
     }
 
-    public void updateEntityFromRequest(DetalleDocumentoCobranza detalleDocumentoCobranza, DetalleDocumentoCobranzaRequestDTO detalleDocumentoCobranzaRequestDTO) {
+    public void updateEntityFromRequest(DetailDocumentCollection detalleDocumentoCobranza, DetailDocumentCollectionRequestDTO detalleDocumentoCobranzaRequestDTO) {
         modelMapper.map(detalleDocumentoCobranzaRequestDTO, detalleDocumentoCobranza);
     }
 
     //Convierte los detalles seleccionados de una cotización a detalles de documento de cobranza
-    public List<DetalleDocumentoCobranza> fromCotizacionDetalles(List<DetalleCotizacionSimpleDTO> detallesCotizacion, DocumentoCobranza documentoCobranza) {
-        List<DetalleDocumentoCobranza> detalles = new ArrayList<>();
+    public List<DetailDocumentCollection> fromCotizacionDetalles(List<DetailQuotationSimpleDTO> detallesCotizacion, DocumentCollection documentoCobranza) {
+        List<DetailDocumentCollection> detalles = new ArrayList<>();
 
         if (detallesCotizacion != null) {
-            for (DetalleCotizacionSimpleDTO detalleCotizacionSimpleDTO : detallesCotizacion) {
-                if (detalleCotizacionSimpleDTO.getSeleccionado() != null && detalleCotizacionSimpleDTO.getSeleccionado()) {
-                    DetalleDocumentoCobranza detalleDocumentoCobranza = new DetalleDocumentoCobranza();
-                    detalleDocumentoCobranza.setDocumentoCobranza(documentoCobranza);
-                    detalleDocumentoCobranza.setCantidad(detalleCotizacionSimpleDTO.getCantidad() != null ? detalleCotizacionSimpleDTO.getCantidad() : 0);
-                    detalleDocumentoCobranza.setDescripcion(detalleCotizacionSimpleDTO.getDescripcion());
-                    detalleDocumentoCobranza.setPrecio(detalleCotizacionSimpleDTO.getPrecioHistorico() != null ? detalleCotizacionSimpleDTO.getPrecioHistorico() : BigDecimal.ZERO);
+            for (DetailQuotationSimpleDTO detalleCotizacionSimpleDTO : detallesCotizacion) {
+                if (detalleCotizacionSimpleDTO.getSelected() != null && detalleCotizacionSimpleDTO.getSelected()) {
+                    DetailDocumentCollection detalleDocumentoCobranza = new DetailDocumentCollection();
+                    detalleDocumentoCobranza.setDocumentCollection(documentoCobranza);
+                    detalleDocumentoCobranza.setAmount(detalleCotizacionSimpleDTO.getQuantity() != null ? detalleCotizacionSimpleDTO.getQuantity() : 0);
+                    detalleDocumentoCobranza.setDescription(detalleCotizacionSimpleDTO.getDescription());
+                    detalleDocumentoCobranza.setPrice(detalleCotizacionSimpleDTO.getPriceHistory() != null ? detalleCotizacionSimpleDTO.getPriceHistory() : BigDecimal.ZERO);
 
-                    if (detalleCotizacionSimpleDTO.getProducto() != null) {
-                        Producto producto = new Producto();
-                        producto.setId(detalleCotizacionSimpleDTO.getProducto().getId());
-                        detalleDocumentoCobranza.setProducto(producto);
+                    if (detalleCotizacionSimpleDTO.getProduct() != null) {
+                        Product producto = new Product();
+                        producto.setId(detalleCotizacionSimpleDTO.getProduct().getId());
+                        detalleDocumentoCobranza.setProduct(producto);
                     }
                     detalles.add(detalleDocumentoCobranza);
                 }

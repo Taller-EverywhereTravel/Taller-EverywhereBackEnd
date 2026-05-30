@@ -1,19 +1,19 @@
 package com.everywhere.backend.service;
 
-import com.everywhere.backend.model.dto.ViajeroConPersonaResponseDTO;
-import com.everywhere.backend.model.dto.ViajeroRequestDTO;
-import com.everywhere.backend.model.dto.ViajeroResponseDTO;
+import com.everywhere.backend.model.dto.TravelerWithPersonResponseDTO;
+import com.everywhere.backend.model.dto.TravelerRequestDTO;
+import com.everywhere.backend.model.dto.TravelerResponseDTO;
 
 import java.util.List;
 
 public interface ViajeroService {
 
-    List<ViajeroResponseDTO> findAll();
-    ViajeroResponseDTO findById(Integer id);
-    List<ViajeroResponseDTO> findByNacionalidad(String nacionalidad);
-    List<ViajeroResponseDTO> findByResidencia(String residencia);
-    ViajeroResponseDTO save(ViajeroRequestDTO viajeroRequestDTO);
-    ViajeroResponseDTO patch(Integer id, ViajeroRequestDTO viajeroRequestDTO);
+    List<TravelerResponseDTO> findAll();
+    TravelerResponseDTO findById(Integer id);
+    List<TravelerResponseDTO> findByNacionalidad(String nacionalidad);
+    List<TravelerResponseDTO> findByResidencia(String residencia);
+    TravelerResponseDTO save(TravelerRequestDTO viajeroRequestDTO);
+    TravelerResponseDTO patch(Integer id, TravelerRequestDTO viajeroRequestDTO);
     void deleteById(Integer id);
-    List<ViajeroConPersonaResponseDTO> findAllWithPersonaNatural();
+    List<TravelerWithPersonResponseDTO> findAllWithPersonaNatural();
 }

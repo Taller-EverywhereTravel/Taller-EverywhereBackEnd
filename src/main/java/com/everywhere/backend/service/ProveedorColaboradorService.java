@@ -1,21 +1,21 @@
 package com.everywhere.backend.service;
 
-import com.everywhere.backend.model.dto.ProveedorColaboradorRequestDTO;
-import com.everywhere.backend.model.dto.ProveedorColaboradorResponseDTO;
+import com.everywhere.backend.model.dto.SupplierCollaboratorRequestDTO;
+import com.everywhere.backend.model.dto.SupplierCollaboratorResponseDTO;
 
 import java.util.List;
 
 public interface ProveedorColaboradorService {
 
-    List<ProveedorColaboradorResponseDTO> findAll();
+    List<SupplierCollaboratorResponseDTO> findAll();
 
-    ProveedorColaboradorResponseDTO findById(Integer id);
+    SupplierCollaboratorResponseDTO findById(Integer id);
 
-    List<ProveedorColaboradorResponseDTO> findByProveedorId(Integer proveedorId);
+    List<SupplierCollaboratorResponseDTO> findByProveedorId(Integer proveedorId);
 
-    ProveedorColaboradorResponseDTO save(ProveedorColaboradorRequestDTO dto);
+    SupplierCollaboratorResponseDTO save(SupplierCollaboratorRequestDTO dto);
 
-    ProveedorColaboradorResponseDTO update(Integer id, ProveedorColaboradorRequestDTO dto);
+    SupplierCollaboratorResponseDTO update(Integer id, SupplierCollaboratorRequestDTO dto);
 
     void deleteById(Integer id);
 }

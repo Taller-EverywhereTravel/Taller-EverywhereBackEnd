@@ -1,11 +1,11 @@
 package com.everywhere.backend.service.impl;
 
-import com.everywhere.backend.model.dto.PersonaNaturalRequestDTO;
-import com.everywhere.backend.model.dto.PersonaNaturalResponseDTO;
-import com.everywhere.backend.model.entity.PersonaNatural;
-import com.everywhere.backend.model.entity.Viajero;
-import com.everywhere.backend.model.entity.Personas;
-import com.everywhere.backend.model.entity.CategoriaPersona;
+import com.everywhere.backend.model.dto.PersonNaturalRequestDTO;
+import com.everywhere.backend.model.dto.PersonNaturalResponseDTO;
+import com.everywhere.backend.model.entity.PersonNatural;
+import com.everywhere.backend.model.entity.Traveler;
+import com.everywhere.backend.model.entity.Person;
+import com.everywhere.backend.model.entity.CategoryPerson;
 import com.everywhere.backend.repository.PersonaNaturalRepository;
 import com.everywhere.backend.repository.ViajeroRepository;
 import com.everywhere.backend.repository.PersonaRepository;
@@ -37,105 +37,105 @@ public class PersonaNaturalServiceImpl implements PersonaNaturalService {
     private final PersonaMapper personaMapper;
 
     @Override
-    public List<PersonaNaturalResponseDTO> findAll() {
+    public List<PersonNaturalResponseDTO> findAll() {
         return personaNaturalRepository.findAll().stream().map(personaNaturalMapper::toResponseDTO).toList();
     }
 
     @Override
-    public PersonaNaturalResponseDTO findById(Integer id) {
-        PersonaNatural personaNatural = personaNaturalRepository.findById(id)
+    public PersonNaturalResponseDTO findById(Integer id) {
+        PersonNatural personaNatural = personaNaturalRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Persona natural no encontrada con ID: " + id));
         return personaNaturalMapper.toResponseDTO(personaNatural);
     }
 
     @Override
-    public List<PersonaNaturalResponseDTO> findByDocumento(String documento) {
-        Optional<PersonaNatural> personaNaturalOptional = personaNaturalRepository.findByDocumentoIgnoreCase(documento);
+    public List<PersonNaturalResponseDTO> findByDocumento(String documento) {
+        Optional<PersonNatural> personaNaturalOptional = personaNaturalRepository.findByDocumentoIgnoreCase(documento);
         if (personaNaturalOptional.isEmpty())
             return List.of();
         return List.of(personaNaturalMapper.toResponseDTO(personaNaturalOptional.get()));
     }
 
     @Override
-    public List<PersonaNaturalResponseDTO> findByNombres(String nombres) {
-        List<PersonaNatural> personaNaturalList = personaNaturalRepository.findByNombresIgnoreAccents(nombres);
+    public List<PersonNaturalResponseDTO> findByNombres(String nombres) {
+        List<PersonNatural> personaNaturalList = personaNaturalRepository.findByNombresIgnoreAccents(nombres);
         return personaNaturalList.stream().map(personaNaturalMapper::toResponseDTO).toList();
     }
 
     @Override
-    public List<PersonaNaturalResponseDTO> findByApellidosPaternos(String apellidosPaternos) {
-        List<PersonaNatural> personaNaturalList = personaNaturalRepository.findByApellidosPaternoIgnoreAccents(apellidosPaternos);
+    public List<PersonNaturalResponseDTO> findByApellidosPaternos(String apellidosPaternos) {
+        List<PersonNatural> personaNaturalList = personaNaturalRepository.findByApellidosPaternoIgnoreAccents(apellidosPaternos);
         if (personaNaturalList.isEmpty())
             throw new ResourceNotFoundException("No se encontraron personas naturales con apellidos paternos: " + apellidosPaternos);
         return personaNaturalList.stream().map(personaNaturalMapper::toResponseDTO).toList();
     }
 
     @Override
-    public List<PersonaNaturalResponseDTO> findByApellidosMaternos(String apellidosMaternos) {
-        List<PersonaNatural> personaNaturalList = personaNaturalRepository.findByApellidosMaternoIgnoreAccents(apellidosMaternos);
+    public List<PersonNaturalResponseDTO> findByApellidosMaternos(String apellidosMaternos) {
+        List<PersonNatural> personaNaturalList = personaNaturalRepository.findByApellidosMaternoIgnoreAccents(apellidosMaternos);
         if (personaNaturalList.isEmpty())
             throw new ResourceNotFoundException("No se encontraron personas naturales con apellidos maternos: " + apellidosMaternos);
         return personaNaturalList.stream().map(personaNaturalMapper::toResponseDTO).toList();
     }
 
     @Override
-    public PersonaNaturalResponseDTO save(PersonaNaturalRequestDTO personaNaturalRequestDTO) {
+    public PersonNaturalResponseDTO save(PersonNaturalRequestDTO personaNaturalRequestDTO) {
         // Validar que no exista ya una persona con el mismo documento
-        if (personaNaturalRequestDTO.getDocumento() != null && !personaNaturalRequestDTO.getDocumento().trim().isEmpty()) {
-            if (personaNaturalRepository.findByDocumentoIgnoreCase(personaNaturalRequestDTO.getDocumento()).isPresent())
-                throw new DataIntegrityViolationException("Ya existe una persona natural con el documento: " + personaNaturalRequestDTO.getDocumento());
+        if (personaNaturalRequestDTO.getDocument() != null && !personaNaturalRequestDTO.getDocument().trim().isEmpty()) {
+            if (personaNaturalRepository.findByDocumentoIgnoreCase(personaNaturalRequestDTO.getDocument()).isPresent())
+                throw new DataIntegrityViolationException("Ya existe una persona natural con el documento: " + personaNaturalRequestDTO.getDocument());
         }
 
         // Crear la persona base
-        Personas persona = (personaNaturalRequestDTO.getPersona() != null)
-            ? personaMapper.toEntity(personaNaturalRequestDTO.getPersona())
-            : new Personas();
+        Person persona = (personaNaturalRequestDTO.getPerson() != null)
+            ? personaMapper.toEntity(personaNaturalRequestDTO.getPerson())
+            : new Person();
 
         // Crear la persona natural
-        PersonaNatural personaNatural = personaNaturalMapper.toEntity(personaNaturalRequestDTO);
-        personaNatural.setPersonas(personaRepository.save(persona)); 
+        PersonNatural personaNatural = personaNaturalMapper.toEntity(personaNaturalRequestDTO);
+        personaNatural.setPerson(personaRepository.save(persona)); 
 
-        if (personaNaturalRequestDTO.getViajeroId() != null) {
-            Viajero viajero = viajeroRepository.findById(personaNaturalRequestDTO.getViajeroId())
-                    .orElseThrow(() -> new ResourceNotFoundException("Viajero no encontrado con ID: " + personaNaturalRequestDTO.getViajeroId()));
-            personaNatural.setViajero(viajero);
+        if (personaNaturalRequestDTO.getTravelerId() != null) {
+            Traveler viajero = viajeroRepository.findById(personaNaturalRequestDTO.getTravelerId())
+                    .orElseThrow(() -> new ResourceNotFoundException("Viajero no encontrado con ID: " + personaNaturalRequestDTO.getTravelerId()));
+            personaNatural.setTraveler(viajero);
         }
 
-        if (personaNaturalRequestDTO.getCategoriaPersonaId() != null) {
-            CategoriaPersona categoria = categoriaPersonaRepository.findById(personaNaturalRequestDTO.getCategoriaPersonaId())
-                    .orElseThrow(() -> new ResourceNotFoundException("Categoría no encontrada con ID: " + personaNaturalRequestDTO.getCategoriaPersonaId()));
-            personaNatural.setCategoriaPersona(categoria);
+        if (personaNaturalRequestDTO.getCategoryPersonId() != null) {
+            CategoryPerson categoria = categoriaPersonaRepository.findById(personaNaturalRequestDTO.getCategoryPersonId())
+                    .orElseThrow(() -> new ResourceNotFoundException("Categoría no encontrada con ID: " + personaNaturalRequestDTO.getCategoryPersonId()));
+            personaNatural.setCategoryPerson(categoria);
         } 
         return personaNaturalMapper.toResponseDTO(personaNaturalRepository.save(personaNatural));
     }
 
     @Override
-    public PersonaNaturalResponseDTO patch(Integer id, PersonaNaturalRequestDTO personaNaturalRequestDTO) {
+    public PersonNaturalResponseDTO patch(Integer id, PersonNaturalRequestDTO personaNaturalRequestDTO) {
         // 🚀 OPTIMIZACIÓN 1: Validar existencia ANTES de buscar el objeto
         if (!personaNaturalRepository.existsById(id))
             throw new ResourceNotFoundException("Persona natural no encontrada con ID: " + id);
 
         // 🚀 OPTIMIZACIÓN 2: Si viene documento, validar duplicado ANTES de buscar el objeto completo
-        if (personaNaturalRequestDTO.getDocumento() != null && 
-            !personaNaturalRequestDTO.getDocumento().trim().isEmpty() &&
-            personaNaturalRepository.findByDocumentoIgnoreCaseAndIdNot(personaNaturalRequestDTO.getDocumento(), id).isPresent()) {
-            throw new BadRequestException("Ya existe otra persona natural con el documento: " + personaNaturalRequestDTO.getDocumento());
+        if (personaNaturalRequestDTO.getDocument() != null && 
+            !personaNaturalRequestDTO.getDocument().trim().isEmpty() &&
+            personaNaturalRepository.findByDocumentoIgnoreCaseAndIdNot(personaNaturalRequestDTO.getDocument(), id).isPresent()) {
+            throw new BadRequestException("Ya existe otra persona natural con el documento: " + personaNaturalRequestDTO.getDocument());
         }
 
         // 🚀 OPTIMIZACIÓN 3: Si viene categoría, validar existencia ANTES de buscar objetos
-        if (personaNaturalRequestDTO.getCategoriaPersonaId() != null && 
-            !categoriaPersonaRepository.existsById(personaNaturalRequestDTO.getCategoriaPersonaId())) {
-            throw new ResourceNotFoundException("Categoría no encontrada con ID: " + personaNaturalRequestDTO.getCategoriaPersonaId());
+        if (personaNaturalRequestDTO.getCategoryPersonId() != null && 
+            !categoriaPersonaRepository.existsById(personaNaturalRequestDTO.getCategoryPersonId())) {
+            throw new ResourceNotFoundException("Categoría no encontrada con ID: " + personaNaturalRequestDTO.getCategoryPersonId());
         }
 
         // Solo ahora buscar los objetos para hacer el update
-        PersonaNatural existingPersonaNatural = personaNaturalRepository.findById(id).get();
+        PersonNatural existingPersonaNatural = personaNaturalRepository.findById(id).get();
         personaNaturalMapper.updateEntityFromDTO(personaNaturalRequestDTO, existingPersonaNatural);
         
         // Manejar categoría si se proporciona
-        if (personaNaturalRequestDTO.getCategoriaPersonaId() != null) {
-            CategoriaPersona categoria = categoriaPersonaRepository.findById(personaNaturalRequestDTO.getCategoriaPersonaId()).get();
-            existingPersonaNatural.setCategoriaPersona(categoria);
+        if (personaNaturalRequestDTO.getCategoryPersonId() != null) {
+            CategoryPerson categoria = categoriaPersonaRepository.findById(personaNaturalRequestDTO.getCategoryPersonId()).get();
+            existingPersonaNatural.setCategoryPerson(categoria);
         } 
         return personaNaturalMapper.toResponseDTO(personaNaturalRepository.save(existingPersonaNatural));
     }
@@ -149,24 +149,24 @@ public class PersonaNaturalServiceImpl implements PersonaNaturalService {
 
     @Override
     @Transactional
-    public PersonaNaturalResponseDTO asociarViajero(Integer personaNaturalId, Integer viajeroId) {
-        PersonaNatural personaNatural = personaNaturalRepository.findById(personaNaturalId)
+    public PersonNaturalResponseDTO asociarViajero(Integer personaNaturalId, Integer viajeroId) {
+        PersonNatural personaNatural = personaNaturalRepository.findById(personaNaturalId)
                 .orElseThrow(() -> new ResourceNotFoundException("Persona natural no encontrada con ID: " + personaNaturalId));
 
-        Viajero viajero = viajeroRepository.findById(viajeroId)
+        Traveler viajero = viajeroRepository.findById(viajeroId)
                 .orElseThrow(() -> new ResourceNotFoundException("Viajero no encontrado con ID: " + viajeroId));
 
-        personaNatural.setViajero(viajero);
+        personaNatural.setTraveler(viajero);
         return personaNaturalMapper.toResponseDTO(personaNaturalRepository.save(personaNatural));
     }
 
     @Override
     @Transactional
-    public PersonaNaturalResponseDTO desasociarViajero(Integer personaNaturalId) {
-        PersonaNatural personaNatural = personaNaturalRepository.findById(personaNaturalId)
+    public PersonNaturalResponseDTO desasociarViajero(Integer personaNaturalId) {
+        PersonNatural personaNatural = personaNaturalRepository.findById(personaNaturalId)
                 .orElseThrow(() -> new ResourceNotFoundException("Persona natural no encontrada con ID: " + personaNaturalId));
 
-        personaNatural.setViajero(null); 
+        personaNatural.setTraveler(null); 
         return personaNaturalMapper.toResponseDTO(personaNaturalRepository.save(personaNatural));
     }
 }

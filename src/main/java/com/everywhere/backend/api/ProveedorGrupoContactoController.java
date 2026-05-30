@@ -1,7 +1,7 @@
 package com.everywhere.backend.api;
 
-import com.everywhere.backend.model.dto.ProveedorGrupoContactoRequestDTO;
-import com.everywhere.backend.model.dto.ProveedorGrupoContactoResponseDTO;
+import com.everywhere.backend.model.dto.SupplierGroupContactRequestDTO;
+import com.everywhere.backend.model.dto.SupplierGroupContactResponseDTO;
 import com.everywhere.backend.security.RequirePermission;
 import com.everywhere.backend.service.ProveedorGrupoContactoService;
 import jakarta.validation.Valid;
@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/proveedor-grupo-contacto")
+@RequestMapping("/supplier-contact-group")
 @RequiredArgsConstructor
 public class ProveedorGrupoContactoController {
 
@@ -21,34 +21,34 @@ public class ProveedorGrupoContactoController {
 
     @GetMapping
     @RequirePermission(module = "PROVEEDORES", permission = "READ")
-    public ResponseEntity<List<ProveedorGrupoContactoResponseDTO>> getAll() {
+    public ResponseEntity<List<SupplierGroupContactResponseDTO>> getAll() {
         return ResponseEntity.ok(service.findAll());
     }
 
     @GetMapping("/{id}")
     @RequirePermission(module = "PROVEEDORES", permission = "READ")
-    public ResponseEntity<ProveedorGrupoContactoResponseDTO> getById(@PathVariable Integer id) {
+    public ResponseEntity<SupplierGroupContactResponseDTO> getById(@PathVariable Integer id) {
         return ResponseEntity.ok(service.findById(id));
     }
 
     @GetMapping("/search")
     @RequirePermission(module = "PROVEEDORES", permission = "READ")
-    public ResponseEntity<List<ProveedorGrupoContactoResponseDTO>> searchByNombre(@RequestParam String nombre) {
+    public ResponseEntity<List<SupplierGroupContactResponseDTO>> searchByNombre(@RequestParam String nombre) {
         return ResponseEntity.ok(service.findByNombre(nombre));
     }
 
     @PostMapping
     @RequirePermission(module = "PROVEEDORES", permission = "CREATE")
-    public ResponseEntity<ProveedorGrupoContactoResponseDTO> create(
-            @Valid @RequestBody ProveedorGrupoContactoRequestDTO dto) {
+    public ResponseEntity<SupplierGroupContactResponseDTO> create(
+            @Valid @RequestBody SupplierGroupContactRequestDTO dto) {
         return ResponseEntity.status(HttpStatus.CREATED).body(service.save(dto));
     }
 
     @PatchMapping("/{id}")
     @RequirePermission(module = "PROVEEDORES", permission = "UPDATE")
-    public ResponseEntity<ProveedorGrupoContactoResponseDTO> update(
+    public ResponseEntity<SupplierGroupContactResponseDTO> update(
             @PathVariable Integer id,
-            @Valid @RequestBody ProveedorGrupoContactoRequestDTO dto) {
+            @Valid @RequestBody SupplierGroupContactRequestDTO dto) {
         return ResponseEntity.ok(service.update(id, dto));
     }
 

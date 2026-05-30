@@ -1,7 +1,7 @@
 package com.everywhere.backend.service;
 
-import com.everywhere.backend.model.dto.PagoPaxRequestDTO;
-import com.everywhere.backend.model.dto.PagoPaxResponseDTO;
+import com.everywhere.backend.model.dto.PaymentPaxRequestDTO;
+import com.everywhere.backend.model.dto.PaymentPaxResponseDTO;
 
 import java.util.List;
 
@@ -10,27 +10,27 @@ public interface PagoPaxService {
     /**
      * Crea un nuevo pago pax
      */
-    PagoPaxResponseDTO create(PagoPaxRequestDTO requestDTO);
+    PaymentPaxResponseDTO create(PaymentPaxRequestDTO requestDTO);
 
     /**
      * Obtiene un pago pax por ID
      */
-    PagoPaxResponseDTO findById(Integer id);
+    PaymentPaxResponseDTO findById(Integer id);
 
     /**
      * Obtiene todos los pagos pax
      */
-    List<PagoPaxResponseDTO> findAll();
+    List<PaymentPaxResponseDTO> findAll();
 
     /**
      * Obtiene todos los pagos pax de una liquidación específica
      */
-    List<PagoPaxResponseDTO> findByLiquidacionId(Integer liquidacionId);
+    List<PaymentPaxResponseDTO> findByLiquidacionId(Integer liquidacionId);
 
     /**
      * Actualiza un pago pax existente
      */
-    PagoPaxResponseDTO update(Integer id, PagoPaxRequestDTO requestDTO);
+    PaymentPaxResponseDTO update(Integer id, PaymentPaxRequestDTO requestDTO);
 
     /**
      * Elimina un pago pax por ID

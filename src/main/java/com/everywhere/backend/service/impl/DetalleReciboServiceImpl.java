@@ -2,9 +2,9 @@ package com.everywhere.backend.service.impl;
 
 import com.everywhere.backend.exceptions.ResourceNotFoundException;
 import com.everywhere.backend.mapper.DetalleReciboMapper;
-import com.everywhere.backend.model.dto.DetalleReciboRequestDTO;
-import com.everywhere.backend.model.dto.DetalleReciboResponseDTO;
-import com.everywhere.backend.model.entity.DetalleRecibo;
+import com.everywhere.backend.model.dto.DetailReceiptRequestDTO;
+import com.everywhere.backend.model.dto.DetailReceiptResponseDTO;
+import com.everywhere.backend.model.entity.DetailReceipt;
 import com.everywhere.backend.repository.DetalleReciboRepository;
 import com.everywhere.backend.repository.ReciboRepository;
 import com.everywhere.backend.repository.ProductoRepository;
@@ -26,19 +26,19 @@ public class DetalleReciboServiceImpl implements DetalleReciboService {
     private final DetalleReciboMapper detalleReciboMapper;
 
     @Override
-    public List<DetalleReciboResponseDTO> findAll() {
+    public List<DetailReceiptResponseDTO> findAll() {
         return mapToResponseList(detalleReciboRepository.findAllWithRelations());
     }
 
     @Override
-    public DetalleReciboResponseDTO findById(Integer id) {
-        DetalleRecibo detalle = detalleReciboRepository.findByIdWithRelations(id)
+    public DetailReceiptResponseDTO findById(Integer id) {
+        DetailReceipt detalle = detalleReciboRepository.findByIdWithRelations(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Detalle no encontrado con ID: " + id));
         return detalleReciboMapper.toResponseDTO(detalle);
     }
 
     @Override
-    public List<DetalleReciboResponseDTO> findByReciboId(Integer reciboId) {
+    public List<DetailReceiptResponseDTO> findByReciboId(Integer reciboId) {
         if (!reciboRepository.existsById(reciboId))
             throw new ResourceNotFoundException("Recibo no encontrado con ID: " + reciboId);
         return mapToResponseList(detalleReciboRepository.findByReciboIdWithRelations(reciboId));
@@ -46,18 +46,18 @@ public class DetalleReciboServiceImpl implements DetalleReciboService {
 
     @Override
     @Transactional
-    public DetalleReciboResponseDTO save(DetalleReciboRequestDTO detalleReciboRequestDTO) {
-        if (!reciboRepository.existsById(detalleReciboRequestDTO.getReciboId()))
-            throw new ResourceNotFoundException("Recibo no encontrado con ID: " + detalleReciboRequestDTO.getReciboId());
+    public DetailReceiptResponseDTO save(DetailReceiptRequestDTO detalleReciboRequestDTO) {
+        if (!reciboRepository.existsById(detalleReciboRequestDTO.getReceiptId()))
+            throw new ResourceNotFoundException("Recibo no encontrado con ID: " + detalleReciboRequestDTO.getReceiptId());
         
-        if (detalleReciboRequestDTO.getProductoId() != null && !productoRepository.existsById(detalleReciboRequestDTO.getProductoId()))
-            throw new ResourceNotFoundException("Producto no encontrado con ID: " + detalleReciboRequestDTO.getProductoId());
+        if (detalleReciboRequestDTO.getProductId() != null && !productoRepository.existsById(detalleReciboRequestDTO.getProductId()))
+            throw new ResourceNotFoundException("Producto no encontrado con ID: " + detalleReciboRequestDTO.getProductId());
 
-        DetalleRecibo detalleRecibo = detalleReciboMapper.toEntity(detalleReciboRequestDTO);
-        detalleRecibo.setRecibo(reciboRepository.findById(detalleReciboRequestDTO.getReciboId()).get());
+        DetailReceipt detalleRecibo = detalleReciboMapper.toEntity(detalleReciboRequestDTO);
+        detalleRecibo.setReceipt(reciboRepository.findById(detalleReciboRequestDTO.getReceiptId()).get());
         
-        if (detalleReciboRequestDTO.getProductoId() != null) {
-            detalleRecibo.setProducto(productoRepository.findById(detalleReciboRequestDTO.getProductoId()).get());
+        if (detalleReciboRequestDTO.getProductId() != null) {
+            detalleRecibo.setProduct(productoRepository.findById(detalleReciboRequestDTO.getProductId()).get());
         }
  
         return detalleReciboMapper.toResponseDTO(detalleReciboRepository.save(detalleRecibo));
@@ -65,23 +65,23 @@ public class DetalleReciboServiceImpl implements DetalleReciboService {
 
     @Override
     @Transactional
-    public DetalleReciboResponseDTO patch(Integer id, DetalleReciboRequestDTO detalleReciboRequestDTO) {
+    public DetailReceiptResponseDTO patch(Integer id, DetailReceiptRequestDTO detalleReciboRequestDTO) {
         if (!detalleReciboRepository.existsById(id))
             throw new ResourceNotFoundException("Detalle no encontrado con ID: " + id);
 
-        DetalleRecibo detalleRecibo = detalleReciboRepository.findById(id).get();
+        DetailReceipt detalleRecibo = detalleReciboRepository.findById(id).get();
         detalleReciboMapper.updateEntityFromRequest(detalleRecibo, detalleReciboRequestDTO);
 
-        if (detalleReciboRequestDTO.getReciboId() != null) {
-            if (!reciboRepository.existsById(detalleReciboRequestDTO.getReciboId()))
-                throw new ResourceNotFoundException("Recibo no encontrado con ID: " + detalleReciboRequestDTO.getReciboId());
-            detalleRecibo.setRecibo(reciboRepository.findById(detalleReciboRequestDTO.getReciboId()).get());
+        if (detalleReciboRequestDTO.getReceiptId() != null) {
+            if (!reciboRepository.existsById(detalleReciboRequestDTO.getReceiptId()))
+                throw new ResourceNotFoundException("Recibo no encontrado con ID: " + detalleReciboRequestDTO.getReceiptId());
+            detalleRecibo.setReceipt(reciboRepository.findById(detalleReciboRequestDTO.getReceiptId()).get());
         }
 
-        if (detalleReciboRequestDTO.getProductoId() != null) {
-            if (!productoRepository.existsById(detalleReciboRequestDTO.getProductoId()))
-                throw new ResourceNotFoundException("Producto no encontrado con ID: " + detalleReciboRequestDTO.getProductoId());
-            detalleRecibo.setProducto(productoRepository.findById(detalleReciboRequestDTO.getProductoId()).get());
+        if (detalleReciboRequestDTO.getProductId() != null) {
+            if (!productoRepository.existsById(detalleReciboRequestDTO.getProductId()))
+                throw new ResourceNotFoundException("Producto no encontrado con ID: " + detalleReciboRequestDTO.getProductId());
+            detalleRecibo.setProduct(productoRepository.findById(detalleReciboRequestDTO.getProductId()).get());
         }
  
         return detalleReciboMapper.toResponseDTO(detalleReciboRepository.save(detalleRecibo));
@@ -95,7 +95,7 @@ public class DetalleReciboServiceImpl implements DetalleReciboService {
         detalleReciboRepository.deleteById(id);
     }
 
-    private List<DetalleReciboResponseDTO> mapToResponseList(List<DetalleRecibo> detalles) {
+    private List<DetailReceiptResponseDTO> mapToResponseList(List<DetailReceipt> detalles) {
         return detalles.stream().map(detalleReciboMapper::toResponseDTO).toList();
     }
 }

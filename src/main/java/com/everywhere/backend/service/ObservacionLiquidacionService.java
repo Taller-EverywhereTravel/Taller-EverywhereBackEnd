@@ -1,16 +1,16 @@
 package com.everywhere.backend.service;
 
-import com.everywhere.backend.model.dto.ObservacionLiquidacionRequestDTO;
-import com.everywhere.backend.model.dto.ObservacionLiquidacionResponseDTO;
+import com.everywhere.backend.model.dto.ObservationLiquidationRequestDTO;
+import com.everywhere.backend.model.dto.ObservationLiquidationResponseDTO;
 
 import java.util.List;
 
 public interface ObservacionLiquidacionService {
 
-    List<ObservacionLiquidacionResponseDTO> findAll();
-    ObservacionLiquidacionResponseDTO findById(Long id);
-    ObservacionLiquidacionResponseDTO save(ObservacionLiquidacionRequestDTO observacionLiquidacionRequestDTO);
-    ObservacionLiquidacionResponseDTO update(Long id, ObservacionLiquidacionRequestDTO observacionLiquidacionRequestDTO);
+    List<ObservationLiquidationResponseDTO> findAll();
+    ObservationLiquidationResponseDTO findById(Long id);
+    ObservationLiquidationResponseDTO save(ObservationLiquidationRequestDTO observacionLiquidacionRequestDTO);
+    ObservationLiquidationResponseDTO update(Long id, ObservationLiquidationRequestDTO observacionLiquidacionRequestDTO);
     void deleteById(Long id);
-    List<ObservacionLiquidacionResponseDTO> findByLiquidacionId(Integer liquidacionId);
+    List<ObservationLiquidationResponseDTO> findByLiquidacionId(Integer liquidacionId);
 }

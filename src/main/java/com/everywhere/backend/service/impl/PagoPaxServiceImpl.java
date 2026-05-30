@@ -2,11 +2,11 @@ package com.everywhere.backend.service.impl;
 
 import com.everywhere.backend.exceptions.ResourceNotFoundException;
 import com.everywhere.backend.mapper.PagoPaxMapper;
-import com.everywhere.backend.model.dto.PagoPaxRequestDTO;
-import com.everywhere.backend.model.dto.PagoPaxResponseDTO;
-import com.everywhere.backend.model.entity.FormaPago;
-import com.everywhere.backend.model.entity.Liquidacion;
-import com.everywhere.backend.model.entity.PagoPax;
+import com.everywhere.backend.model.dto.PaymentPaxRequestDTO;
+import com.everywhere.backend.model.dto.PaymentPaxResponseDTO;
+import com.everywhere.backend.model.entity.MethodPayment;
+import com.everywhere.backend.model.entity.Liquidation;
+import com.everywhere.backend.model.entity.PaymentPax;
 import com.everywhere.backend.repository.FormaPagoRepository;
 import com.everywhere.backend.repository.LiquidacionRepository;
 import com.everywhere.backend.repository.PagoPaxRepository;
@@ -30,21 +30,21 @@ public class PagoPaxServiceImpl implements PagoPaxService {
 
     @Override
     @Transactional
-    public PagoPaxResponseDTO create(PagoPaxRequestDTO requestDTO) {
+    public PaymentPaxResponseDTO create(PaymentPaxRequestDTO requestDTO) {
         // Validar que existe la liquidación
-        Liquidacion liquidacion = liquidacionRepository.findById(requestDTO.getLiquidacionId())
+        Liquidation liquidacion = liquidacionRepository.findById(requestDTO.getLiquidationId())
                 .orElseThrow(() -> new ResourceNotFoundException(
-                        "Liquidación no encontrada con ID: " + requestDTO.getLiquidacionId()));
+                        "Liquidación no encontrada con ID: " + requestDTO.getLiquidationId()));
 
         // Validar que existe la forma de pago
-        FormaPago formaPago = formaPagoRepository.findById(requestDTO.getFormaPagoId())
+        MethodPayment formaPago = formaPagoRepository.findById(requestDTO.getMethodPaymentId())
                 .orElseThrow(() -> new ResourceNotFoundException(
-                        "Forma de pago no encontrada con ID: " + requestDTO.getFormaPagoId()));
+                        "Forma de pago no encontrada con ID: " + requestDTO.getMethodPaymentId()));
 
         // Crear la entidad
-        PagoPax pagoPax = pagoPaxMapper.toEntity(requestDTO);
-        pagoPax.setLiquidacion(liquidacion);
-        pagoPax.setFormaPago(formaPago);
+        PaymentPax pagoPax = pagoPaxMapper.toEntity(requestDTO);
+        pagoPax.setLiquidation(liquidacion);
+        pagoPax.setMethodPayment(formaPago);
 
         // Guardar
         pagoPax = pagoPaxRepository.save(pagoPax);
@@ -53,22 +53,22 @@ public class PagoPaxServiceImpl implements PagoPaxService {
     }
 
     @Override
-    public PagoPaxResponseDTO findById(Integer id) {
-        PagoPax pagoPax = pagoPaxRepository.findByIdWithRelations(id)
+    public PaymentPaxResponseDTO findById(Integer id) {
+        PaymentPax pagoPax = pagoPaxRepository.findByIdWithRelations(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Pago Pax no encontrado con ID: " + id));
 
         return pagoPaxMapper.toResponseDTO(pagoPax);
     }
 
     @Override
-    public List<PagoPaxResponseDTO> findAll() {
+    public List<PaymentPaxResponseDTO> findAll() {
         return pagoPaxRepository.findAllWithRelations().stream()
                 .map(pagoPaxMapper::toResponseDTO)
                 .collect(Collectors.toList());
     }
 
     @Override
-    public List<PagoPaxResponseDTO> findByLiquidacionId(Integer liquidacionId) {
+    public List<PaymentPaxResponseDTO> findByLiquidacionId(Integer liquidacionId) {
         // Validar que existe la liquidación
         if (!liquidacionRepository.existsById(liquidacionId)) {
             throw new ResourceNotFoundException("Liquidación no encontrada con ID: " + liquidacionId);
@@ -81,30 +81,30 @@ public class PagoPaxServiceImpl implements PagoPaxService {
 
     @Override
     @Transactional
-    public PagoPaxResponseDTO update(Integer id, PagoPaxRequestDTO requestDTO) {
+    public PaymentPaxResponseDTO update(Integer id, PaymentPaxRequestDTO requestDTO) {
         // Buscar el pago pax existente
-        PagoPax pagoPax = pagoPaxRepository.findById(id)
+        PaymentPax pagoPax = pagoPaxRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Pago Pax no encontrado con ID: " + id));
 
         // Actualizar datos básicos
         pagoPaxMapper.updateEntityFromRequestDTO(pagoPax, requestDTO);
 
         // Actualizar liquidación si cambió
-        if (requestDTO.getLiquidacionId() != null 
-            && !requestDTO.getLiquidacionId().equals(pagoPax.getLiquidacion().getId())) {
-            Liquidacion liquidacion = liquidacionRepository.findById(requestDTO.getLiquidacionId())
+        if (requestDTO.getLiquidationId() != null 
+            && !requestDTO.getLiquidationId().equals(pagoPax.getLiquidation().getId())) {
+            Liquidation liquidacion = liquidacionRepository.findById(requestDTO.getLiquidationId())
                     .orElseThrow(() -> new ResourceNotFoundException(
-                            "Liquidación no encontrada con ID: " + requestDTO.getLiquidacionId()));
-            pagoPax.setLiquidacion(liquidacion);
+                            "Liquidación no encontrada con ID: " + requestDTO.getLiquidationId()));
+            pagoPax.setLiquidation(liquidacion);
         }
 
         // Actualizar forma de pago si cambió
-        if (requestDTO.getFormaPagoId() != null 
-            && !requestDTO.getFormaPagoId().equals(pagoPax.getFormaPago().getId())) {
-            FormaPago formaPago = formaPagoRepository.findById(requestDTO.getFormaPagoId())
+        if (requestDTO.getMethodPaymentId() != null 
+            && !requestDTO.getMethodPaymentId().equals(pagoPax.getMethodPayment().getId())) {
+            MethodPayment formaPago = formaPagoRepository.findById(requestDTO.getMethodPaymentId())
                     .orElseThrow(() -> new ResourceNotFoundException(
-                            "Forma de pago no encontrada con ID: " + requestDTO.getFormaPagoId()));
-            pagoPax.setFormaPago(formaPago);
+                            "Forma de pago no encontrada con ID: " + requestDTO.getMethodPaymentId()));
+            pagoPax.setMethodPayment(formaPago);
         }
 
         // Guardar

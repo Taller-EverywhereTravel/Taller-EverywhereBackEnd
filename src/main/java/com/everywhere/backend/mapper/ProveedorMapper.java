@@ -1,8 +1,8 @@
 package com.everywhere.backend.mapper;
 
-import com.everywhere.backend.model.dto.ProveedorRequestDTO;
-import com.everywhere.backend.model.dto.ProveedorResponseDTO;
-import com.everywhere.backend.model.entity.Proveedor;
+import com.everywhere.backend.model.dto.SupplierRequestDTO;
+import com.everywhere.backend.model.dto.SupplierResponseDTO;
+import com.everywhere.backend.model.entity.Supplier;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -13,15 +13,15 @@ public class ProveedorMapper {
     @Autowired
     private ModelMapper modelMapper;
 
-    public Proveedor toEntity(ProveedorRequestDTO proveedorRequestDTO) {
-        return modelMapper.map(proveedorRequestDTO, Proveedor.class);
+    public Supplier toEntity(SupplierRequestDTO proveedorRequestDTO) {
+        return modelMapper.map(proveedorRequestDTO, Supplier.class);
     }
 
-    public ProveedorResponseDTO toResponseDTO(Proveedor proveedor) {
-        return modelMapper.map(proveedor, ProveedorResponseDTO.class);
+    public SupplierResponseDTO toResponseDTO(Supplier proveedor) {
+        return modelMapper.map(proveedor, SupplierResponseDTO.class);
     }
 
-    public void updateEntityFromDTO(ProveedorRequestDTO proveedorRequestDTO, Proveedor proveedor) {
+    public void updateEntityFromDTO(SupplierRequestDTO proveedorRequestDTO, Supplier proveedor) {
         modelMapper.map(proveedorRequestDTO, proveedor);
     }
 }

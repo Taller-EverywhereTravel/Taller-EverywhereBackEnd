@@ -8,25 +8,25 @@ public class CounterMapper {
 
     public static Counter toEntity(CounterRequestDto dto){
         Counter counter = new Counter();
-        counter.setNombre(dto.getNombre());
-        counter.setEstado(Boolean.TRUE);
+        counter.setName(dto.getName());
+        counter.setStatus(Boolean.TRUE);
         return counter;
     }
 
     public static Counter toEntityForUpdate(CounterRequestDto dto, Counter existingEntity) {
-        existingEntity.setNombre(dto.getNombre());
-        existingEntity.setFechaActualizacion(LocalDateTime.now());
+        existingEntity.setName(dto.getName());
+        existingEntity.setDateUpdate(LocalDateTime.now());
         return existingEntity;
     }
 
     public static CounterResponseDto toResponse(Counter entity){
         CounterResponseDto dto = new CounterResponseDto();
         dto.setId(entity.getId());
-        dto.setNombre(entity.getNombre());
-        dto.setEstado(entity.getEstado());
-        dto.setCodigo(entity.getCodigo());
-        dto.setFechaCreacion(entity.getFechaCreacion());
-        dto.setFechaActualizacion(entity.getFechaActualizacion());
+        dto.setName(entity.getName());
+        dto.setStatus(entity.getStatus());
+        dto.setCode(entity.getCode());
+        dto.setDateCreation(entity.getDateCreation());
+        dto.setDateUpdated(entity.getDateUpdate());
         return dto;
     }
 }

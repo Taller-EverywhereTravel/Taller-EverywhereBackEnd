@@ -29,12 +29,12 @@ public class AuthorizationService {
         }
 
         if (user.getRole() == null) {
-            log.warn("Usuario sin rol asignado: {}", user.getEmail());
+            log.warn("Usuario sin rol asignado: {}", user.getMail());
             throw new UnauthorizedAccessException("El usuario no tiene un rol asignado. Contacte al administrador.");
         }
 
         String roleName = user.getRole().getName();
-        log.info("Verificando permisos para usuario: {} con rol: {}", user.getEmail(), roleName);
+        log.info("Verificando permisos para usuario: {} con rol: {}", user.getMail(), roleName);
 
         try {
             Role userRole = Role.fromName(roleName);
@@ -45,7 +45,7 @@ public class AuthorizationService {
 
             return hasAccess;
         } catch (IllegalArgumentException e) {
-            log.error("Rol no encontrado en enum: {} para usuario: {}", roleName, user.getEmail());
+            log.error("Rol no encontrado en enum: {} para usuario: {}", roleName, user.getMail());
             throw new UnauthorizedAccessException("El rol del usuario no es válido. Contacte al administrador.");
         }
     }
@@ -67,7 +67,7 @@ public class AuthorizationService {
         }
 
         if (user.getRole() == null) {
-            log.warn("Usuario sin rol asignado: {}", user.getEmail());
+            log.warn("Usuario sin rol asignado: {}", user.getMail());
             return null;
         }
 

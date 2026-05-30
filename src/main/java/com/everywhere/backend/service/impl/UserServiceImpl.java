@@ -93,7 +93,7 @@ public class UserServiceImpl implements UserService {
             throw new IllegalArgumentException("El nombre no puede estar vacío");
         }
         User user = getUserbyId(userId);
-        user.setNombre(name.trim());
+        user.setName(name.trim());
         return userMapper.toUserProfileDTO(userRepository.save(user));
     }
 }

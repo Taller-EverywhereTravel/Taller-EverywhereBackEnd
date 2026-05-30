@@ -1,21 +1,21 @@
 package com.everywhere.backend.service;
 
-import com.everywhere.backend.model.dto.SucursalRequestDTO;
-import com.everywhere.backend.model.dto.SucursalResponseDTO;
+import com.everywhere.backend.model.dto.BranchRequestDTO;
+import com.everywhere.backend.model.dto.BranchResponseDTO;
 
 import java.util.List;
 
 public interface SucursalService {
-    List<SucursalResponseDTO> findAll();
-    SucursalResponseDTO findById(Integer id);
-    List<SucursalResponseDTO> findByDescripcion(String descripcion);
-    SucursalResponseDTO findByDescripcionExacta(String descripcion);
-    List<SucursalResponseDTO> findByEstado(Boolean estado);
-    List<SucursalResponseDTO> findByEstadoAndDescripcion(Boolean estado, String descripcion);
-    List<SucursalResponseDTO> findByDireccion(String direccion);
-    SucursalResponseDTO findByEmail(String email);
-    SucursalResponseDTO save(SucursalRequestDTO sucursalRequestDTO);
-    SucursalResponseDTO update(Integer id, SucursalRequestDTO sucursalRequestDTO);
+    List<BranchResponseDTO> findAll();
+    BranchResponseDTO findById(Integer id);
+    List<BranchResponseDTO> findByDescripcion(String descripcion);
+    BranchResponseDTO findByDescripcionExacta(String descripcion);
+    List<BranchResponseDTO> findByEstado(Boolean estado);
+    List<BranchResponseDTO> findByEstadoAndDescripcion(Boolean estado, String descripcion);
+    List<BranchResponseDTO> findByDireccion(String direccion);
+    BranchResponseDTO findByEmail(String email);
+    BranchResponseDTO save(BranchRequestDTO sucursalRequestDTO);
+    BranchResponseDTO update(Integer id, BranchRequestDTO sucursalRequestDTO);
     void deleteById(Integer id);
-    SucursalResponseDTO cambiarEstado(Integer id, Boolean estado);
+    BranchResponseDTO cambiarEstado(Integer id, Boolean estado);
 }

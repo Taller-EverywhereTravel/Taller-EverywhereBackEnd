@@ -1,8 +1,8 @@
 package com.everywhere.backend.mapper;
 
-import com.everywhere.backend.model.dto.PagoPaxRequestDTO;
-import com.everywhere.backend.model.dto.PagoPaxResponseDTO;
-import com.everywhere.backend.model.entity.PagoPax;
+import com.everywhere.backend.model.dto.PaymentPaxRequestDTO;
+import com.everywhere.backend.model.dto.PaymentPaxResponseDTO;
+import com.everywhere.backend.model.entity.PaymentPax;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
@@ -18,20 +18,20 @@ public class PagoPaxMapper {
     /**
      * Convierte una entidad PagoPax a PagoPaxResponseDTO
      */
-    public PagoPaxResponseDTO toResponseDTO(PagoPax pagoPax) {
+    public PaymentPaxResponseDTO toResponseDTO(PaymentPax pagoPax) {
         if (pagoPax == null) {
             return null;
         }
 
-        PagoPaxResponseDTO dto = modelMapper.map(pagoPax, PagoPaxResponseDTO.class);
+        PaymentPaxResponseDTO dto = modelMapper.map(pagoPax, PaymentPaxResponseDTO.class);
 
         // Mapear relaciones si existen
-        if (pagoPax.getLiquidacion() != null) {
-            dto.setLiquidacion(liquidacionMapper.toResponseDTO(pagoPax.getLiquidacion()));
+        if (pagoPax.getLiquidation() != null) {
+            dto.setLiquidation(liquidacionMapper.toResponseDTO(pagoPax.getLiquidation()));
         }
 
-        if (pagoPax.getFormaPago() != null) {
-            dto.setFormaPago(formaPagoMapper.toResponseDTO(pagoPax.getFormaPago()));
+        if (pagoPax.getMethodPayment() != null) {
+            dto.setMethodPayment(formaPagoMapper.toResponseDTO(pagoPax.getMethodPayment()));
         }
 
         return dto;
@@ -40,15 +40,15 @@ public class PagoPaxMapper {
     /**
      * Convierte un PagoPaxRequestDTO a entidad PagoPax
      */
-    public PagoPax toEntity(PagoPaxRequestDTO requestDTO) {
+    public PaymentPax toEntity(PaymentPaxRequestDTO requestDTO) {
         if (requestDTO == null) {
             return null;
         }
 
-        PagoPax pagoPax = new PagoPax();
-        pagoPax.setMonto(requestDTO.getMonto());
-        pagoPax.setMoneda(requestDTO.getMoneda());
-        pagoPax.setDetalle(requestDTO.getDetalle());
+        PaymentPax pagoPax = new PaymentPax();
+        pagoPax.setAmount(requestDTO.getAmount());
+        pagoPax.setCurrency(requestDTO.getCurrency());
+        pagoPax.setDetail(requestDTO.getDetail());
 
         return pagoPax;
     }
@@ -56,19 +56,19 @@ public class PagoPaxMapper {
     /**
      * Actualiza una entidad PagoPax existente con datos del RequestDTO
      */
-    public void updateEntityFromRequestDTO(PagoPax pagoPax, PagoPaxRequestDTO requestDTO) {
+    public void updateEntityFromRequestDTO(PaymentPax pagoPax, PaymentPaxRequestDTO requestDTO) {
         if (pagoPax == null || requestDTO == null) {
             return;
         }
 
-        if (requestDTO.getMonto() != null) {
-            pagoPax.setMonto(requestDTO.getMonto());
+        if (requestDTO.getAmount() != null) {
+            pagoPax.setAmount(requestDTO.getAmount());
         }
-        if (requestDTO.getMoneda() != null) {
-            pagoPax.setMoneda(requestDTO.getMoneda());
+        if (requestDTO.getCurrency() != null) {
+            pagoPax.setCurrency(requestDTO.getCurrency());
         }
-        if (requestDTO.getDetalle() != null) {
-            pagoPax.setDetalle(requestDTO.getDetalle());
+        if (requestDTO.getDetail() != null) {
+            pagoPax.setDetail(requestDTO.getDetail());
         }
     }
 }

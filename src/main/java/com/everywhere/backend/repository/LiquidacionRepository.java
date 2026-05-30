@@ -1,6 +1,6 @@
 package com.everywhere.backend.repository;
 
-import com.everywhere.backend.model.entity.Liquidacion;
+import com.everywhere.backend.model.entity.Liquidation;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.lang.NonNull;
@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface LiquidacionRepository extends JpaRepository<Liquidacion, Integer> {
+public interface LiquidacionRepository extends JpaRepository<Liquidation, Integer> {
 
     @EntityGraph(attributePaths = {
             "producto",
@@ -26,7 +26,7 @@ public interface LiquidacionRepository extends JpaRepository<Liquidacion, Intege
             "observacionesLiquidacion"
     })
     @NonNull
-    List<Liquidacion> findAll();
+    List<Liquidation> findAll();
 
     @EntityGraph(attributePaths = {
             "producto",
@@ -42,7 +42,7 @@ public interface LiquidacionRepository extends JpaRepository<Liquidacion, Intege
             "observacionesLiquidacion"
     })
     @NonNull
-    Optional<Liquidacion> findById(@NonNull Integer id);
+    Optional<Liquidation> findById(@NonNull Integer id);
 
     // Buscar liquidaciones por carpeta
     @EntityGraph(attributePaths = {
@@ -58,7 +58,7 @@ public interface LiquidacionRepository extends JpaRepository<Liquidacion, Intege
             "carpeta",
             "observacionesLiquidacion"
     })
-    List<Liquidacion> findByCarpetaId(Integer carpetaId);
+    List<Liquidation> findByCarpetaId(Integer carpetaId);
 
     // Buscar liquidaciones sin carpeta asignada
     @EntityGraph(attributePaths = {
@@ -74,5 +74,5 @@ public interface LiquidacionRepository extends JpaRepository<Liquidacion, Intege
             "carpeta",
             "observacionesLiquidacion"
     })
-    List<Liquidacion> findByCarpetaIsNull();
+    List<Liquidation> findByCarpetaIsNull();
 }

@@ -1,11 +1,11 @@
 package com.everywhere.backend.mapper;
 
-import com.everywhere.backend.model.entity.Categoria;
+import com.everywhere.backend.model.entity.Category;
 
 import lombok.RequiredArgsConstructor;
 
-import com.everywhere.backend.model.dto.CategoriaRequestDto;
-import com.everywhere.backend.model.dto.CategoriaResponseDto;
+import com.everywhere.backend.model.dto.CategoryRequestDto;
+import com.everywhere.backend.model.dto.CategoryResponseDto;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
@@ -16,15 +16,15 @@ public class CategoriaMapper {
 
 	private final ModelMapper modelMapper;
 
-	public Categoria toEntity(CategoriaRequestDto categoriaRequestDto) {
-		return modelMapper.map(categoriaRequestDto, Categoria.class);
+	public Category toEntity(CategoryRequestDto categoriaRequestDto) {
+		return modelMapper.map(categoriaRequestDto, Category.class);
 	}
 
-	public CategoriaResponseDto toResponseDto(Categoria categoria) {
-		return modelMapper.map(categoria, CategoriaResponseDto.class);
+	public CategoryResponseDto toResponseDto(Category categoria) {
+		return modelMapper.map(categoria, CategoryResponseDto.class);
 	}
 
-	public void updateEntityFromDTO(CategoriaRequestDto categoriaRequestDto, Categoria categoria) {
+	public void updateEntityFromDTO(CategoryRequestDto categoriaRequestDto, Category categoria) {
 		modelMapper.map(categoriaRequestDto, categoria);
 	}
 }

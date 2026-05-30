@@ -1,8 +1,8 @@
 package com.everywhere.backend.mapper;
 
-import com.everywhere.backend.model.dto.DetalleDocumentoRequestDto;
-import com.everywhere.backend.model.dto.DetalleDocumentoResponseDto;
-import com.everywhere.backend.model.entity.DetalleDocumento; 
+import com.everywhere.backend.model.dto.DetailDocumentRequestDto;
+import com.everywhere.backend.model.dto.DetailDocumentResponseDto;
+import com.everywhere.backend.model.entity.DetailDocument; 
 
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
@@ -18,23 +18,23 @@ public class DetalleDocumentoMapper {
 
     @PostConstruct
     public void configureMappings() {
-        modelMapper.typeMap(DetalleDocumentoRequestDto.class, DetalleDocumento.class).addMappings(mapper -> {
-            mapper.skip(DetalleDocumento::setDocumento);
-            mapper.skip(DetalleDocumento::setPersonaNatural);
+        modelMapper.typeMap(DetailDocumentRequestDto.class, DetailDocument.class).addMappings(mapper -> {
+            mapper.skip(DetailDocument::setDocument);
+            mapper.skip(DetailDocument::setPersonNatural);
         });
     }
 
-    public DetalleDocumento toEntity(DetalleDocumentoRequestDto detalleDocumentoRequestDto) {
-        DetalleDocumento detalleDocumento = modelMapper.map(detalleDocumentoRequestDto, DetalleDocumento.class);
+    public DetailDocument toEntity(DetailDocumentRequestDto detalleDocumentoRequestDto) {
+        DetailDocument detalleDocumento = modelMapper.map(detalleDocumentoRequestDto, DetailDocument.class);
         return detalleDocumento;
     }
 
-    public DetalleDocumentoResponseDto toResponse(DetalleDocumento detalleDocumento) {
-        DetalleDocumentoResponseDto detalleDocumentoResponseDto = modelMapper.map(detalleDocumento, DetalleDocumentoResponseDto.class);
+    public DetailDocumentResponseDto toResponse(DetailDocument detalleDocumento) {
+        DetailDocumentResponseDto detalleDocumentoResponseDto = modelMapper.map(detalleDocumento, DetailDocumentResponseDto.class);
         return detalleDocumentoResponseDto;
     }
 
-    public void updateEntityFromDto(DetalleDocumentoRequestDto detalleDocumentoRequestDto, DetalleDocumento detalleDocumento) {
+    public void updateEntityFromDto(DetailDocumentRequestDto detalleDocumentoRequestDto, DetailDocument detalleDocumento) {
         modelMapper.map(detalleDocumentoRequestDto, detalleDocumento);
     }
 }

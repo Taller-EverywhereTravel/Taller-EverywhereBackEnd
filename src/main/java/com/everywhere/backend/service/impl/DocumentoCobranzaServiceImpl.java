@@ -1,33 +1,33 @@
 package com.everywhere.backend.service.impl;
 
-import com.everywhere.backend.model.dto.CotizacionConDetallesResponseDTO;
-import com.everywhere.backend.model.dto.DocumentoCobranzaResponseDTO;
-import com.everywhere.backend.model.dto.DocumentoCobranzaUpdateDTO;
+import com.everywhere.backend.model.dto.QuotationWithDetailResponseDTO;
+import com.everywhere.backend.model.dto.DocumentCollectionResponseDTO;
+import com.everywhere.backend.model.dto.DocumentCollectionUpdateDTO;
 import com.everywhere.backend.exceptions.ResourceNotFoundException;
 import com.everywhere.backend.mapper.DocumentoCobranzaMapper;
-import com.everywhere.backend.model.entity.DocumentoCobranza;
-import com.everywhere.backend.model.entity.FormaPago;
-import com.everywhere.backend.model.entity.PersonaJuridica;
+import com.everywhere.backend.model.entity.DocumentCollection;
+import com.everywhere.backend.model.entity.MethodPayment;
+import com.everywhere.backend.model.entity.PersonJuridic;
 import com.everywhere.backend.repository.PersonaJuridicaRepository;
 import com.everywhere.backend.repository.PersonaNaturalRepository;
-import com.everywhere.backend.model.entity.PersonaNatural;
-import com.everywhere.backend.model.entity.Sucursal;
+import com.everywhere.backend.model.entity.PersonNatural;
+import com.everywhere.backend.model.entity.Branch;
 import com.everywhere.backend.repository.SucursalRepository;
-import com.everywhere.backend.model.entity.DetalleDocumentoCobranza;
-import com.everywhere.backend.model.entity.DetalleDocumento;
+import com.everywhere.backend.model.entity.DetailDocumentCollection;
+import com.everywhere.backend.model.entity.DetailDocument;
 import com.everywhere.backend.repository.DetalleDocumentoCobranzaRepository;
 import com.everywhere.backend.repository.DetalleDocumentoRepository;
 import com.everywhere.backend.repository.DocumentoCobranzaRepository;
 import com.everywhere.backend.repository.FormaPagoRepository;
 import com.everywhere.backend.repository.NaturalJuridicoRepository;
-import com.everywhere.backend.model.entity.Carpeta;
+import com.everywhere.backend.model.entity.Folder;
 import com.everywhere.backend.repository.CarpetaRepository;
 import com.everywhere.backend.security.UserPrincipal;
 import com.everywhere.backend.service.CotizacionService;
 import com.everywhere.backend.service.DetalleCotizacionService;
 import com.everywhere.backend.service.DocumentoCobranzaService;
-import com.everywhere.backend.model.dto.DetalleCotizacionResponseDto;
-import com.everywhere.backend.model.entity.Producto;
+import com.everywhere.backend.model.dto.DetailQuotationResponseDto;
+import com.everywhere.backend.model.entity.Product;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.dao.DataIntegrityViolationException;
@@ -62,7 +62,7 @@ public class DocumentoCobranzaServiceImpl implements DocumentoCobranzaService {
 
     @Override
     @Transactional
-    public DocumentoCobranzaResponseDTO createDocumentoCobranza(Integer cotizacionId, Integer personaJuridicaId,
+    public DocumentCollectionResponseDTO createDocumentoCobranza(Integer cotizacionId, Integer personaJuridicaId,
             Integer sucursalId) {
         if (cotizacionId == null)
             throw new IllegalArgumentException("El ID de la cotización no puede ser nulo");
@@ -71,25 +71,25 @@ public class DocumentoCobranzaServiceImpl implements DocumentoCobranzaService {
             throw new DataIntegrityViolationException(
                     "Ya existe un documento de cobranza para la cotización ID: " + cotizacionId);
 
-        CotizacionConDetallesResponseDTO cotizacion = cotizacionService.findByIdWithDetalles(cotizacionId);
+        QuotationWithDetailResponseDTO cotizacion = cotizacionService.findByIdWithDetalles(cotizacionId);
 
         String[] serieCorrelativo = generateNextDocumentNumber();
         System.out.println("=== GENERANDO DOCUMENTO ===");
         System.out.println("Serie: " + serieCorrelativo[0]);
         System.out.println("Correlativo: " + serieCorrelativo[1]);
-        DocumentoCobranza documentoCobranza = documentoCobranzaMapper.fromCotizacion(cotizacion, serieCorrelativo[0],
+        DocumentCollection documentoCobranza = documentoCobranzaMapper.fromCotizacion(cotizacion, serieCorrelativo[0],
                 Integer.parseInt(serieCorrelativo[1]));
 
         // Validar y setear PersonaJuridica si fue proporcionada
         if (personaJuridicaId != null) {
-            PersonaJuridica personaJuridica = personaJuridicaRepository.findById(personaJuridicaId)
+            PersonJuridic personaJuridica = personaJuridicaRepository.findById(personaJuridicaId)
                     .orElseThrow(() -> new ResourceNotFoundException(
                             "Persona jurídica no encontrada con ID: " + personaJuridicaId));
 
             // Validar que la PersonaJuridica esté asociada a la PersonaNatural de la cotización
-            if (cotizacion.getPersonas() != null) {
-                Integer personaId = cotizacion.getPersonas().getId();
-                PersonaNatural personaNatural = personaNaturalRepository.findByPersonasId(personaId)
+            if (cotizacion.getPerson() != null) {
+                Integer personaId = cotizacion.getPerson().getId();
+                PersonNatural personaNatural = personaNaturalRepository.findByPersonasId(personaId)
                         .orElse(null);
 
                 if (personaNatural != null) {
@@ -105,14 +105,14 @@ public class DocumentoCobranzaServiceImpl implements DocumentoCobranzaService {
                 }
             }
 
-            documentoCobranza.setPersonaJuridica(personaJuridica);
+            documentoCobranza.setPersonJuridic(personaJuridica);
         }
 
         // Validar y setear Sucursal si fue proporcionada
         if (sucursalId != null) {
-            Sucursal sucursal = sucursalRepository.findById(sucursalId)
+            Branch sucursal = sucursalRepository.findById(sucursalId)
                     .orElseThrow(() -> new ResourceNotFoundException("Sucursal no encontrada con ID: " + sucursalId));
-            documentoCobranza.setSucursal(sucursal);
+            documentoCobranza.setBranch(sucursal);
         }
 
         documentoCobranza = documentoCobranzaRepository.save(documentoCobranza);
@@ -125,42 +125,42 @@ public class DocumentoCobranzaServiceImpl implements DocumentoCobranzaService {
 
     @Override
     public ByteArrayInputStream generatePdf(Long documentoId) {
-        DocumentoCobranza documentoCobranza = documentoCobranzaRepository.findByIdWithRelations(documentoId)
+        DocumentCollection documentoCobranza = documentoCobranzaRepository.findByIdWithRelations(documentoId)
                 .orElseThrow(() -> new ResourceNotFoundException(
                         "Documento de cobranza no encontrado con ID: " + documentoId));
 
         documentoCobranzaRepository.findByIdWithDetalles(documentoId)
-                .ifPresent(d -> documentoCobranza.setDetalles(d.getDetalles()));
+                .ifPresent(d -> documentoCobranza.setDetail(d.getDetail()));
 
-        DocumentoCobranzaResponseDTO documentoCobranzaResponseDTO = documentoCobranzaMapper
+        DocumentCollectionResponseDTO documentoCobranzaResponseDTO = documentoCobranzaMapper
                 .toResponseDTO(documentoCobranza);
         String userName = getAuthenticatedUserName();
         return documentoCobranzaPdfGenerator.generatePdf(documentoCobranzaResponseDTO, userName);
     }
 
     @Override
-    public DocumentoCobranzaResponseDTO findById(Long id) {
-        DocumentoCobranza documentoCobranza = documentoCobranzaRepository.findByIdWithRelations(id)
+    public DocumentCollectionResponseDTO findById(Long id) {
+        DocumentCollection documentoCobranza = documentoCobranzaRepository.findByIdWithRelations(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Documento de cobranza no encontrado con ID: " + id));
         return documentoCobranzaMapper.toResponseDTO(documentoCobranza);
     }
 
     @Override
-    public DocumentoCobranzaResponseDTO findBySerieAndCorrelativo(String serie, Integer correlativo) {
-        DocumentoCobranza documentoCobranza = documentoCobranzaRepository.findBySerieAndCorrelativo(serie, correlativo)
+    public DocumentCollectionResponseDTO findBySerieAndCorrelativo(String serie, Integer correlativo) {
+        DocumentCollection documentoCobranza = documentoCobranzaRepository.findBySerieAndCorrelativo(serie, correlativo)
                 .orElseThrow(() -> new ResourceNotFoundException(
                         "Documento de cobranza no encontrado con serie: " + serie + " y correlativo: " + correlativo));
         return documentoCobranzaMapper.toResponseDTO(documentoCobranza);
     }
 
     @Override
-    public List<DocumentoCobranzaResponseDTO> findAll() {
+    public List<DocumentCollectionResponseDTO> findAll() {
         return mapToResponseList(documentoCobranzaRepository.findAllForListing());
     }
 
     @Override
-    public DocumentoCobranzaResponseDTO findByCotizacionId(Integer cotizacionId) {
-        DocumentoCobranza documentoCobranza = documentoCobranzaRepository.findByCotizacionId(cotizacionId)
+    public DocumentCollectionResponseDTO findByCotizacionId(Integer cotizacionId) {
+        DocumentCollection documentoCobranza = documentoCobranzaRepository.findByCotizacionId(cotizacionId)
                 .orElseThrow(() -> new ResourceNotFoundException(
                         "Documento de cobranza no encontrado para cotización ID: " + cotizacionId));
         return documentoCobranzaMapper.toResponseDTO(documentoCobranza);
@@ -168,74 +168,74 @@ public class DocumentoCobranzaServiceImpl implements DocumentoCobranzaService {
 
     @Override
     @Transactional
-    public DocumentoCobranzaResponseDTO patchDocumento(Long id, DocumentoCobranzaUpdateDTO documentoCobranzaUpdateDTO) {
+    public DocumentCollectionResponseDTO patchDocumento(Long id, DocumentCollectionUpdateDTO documentoCobranzaUpdateDTO) {
         if (!documentoCobranzaRepository.existsById(id))
             throw new ResourceNotFoundException("Documento de cobranza no encontrado con ID: " + id);
 
-        if (documentoCobranzaUpdateDTO.getDetalleDocumentoId() != null &&
-                !detalleDocumentoRepository.existsById(documentoCobranzaUpdateDTO.getDetalleDocumentoId()))
+        if (documentoCobranzaUpdateDTO.getDetailDocumentId() != null &&
+                !detalleDocumentoRepository.existsById(documentoCobranzaUpdateDTO.getDetailDocumentId()))
             throw new ResourceNotFoundException(
-                    "Detalle de documento no encontrado con ID: " + documentoCobranzaUpdateDTO.getDetalleDocumentoId());
+                    "Detalle de documento no encontrado con ID: " + documentoCobranzaUpdateDTO.getDetailDocumentId());
 
-        DocumentoCobranza documentoCobranza = documentoCobranzaRepository.findById(id).get();
+        DocumentCollection documentoCobranza = documentoCobranzaRepository.findById(id).get();
         documentoCobranzaMapper.updateEntityFromUpdateDTO(documentoCobranza, documentoCobranzaUpdateDTO);
 
         // ========== LÓGICA MUTUAMENTE EXCLUYENTE: DetalleDocumento XOR PersonaJuridica
         // ========== Si se envía detalleDocumentoId, usar documento personal y LIMPIAR empresa
-        if (documentoCobranzaUpdateDTO.getDetalleDocumentoId() != null) {
-            DetalleDocumento detalleDocumento = detalleDocumentoRepository
-                    .findById(documentoCobranzaUpdateDTO.getDetalleDocumentoId()).get();
-            documentoCobranza.setDetalleDocumento(detalleDocumento);
+        if (documentoCobranzaUpdateDTO.getDetailDocumentId() != null) {
+            DetailDocument detalleDocumento = detalleDocumentoRepository
+                    .findById(documentoCobranzaUpdateDTO.getDetailDocumentId()).get();
+            documentoCobranza.setDetailDocument(detalleDocumento);
             // Limpiar PersonaJuridica cuando se selecciona documento personal
-            documentoCobranza.setPersonaJuridica(null);
+            documentoCobranza.setPersonJuridic(null);
         }
         // Si se envía personaJuridicaId, usar empresa y LIMPIAR documento personal
-        else if (documentoCobranzaUpdateDTO.getPersonaJuridicaId() != null) {
-            PersonaJuridica personaJuridica = personaJuridicaRepository
-                    .findById(documentoCobranzaUpdateDTO.getPersonaJuridicaId())
+        else if (documentoCobranzaUpdateDTO.getPersonJuridicId() != null) {
+            PersonJuridic personaJuridica = personaJuridicaRepository
+                    .findById(documentoCobranzaUpdateDTO.getPersonJuridicId())
                     .orElseThrow(() -> new ResourceNotFoundException("Persona jurídica no encontrada con ID: "
-                            + documentoCobranzaUpdateDTO.getPersonaJuridicaId()));
+                            + documentoCobranzaUpdateDTO.getPersonJuridicId()));
 
             // Validar que la PersonaJuridica esté asociada a la PersonaNatural del documento
-            if (documentoCobranza.getPersona() != null) {
-                Integer personaId = documentoCobranza.getPersona().getId();
-                PersonaNatural personaNatural = personaNaturalRepository.findByPersonasId(personaId)
+            if (documentoCobranza.getPerson() != null) {
+                Integer personaId = documentoCobranza.getPerson().getId();
+                PersonNatural personaNatural = personaNaturalRepository.findByPersonasId(personaId)
                         .orElse(null);
 
                 if (personaNatural != null) {
                     boolean relacionExiste = naturalJuridicoRepository
                             .findByPersonaNaturalIdAndPersonaJuridicaId(personaNatural.getId(),
-                                    documentoCobranzaUpdateDTO.getPersonaJuridicaId())
+                                    documentoCobranzaUpdateDTO.getPersonJuridicId())
                             .isPresent();
 
                     if (!relacionExiste) {
                         throw new IllegalArgumentException(
-                                "La persona jurídica ID " + documentoCobranzaUpdateDTO.getPersonaJuridicaId() +
+                                "La persona jurídica ID " + documentoCobranzaUpdateDTO.getPersonJuridicId() +
                                         " no está asociada a la persona natural del documento");
                     }
                 }
             }
 
-            documentoCobranza.setPersonaJuridica(personaJuridica);
+            documentoCobranza.setPersonJuridic(personaJuridica);
             // Limpiar DetalleDocumento cuando se selecciona empresa
-            documentoCobranza.setDetalleDocumento(null);
+            documentoCobranza.setDetailDocument(null);
         }
 
         // Validar y actualizar Sucursal si fue proporcionada
-        if (documentoCobranzaUpdateDTO.getSucursalId() != null) {
-            Sucursal sucursal = sucursalRepository.findById(documentoCobranzaUpdateDTO.getSucursalId())
+        if (documentoCobranzaUpdateDTO.getBranchId() != null) {
+            Branch sucursal = sucursalRepository.findById(documentoCobranzaUpdateDTO.getBranchId())
                     .orElseThrow(() -> new ResourceNotFoundException(
-                            "Sucursal no encontrada con ID: " + documentoCobranzaUpdateDTO.getSucursalId()));
-            documentoCobranza.setSucursal(sucursal);
+                            "Sucursal no encontrada con ID: " + documentoCobranzaUpdateDTO.getBranchId()));
+            documentoCobranza.setBranch(sucursal);
         }
 
         // Validar y actualizar FormaPago si fue proporcionada
-        if (documentoCobranzaUpdateDTO.getFormaPagoId() != null) {
-            FormaPago formaPago = formaPagoRepository.findById(documentoCobranzaUpdateDTO.getFormaPagoId())
+        if (documentoCobranzaUpdateDTO.getMethodPaymentId() != null) {
+            MethodPayment formaPago = formaPagoRepository.findById(documentoCobranzaUpdateDTO.getMethodPaymentId())
                     .orElseThrow(() -> new ResourceNotFoundException(
-                            "Forma de pago no encontrada con ID: " + documentoCobranzaUpdateDTO.getFormaPagoId()));
-            documentoCobranza.setFormaPago(formaPago);
-            System.out.println("FormaPago actualizada: " + formaPago.getDescripcion());
+                            "Forma de pago no encontrada con ID: " + documentoCobranzaUpdateDTO.getMethodPaymentId()));
+            documentoCobranza.setMethodPayment(formaPago);
+            System.out.println("FormaPago actualizada: " + formaPago.getDescription());
         }
 
         return documentoCobranzaMapper.toResponseDTO(documentoCobranzaRepository.save(documentoCobranza));
@@ -243,12 +243,12 @@ public class DocumentoCobranzaServiceImpl implements DocumentoCobranzaService {
 
     // ========== MÉTODOS PRIVADOS ==========
     private String[] generateNextDocumentNumber() {
-        Optional<DocumentoCobranza> lastDocOpt = documentoCobranzaRepository.findTopByOrderByIdDesc();
+        Optional<DocumentCollection> lastDocOpt = documentoCobranzaRepository.findTopByOrderByIdDesc();
 
         if (lastDocOpt.isPresent()) {
-            DocumentoCobranza lastDoc = lastDocOpt.get();
+            DocumentCollection lastDoc = lastDocOpt.get();
             String lastSerie = lastDoc.getSerie();
-            Integer lastCorrelativo = lastDoc.getCorrelativo();
+            Integer lastCorrelativo = lastDoc.getCorrelative();
 
             // Si correlativo llegó al máximo, incrementa serie
             if (lastCorrelativo >= 999999999) {
@@ -263,7 +263,7 @@ public class DocumentoCobranzaServiceImpl implements DocumentoCobranzaService {
         return new String[] { "DC01", "1" };
     }
 
-    private List<DocumentoCobranzaResponseDTO> mapToResponseList(List<DocumentoCobranza> documentos) {
+    private List<DocumentCollectionResponseDTO> mapToResponseList(List<DocumentCollection> documentos) {
         return documentos.stream().map(documentoCobranzaMapper::toResponseDTO).toList();
     }
 
@@ -281,8 +281,8 @@ public class DocumentoCobranzaServiceImpl implements DocumentoCobranzaService {
 
                 UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
 
-                if (userPrincipal.getUser() != null && userPrincipal.getUser().getNombre() != null) {
-                    return userPrincipal.getUser().getNombre();
+                if (userPrincipal.getUser() != null && userPrincipal.getUser().getName() != null) {
+                    return userPrincipal.getUser().getName();
                 }
             }
         } catch (Exception e) {
@@ -292,38 +292,38 @@ public class DocumentoCobranzaServiceImpl implements DocumentoCobranzaService {
         return "Usuario desconocido";
     }
 
-    private void crearDetallesDesdeCotizacion(DocumentoCobranza documentoCobranza, Integer cotizacionId) {
+    private void crearDetallesDesdeCotizacion(DocumentCollection documentoCobranza, Integer cotizacionId) {
         // Obtener todos los detalles de la cotización
-        List<DetalleCotizacionResponseDto> detallesCotizacion = detalleCotizacionService
+        List<DetailQuotationResponseDto> detallesCotizacion = detalleCotizacionService
                 .findByCotizacionId(cotizacionId);
 
         // Filtrar solo los detalles seleccionados
-        List<DetalleCotizacionResponseDto> detallesSeleccionados = detallesCotizacion.stream()
-                .filter(detalle -> detalle.getSeleccionado() != null && detalle.getSeleccionado())
+        List<DetailQuotationResponseDto> detallesSeleccionados = detallesCotizacion.stream()
+                .filter(detalle -> detalle.getSelected() != null && detalle.getSelected())
                 .toList();
 
         // Por cada detalle seleccionado, crear N detalles de documento de cobranza (donde N = cantidad)
-        for (DetalleCotizacionResponseDto detalleCot : detallesSeleccionados) {
-            int cantidad = detalleCot.getCantidad() != null ? detalleCot.getCantidad() : 1;
+        for (DetailQuotationResponseDto detalleCot : detallesSeleccionados) {
+            int cantidad = detalleCot.getQuantity() != null ? detalleCot.getQuantity() : 1;
 
             // Crear un detalle de documento de cobranza por cada unidad de cantidad
             for (int i = 0; i < cantidad; i++) {
-                DetalleDocumentoCobranza detalleDoc = new DetalleDocumentoCobranza();
+                DetailDocumentCollection detalleDoc = new DetailDocumentCollection();
 
                 // Asignar el documento de cobranza
-                detalleDoc.setDocumentoCobranza(documentoCobranza);
+                detalleDoc.setDocumentCollection(documentoCobranza);
 
                 // Mapear datos desde el detalle de cotización
-                detalleDoc.setCantidad(1); // Cada registro individual tiene cantidad = 1
-                detalleDoc.setDescripcion(detalleCot.getDescripcion());
-                detalleDoc.setPrecio(
-                        detalleCot.getPrecioHistorico() != null ? detalleCot.getPrecioHistorico() : BigDecimal.ZERO);
+                detalleDoc.setAmount(1); // Cada registro individual tiene cantidad = 1
+                detalleDoc.setDescription(detalleCot.getDescription());
+                detalleDoc.setPrice(
+                        detalleCot.getPriceHistory() != null ? detalleCot.getPriceHistory() : BigDecimal.ZERO);
 
                 // Asignar producto si existe
-                if (detalleCot.getProducto() != null) {
-                    Producto producto = new Producto();
-                    producto.setId(detalleCot.getProducto().getId());
-                    detalleDoc.setProducto(producto);
+                if (detalleCot.getProduct() != null) {
+                    Product producto = new Product();
+                    producto.setId(detalleCot.getProduct().getId());
+                    detalleDoc.setProduct(producto);
                 }
 
                 // Guardar el detalle
@@ -335,27 +335,27 @@ public class DocumentoCobranzaServiceImpl implements DocumentoCobranzaService {
     // Implementación de métodos para gestión de carpetas
 
     @Override
-    public List<DocumentoCobranzaResponseDTO> findByCarpeta(Integer carpetaId) {
+    public List<DocumentCollectionResponseDTO> findByCarpeta(Integer carpetaId) {
         return mapToResponseList(documentoCobranzaRepository.findByCarpetaId(carpetaId));
     }
 
     @Override
-    public List<DocumentoCobranzaResponseDTO> findSinCarpeta() {
+    public List<DocumentCollectionResponseDTO> findSinCarpeta() {
         return mapToResponseList(documentoCobranzaRepository.findByCarpetaIsNull());
     }
 
     @Override
     @Transactional
-    public DocumentoCobranzaResponseDTO updateCarpeta(Long id, Integer carpetaId) {
-        DocumentoCobranza documentoCobranza = documentoCobranzaRepository.findById(id)
+    public DocumentCollectionResponseDTO updateCarpeta(Long id, Integer carpetaId) {
+        DocumentCollection documentoCobranza = documentoCobranzaRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Documento de cobranza no encontrado con ID: " + id));
 
         if (carpetaId != null) {
-            Carpeta carpeta = carpetaRepository.findById(carpetaId)
+            Folder carpeta = carpetaRepository.findById(carpetaId)
                     .orElseThrow(() -> new ResourceNotFoundException("Carpeta no encontrada con ID: " + carpetaId));
-            documentoCobranza.setCarpeta(carpeta);
+            documentoCobranza.setFolder(carpeta);
         } else {
-            documentoCobranza.setCarpeta(null);
+            documentoCobranza.setFolder(null);
         }
 
         return documentoCobranzaMapper.toResponseDTO(documentoCobranzaRepository.save(documentoCobranza));

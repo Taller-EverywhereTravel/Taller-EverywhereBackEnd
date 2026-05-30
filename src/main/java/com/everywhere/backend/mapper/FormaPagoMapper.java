@@ -1,8 +1,8 @@
 package com.everywhere.backend.mapper;
 
-import com.everywhere.backend.model.dto.FormaPagoRequestDTO;
-import com.everywhere.backend.model.dto.FormaPagoResponseDTO;
-import com.everywhere.backend.model.entity.FormaPago;
+import com.everywhere.backend.model.dto.MethodPaymentRequestDTO;
+import com.everywhere.backend.model.dto.MethodPaymentResponseDTO;
+import com.everywhere.backend.model.entity.MethodPayment;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -13,11 +13,11 @@ public class FormaPagoMapper {
     @Autowired
     private ModelMapper modelMapper;
 
-    public FormaPago toEntity(FormaPagoRequestDTO formaPagoRequestDTO) {
-        return modelMapper.map(formaPagoRequestDTO, FormaPago.class);
+    public MethodPayment toEntity(MethodPaymentRequestDTO formaPagoRequestDTO) {
+        return modelMapper.map(formaPagoRequestDTO, MethodPayment.class);
     }
 
-    public FormaPagoResponseDTO toResponseDTO(FormaPago formaPago) {
-        return modelMapper.map(formaPago, FormaPagoResponseDTO.class);
+    public MethodPaymentResponseDTO toResponseDTO(MethodPayment formaPago) {
+        return modelMapper.map(formaPago, MethodPaymentResponseDTO.class);
     }
 }

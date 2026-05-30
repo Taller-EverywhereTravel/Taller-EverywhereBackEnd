@@ -10,6 +10,6 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class GenerarDocxVueloRequest {
-    private Integer cotizacionId;
+    private Integer quotationId;
     private List<ClaseVueloConfig> configuracionVuelos;
 }

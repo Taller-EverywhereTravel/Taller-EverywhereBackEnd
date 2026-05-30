@@ -1,11 +1,11 @@
 package com.everywhere.backend.mapper;
 
-import com.everywhere.backend.model.dto.PersonaRequestDTO;
-import com.everywhere.backend.model.dto.PersonaResponseDTO;
-import com.everywhere.backend.model.dto.PersonaDisplayDto;
-import com.everywhere.backend.model.entity.PersonaJuridica;
-import com.everywhere.backend.model.entity.PersonaNatural;
-import com.everywhere.backend.model.entity.Personas;
+import com.everywhere.backend.model.dto.PersonRequestDTO;
+import com.everywhere.backend.model.dto.PersonResponseDTO;
+import com.everywhere.backend.model.dto.PersonDisplayDto;
+import com.everywhere.backend.model.entity.PersonJuridic;
+import com.everywhere.backend.model.entity.PersonNatural;
+import com.everywhere.backend.model.entity.Person;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
@@ -19,12 +19,12 @@ public class PersonaMapper {
     private final ModelMapper modelMapper;
     private final TelefonoPersonaMapper telefonoPersonaMapper;
 
-    public PersonaResponseDTO toResponseDTO(Personas persona) {
-        PersonaResponseDTO personaResponseDTO = modelMapper.map(persona, PersonaResponseDTO.class);
+    public PersonResponseDTO toResponseDTO(Person persona) {
+        PersonResponseDTO personaResponseDTO = modelMapper.map(persona, PersonResponseDTO.class);
 
-        if (persona.getTelefonos() != null) {
-            personaResponseDTO.setTelefonos(
-                    persona.getTelefonos().stream()
+        if (persona.getPhone() != null) {
+            personaResponseDTO.setPhone(
+                    persona.getPhone().stream()
                             .map(telefonoPersonaMapper::toResponseDTO)
                             .collect(Collectors.toList())
             );
@@ -33,32 +33,32 @@ public class PersonaMapper {
         return personaResponseDTO;
     }
 
-    public Personas toEntity(PersonaRequestDTO personaRequestDTO) {
-        return modelMapper.map(personaRequestDTO, Personas.class);
+    public Person toEntity(PersonRequestDTO personaRequestDTO) {
+        return modelMapper.map(personaRequestDTO, Person.class);
     }
 
-    public void updateEntityFromDTO(PersonaRequestDTO personaRequestDTO, Personas personas) {
+    public void updateEntityFromDTO(PersonRequestDTO personaRequestDTO, Person personas) {
         modelMapper.map(personaRequestDTO, personas);
     }
 
-    public PersonaDisplayDto toDisplayDTO(PersonaNatural personaNatural) {
-        String nombreCompleto = personaNatural.getNombres() + " " +
-                personaNatural.getApellidosPaterno() + " " +
-                personaNatural.getApellidosMaterno();
-        return new PersonaDisplayDto(
+    public PersonDisplayDto toDisplayDTO(PersonNatural personaNatural) {
+        String nombreCompleto = personaNatural.getName() + " " +
+                personaNatural.getSurnamePaternal() + " " +
+                personaNatural.getSurnameMaternal();
+        return new PersonDisplayDto(
                 personaNatural.getId(),
                 "NATURAL",
-                String.valueOf(personaNatural.getDocumento()),
+                String.valueOf(personaNatural.getDocument()),
                 nombreCompleto
         );
     }
 
-    public PersonaDisplayDto toDisplayDTO(PersonaJuridica personaJuridica) {
-        return new PersonaDisplayDto(
+    public PersonDisplayDto toDisplayDTO(PersonJuridic personaJuridica) {
+        return new PersonDisplayDto(
                 personaJuridica.getId(),
                 "JURIDICA",
                 String.valueOf(personaJuridica.getRuc()),
-                personaJuridica.getRazonSocial()
+                personaJuridica.getNameCompany()
         );
     }
 }

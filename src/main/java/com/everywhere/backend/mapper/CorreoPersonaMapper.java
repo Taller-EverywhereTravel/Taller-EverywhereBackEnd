@@ -1,8 +1,8 @@
 package com.everywhere.backend.mapper;
 
-import com.everywhere.backend.model.dto.CorreoPersonaRequestDTO;
-import com.everywhere.backend.model.dto.CorreoPersonaResponseDTO;
-import com.everywhere.backend.model.entity.CorreoPersona;
+import com.everywhere.backend.model.dto.MailPersonRequestDTO;
+import com.everywhere.backend.model.dto.MailPersonResponseDTO;
+import com.everywhere.backend.model.entity.MailPerson;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
@@ -13,15 +13,15 @@ public class CorreoPersonaMapper {
 
     private final ModelMapper modelMapper;
 
-    public CorreoPersona toEntity(CorreoPersonaRequestDTO correoPersona) {
-        return modelMapper.map(correoPersona, CorreoPersona.class);
+    public MailPerson toEntity(MailPersonRequestDTO correoPersona) {
+        return modelMapper.map(correoPersona, MailPerson.class);
     }
 
-    public CorreoPersonaResponseDTO toResponseDTO(CorreoPersona correoPersona) {
-        return modelMapper.map(correoPersona, CorreoPersonaResponseDTO.class);
+    public MailPersonResponseDTO toResponseDTO(MailPerson correoPersona) {
+        return modelMapper.map(correoPersona, MailPersonResponseDTO.class);
     }
 
-    public void updateEntityFromDTO(CorreoPersona correoPersona, CorreoPersonaRequestDTO correoPersonaRequestDTO) {
+    public void updateEntityFromDTO(MailPerson correoPersona, MailPersonRequestDTO correoPersonaRequestDTO) {
         modelMapper.map(correoPersonaRequestDTO, correoPersona);
     }
 }

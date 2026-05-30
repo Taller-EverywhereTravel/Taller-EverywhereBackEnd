@@ -1,7 +1,7 @@
 package com.everywhere.backend.api;
 
-import com.everywhere.backend.model.dto.TelefonoPersonaRequestDTO;
-import com.everywhere.backend.model.dto.TelefonoPersonaResponseDTO;
+import com.everywhere.backend.model.dto.PhonePersonRequestDTO;
+import com.everywhere.backend.model.dto.PhonePersonResponseDTO;
 import com.everywhere.backend.security.RequirePermission;
 import com.everywhere.backend.service.TelefonoPersonaService;
 import jakarta.validation.Valid;
@@ -13,42 +13,42 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/telefonos-persona")
+@RequestMapping("/phone-person")
 @RequiredArgsConstructor
 public class    TelefonoPersonaController {
 
     private final TelefonoPersonaService telefonoPersonaService;
 
-    @GetMapping("/personas/{personaId}")
+    @GetMapping("/person/{personaId}")
     @RequirePermission(module = "PERSONAS", permission = "READ")
-    public ResponseEntity<List<TelefonoPersonaResponseDTO>> findByPersonaId(@PathVariable Integer personaId) {
+    public ResponseEntity<List<PhonePersonResponseDTO>> findByPersonaId(@PathVariable Integer personaId) {
         return ResponseEntity.ok(telefonoPersonaService.findByPersonaId(personaId));
     }
 
-    @GetMapping("/personas/{personaId}/telefono/{telefonoId}")
+    @GetMapping("/person/{personaId}/phone/{telefonoId}")
     @RequirePermission(module = "PERSONAS", permission = "READ")
-    public ResponseEntity<TelefonoPersonaResponseDTO> findById(@PathVariable Integer personaId, @PathVariable Integer telefonoId) {
+    public ResponseEntity<PhonePersonResponseDTO> findById(@PathVariable Integer personaId, @PathVariable Integer telefonoId) {
         return telefonoPersonaService.findById(telefonoId, personaId)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    @PostMapping("/personas/{personaId}")
+    @PostMapping("/person/{personaId}")
     @RequirePermission(module = "PERSONAS", permission = "CREATE")
-    public ResponseEntity<TelefonoPersonaResponseDTO> create(@PathVariable Integer personaId,
-                                                             @RequestBody @Valid TelefonoPersonaRequestDTO telefonoPersonaRequestDTO) {
+    public ResponseEntity<PhonePersonResponseDTO> create(@PathVariable Integer personaId,
+                                                             @RequestBody @Valid PhonePersonRequestDTO telefonoPersonaRequestDTO) {
         return new ResponseEntity<>(telefonoPersonaService.save(telefonoPersonaRequestDTO, personaId), HttpStatus.CREATED);
     }
 
-    @PatchMapping("/personas/{personaId}/telefono/{telefonoId}")
+    @PatchMapping("/person/{personaId}/phone/{telefonoId}")
     @RequirePermission(module = "PERSONAS", permission = "UPDATE")
-    public ResponseEntity<TelefonoPersonaResponseDTO> update(@PathVariable Integer personaId,
+    public ResponseEntity<PhonePersonResponseDTO> update(@PathVariable Integer personaId,
                                                              @PathVariable Integer telefonoId,
-                                                             @RequestBody  TelefonoPersonaRequestDTO telefonoPersonaRequestDTO) {
+                                                             @RequestBody  PhonePersonRequestDTO telefonoPersonaRequestDTO) {
         return ResponseEntity.ok(telefonoPersonaService.update(personaId, telefonoPersonaRequestDTO, telefonoId));
     }
 
-    @DeleteMapping("/personas/{personaId}/telefono/{telefonoId}")
+    @DeleteMapping("/person/{personaId}/phone/{telefonoId}")
     @RequirePermission(module = "PERSONAS", permission = "DELETE")
     public ResponseEntity<Void> delete(@PathVariable Integer personaId, @PathVariable Integer telefonoId) {
         telefonoPersonaService.deleteById(telefonoId, personaId);

@@ -1,9 +1,9 @@
 package com.everywhere.backend.service.impl;
 
 import com.everywhere.backend.exceptions.ConflictException;
-import com.everywhere.backend.model.dto.CategoriaRequestDto;
-import com.everywhere.backend.model.dto.CategoriaResponseDto;
-import com.everywhere.backend.model.entity.Categoria; 
+import com.everywhere.backend.model.dto.CategoryRequestDto;
+import com.everywhere.backend.model.dto.CategoryResponseDto;
+import com.everywhere.backend.model.entity.Category; 
 import com.everywhere.backend.repository.CategoriaRepository;
 import com.everywhere.backend.exceptions.ResourceNotFoundException;
 import com.everywhere.backend.mapper.CategoriaMapper;
@@ -27,43 +27,43 @@ public class CategoriaServiceImpl implements CategoriaService {
     private final DetalleCotizacionRepository detalleCotizacionRepository;
 
 	@Override
-	public List<CategoriaResponseDto> findAll() {
+	public List<CategoryResponseDto> findAll() {
 		return mapToResponseList(categoriaRepository.findAll());
 	}
 
-    private List<CategoriaResponseDto> mapToResponseList(List<Categoria> categorias) {
+    private List<CategoryResponseDto> mapToResponseList(List<Category> categorias) {
         return categorias.stream()
                 .map(categoriaMapper::toResponseDto)
                 .toList();
     }
 
     @Override
-	public CategoriaResponseDto findById(int id) {
-		Categoria categoria = categoriaRepository.findById(id)
+	public CategoryResponseDto findById(int id) {
+		Category categoria = categoriaRepository.findById(id)
 				.orElseThrow(() -> new ResourceNotFoundException("Categoria no encontrada"));
 		return categoriaMapper.toResponseDto(categoria);
 	}
 
 	@Override
 	@Transactional
-	public CategoriaResponseDto create(CategoriaRequestDto categoriaRequestDto) {
-		if(categoriaRepository.existsByNombreIgnoreCase(categoriaRequestDto.getNombre()))
-			throw new DataIntegrityViolationException("Ya existe una categoría con el nombre: " + categoriaRequestDto.getNombre());
-		Categoria categoria = categoriaMapper.toEntity(categoriaRequestDto); 
+	public CategoryResponseDto create(CategoryRequestDto categoriaRequestDto) {
+		if(categoriaRepository.existsByNombreIgnoreCase(categoriaRequestDto.getName()))
+			throw new DataIntegrityViolationException("Ya existe una categoría con el nombre: " + categoriaRequestDto.getName());
+		Category categoria = categoriaMapper.toEntity(categoriaRequestDto); 
 		return categoriaMapper.toResponseDto(categoriaRepository.save(categoria));
 	}
 
 	@Override
 	@Transactional
-	public CategoriaResponseDto patch(int id, CategoriaRequestDto categoriaRequestDto) {
+	public CategoryResponseDto patch(int id, CategoryRequestDto categoriaRequestDto) {
 		if (!categoriaRepository.existsById(id))
 			throw new ResourceNotFoundException("Categoria no encontrada con ID: " + id);
 
-		if (categoriaRequestDto.getNombre() != null && 
-			categoriaRepository.existsByNombreIgnoreCase(categoriaRequestDto.getNombre())) {
-			Categoria categoria = categoriaRepository.findById(id).get();
-			if (!categoriaRequestDto.getNombre().equalsIgnoreCase(categoria.getNombre()))
-				throw new DataIntegrityViolationException("Ya existe una categoría con el nombre: " + categoriaRequestDto.getNombre());
+		if (categoriaRequestDto.getName() != null && 
+			categoriaRepository.existsByNombreIgnoreCase(categoriaRequestDto.getName())) {
+			Category categoria = categoriaRepository.findById(id).get();
+			if (!categoriaRequestDto.getName().equalsIgnoreCase(categoria.getName()))
+				throw new DataIntegrityViolationException("Ya existe una categoría con el nombre: " + categoriaRequestDto.getName());
 		}
 
 		categoriaMapper.updateEntityFromDTO(categoriaRequestDto, categoriaRepository.findById(id).get());

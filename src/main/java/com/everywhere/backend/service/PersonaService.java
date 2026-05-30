@@ -1,18 +1,18 @@
 package com.everywhere.backend.service;
 
-import com.everywhere.backend.model.dto.PersonaRequestDTO;
-import com.everywhere.backend.model.dto.PersonaResponseDTO;
-import com.everywhere.backend.model.dto.PersonaDisplayDto;
+import com.everywhere.backend.model.dto.PersonRequestDTO;
+import com.everywhere.backend.model.dto.PersonResponseDTO;
+import com.everywhere.backend.model.dto.PersonDisplayDto;
 
 import java.util.List;
 
 public interface PersonaService {
-    List<PersonaResponseDTO> findAll();
-    PersonaResponseDTO findById(Integer id);
-    List<PersonaResponseDTO> findByEmail(String email);
-    List<PersonaResponseDTO> findByTelefono(String telefono);
-    PersonaResponseDTO save(PersonaRequestDTO personaRequestDTO);
-    PersonaResponseDTO patch(Integer id, PersonaRequestDTO personaRequestDTO);
+    List<PersonResponseDTO> findAll();
+    PersonResponseDTO findById(Integer id);
+    List<PersonResponseDTO> findByEmail(String email);
+    List<PersonResponseDTO> findByTelefono(String telefono);
+    PersonResponseDTO save(PersonRequestDTO personaRequestDTO);
+    PersonResponseDTO patch(Integer id, PersonRequestDTO personaRequestDTO);
     void deleteById(Integer id);
-    PersonaDisplayDto findPersonaNaturalOrJuridicaById(Integer id);
+    PersonDisplayDto findPersonaNaturalOrJuridicaById(Integer id);
 }

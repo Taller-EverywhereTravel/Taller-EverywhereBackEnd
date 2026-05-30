@@ -1,21 +1,21 @@
 package com.everywhere.backend.service;
 
-import com.everywhere.backend.model.dto.CategoriaPersonaRequestDTO;
-import com.everywhere.backend.model.dto.CategoriaPersonaResponseDTO;
-import com.everywhere.backend.model.dto.PersonaNaturalResponseDTO;
+import com.everywhere.backend.model.dto.CategoryPersonaRequestDTO;
+import com.everywhere.backend.model.dto.CategoryPersonaResponseDTO;
+import com.everywhere.backend.model.dto.PersonNaturalResponseDTO;
 
 import java.util.List;
 
 public interface CategoriaPersonaService {
-    List<CategoriaPersonaResponseDTO> findAll();
-    CategoriaPersonaResponseDTO findById(Integer id);
-    List<CategoriaPersonaResponseDTO> findByNombre(String nombre);
-    CategoriaPersonaResponseDTO save(CategoriaPersonaRequestDTO categoriaPersonaRequestDTO);
-    CategoriaPersonaResponseDTO patch(Integer id, CategoriaPersonaRequestDTO categoriaPersonaRequestDTO);
+    List<CategoryPersonaResponseDTO> findAll();
+    CategoryPersonaResponseDTO findById(Integer id);
+    List<CategoryPersonaResponseDTO> findByNombre(String nombre);
+    CategoryPersonaResponseDTO save(CategoryPersonaRequestDTO categoriaPersonaRequestDTO);
+    CategoryPersonaResponseDTO patch(Integer id, CategoryPersonaRequestDTO categoriaPersonaRequestDTO);
     void deleteById(Integer id);
 
-    PersonaNaturalResponseDTO asignarCategoria(Integer personaNaturalId, Integer categoriaId);
-    PersonaNaturalResponseDTO desasignarCategoria(Integer personaNaturalId);
-    List<PersonaNaturalResponseDTO> findPersonasPorCategoria(Integer categoriaId);
-    CategoriaPersonaResponseDTO getCategoriaDePersona(Integer personaNaturalId);
+    PersonNaturalResponseDTO asignarCategoria(Integer personaNaturalId, Integer categoriaId);
+    PersonNaturalResponseDTO desasignarCategoria(Integer personaNaturalId);
+    List<PersonNaturalResponseDTO> findPersonasPorCategoria(Integer categoriaId);
+    CategoryPersonaResponseDTO getCategoriaDePersona(Integer personaNaturalId);
 }

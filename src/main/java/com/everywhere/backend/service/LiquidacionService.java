@@ -1,21 +1,21 @@
 package com.everywhere.backend.service;
 
-import com.everywhere.backend.model.dto.LiquidacionRequestDTO;
-import com.everywhere.backend.model.dto.LiquidacionResponseDTO;
-import com.everywhere.backend.model.dto.LiquidacionConDetallesResponseDTO;
+import com.everywhere.backend.model.dto.LiquidationRequestDTO;
+import com.everywhere.backend.model.dto.LiquidationResponseDTO;
+import com.everywhere.backend.model.dto.LiquidationWithDetailResponseDTO;
 
 import java.io.ByteArrayInputStream;
 import java.util.List;
 
 public interface LiquidacionService {
-    List<LiquidacionResponseDTO> findAll();
-    LiquidacionResponseDTO findById(Integer id);
-    LiquidacionConDetallesResponseDTO findByIdWithDetalles(Integer id);
-    LiquidacionResponseDTO update(Integer id, LiquidacionRequestDTO liquidacionRequestDTO);
+    List<LiquidationResponseDTO> findAll();
+    LiquidationResponseDTO findById(Integer id);
+    LiquidationWithDetailResponseDTO findByIdWithDetalles(Integer id);
+    LiquidationResponseDTO update(Integer id, LiquidationRequestDTO liquidacionRequestDTO);
     void deleteById(Integer id);
-    LiquidacionResponseDTO create(LiquidacionRequestDTO liquidacionRequestDTO, Integer cotizacionId);
-    List<LiquidacionResponseDTO> findByCarpeta(Integer carpetaId);
-    List<LiquidacionResponseDTO> findSinCarpeta();
-    LiquidacionResponseDTO updateCarpeta(Integer id, Integer carpetaId);
+    LiquidationResponseDTO create(LiquidationRequestDTO liquidacionRequestDTO, Integer cotizacionId);
+    List<LiquidationResponseDTO> findByCarpeta(Integer carpetaId);
+    List<LiquidationResponseDTO> findSinCarpeta();
+    LiquidationResponseDTO updateCarpeta(Integer id, Integer carpetaId);
     ByteArrayInputStream generateExcel(Integer liquidacionId);
 }

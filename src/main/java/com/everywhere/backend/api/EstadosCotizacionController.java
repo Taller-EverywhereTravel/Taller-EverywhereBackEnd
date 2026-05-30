@@ -1,7 +1,7 @@
 package com.everywhere.backend.api;
 
-import com.everywhere.backend.model.dto.EstadoCotizacionRequestDTO;
-import com.everywhere.backend.model.dto.EstadoCotizacionResponseDTO;
+import com.everywhere.backend.model.dto.StatusQuotationRequestDTO;
+import com.everywhere.backend.model.dto.StatusQuotationResponseDTO;
 import com.everywhere.backend.security.RequirePermission;
 import com.everywhere.backend.service.EstadoCotizacionService;
 import lombok.RequiredArgsConstructor;
@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/estados-cotizacion")
+@RequestMapping("/status-quotation")
 @RequiredArgsConstructor
 public class EstadosCotizacionController {
 
@@ -21,27 +21,27 @@ public class EstadosCotizacionController {
 
     @PostMapping
     @RequirePermission(module = "COTIZACIONES", permission = "CREATE")
-    public ResponseEntity<EstadoCotizacionResponseDTO> create(@RequestBody EstadoCotizacionRequestDTO estadoCotizacionRequestDTO) {
+    public ResponseEntity<StatusQuotationResponseDTO> create(@RequestBody StatusQuotationRequestDTO estadoCotizacionRequestDTO) {
         return ResponseEntity.status(HttpStatus.CREATED).body(estadoCotizacionService.create(estadoCotizacionRequestDTO));
     }
 
     @PatchMapping("/{id}")
     @RequirePermission(module = "COTIZACIONES", permission = "UPDATE")
-    public ResponseEntity<EstadoCotizacionResponseDTO> update(
+    public ResponseEntity<StatusQuotationResponseDTO> update(
             @PathVariable Integer id,
-            @RequestBody EstadoCotizacionRequestDTO estadoCotizacionRequestDTO) {
+            @RequestBody StatusQuotationRequestDTO estadoCotizacionRequestDTO) {
         return ResponseEntity.ok(estadoCotizacionService.update(id, estadoCotizacionRequestDTO));
     }
 
     @GetMapping("/{id}")
     @RequirePermission(module = "COTIZACIONES", permission = "READ")
-    public ResponseEntity<EstadoCotizacionResponseDTO> getById(@PathVariable Integer id) {
+    public ResponseEntity<StatusQuotationResponseDTO> getById(@PathVariable Integer id) {
         return ResponseEntity.ok(estadoCotizacionService.getById(id));
     }
 
     @GetMapping
     @RequirePermission(module = "COTIZACIONES", permission = "READ")
-    public ResponseEntity<List<EstadoCotizacionResponseDTO>> getAll() {
+    public ResponseEntity<List<StatusQuotationResponseDTO>> getAll() {
         return ResponseEntity.ok(estadoCotizacionService.getAll());
     }
 

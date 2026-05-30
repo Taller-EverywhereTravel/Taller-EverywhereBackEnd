@@ -1,13 +1,13 @@
 package com.everywhere.backend.service;
 
-import com.everywhere.backend.model.dto.CategoriaRequestDto;
-import com.everywhere.backend.model.dto.CategoriaResponseDto;
+import com.everywhere.backend.model.dto.CategoryRequestDto;
+import com.everywhere.backend.model.dto.CategoryResponseDto;
 import java.util.List;
 
 public interface CategoriaService {
-	List<CategoriaResponseDto> findAll();
-	CategoriaResponseDto findById(int id);
-	CategoriaResponseDto create(CategoriaRequestDto categoriaRequestDto);
-	CategoriaResponseDto patch(int id, CategoriaRequestDto categoriaRequestDto);
+	List<CategoryResponseDto> findAll();
+	CategoryResponseDto findById(int id);
+	CategoryResponseDto create(CategoryRequestDto categoriaRequestDto);
+	CategoryResponseDto patch(int id, CategoryRequestDto categoriaRequestDto);
 	void delete(int id);
 }

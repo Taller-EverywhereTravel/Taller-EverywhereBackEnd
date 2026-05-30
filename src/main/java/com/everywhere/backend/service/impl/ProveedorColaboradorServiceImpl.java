@@ -3,10 +3,10 @@ package com.everywhere.backend.service.impl;
 import com.everywhere.backend.exceptions.BadRequestException;
 import com.everywhere.backend.exceptions.ResourceNotFoundException;
 import com.everywhere.backend.mapper.ProveedorColaboradorMapper;
-import com.everywhere.backend.model.dto.ProveedorColaboradorRequestDTO;
-import com.everywhere.backend.model.dto.ProveedorColaboradorResponseDTO;
-import com.everywhere.backend.model.entity.Proveedor;
-import com.everywhere.backend.model.entity.ProveedorColaborador;
+import com.everywhere.backend.model.dto.SupplierCollaboratorRequestDTO;
+import com.everywhere.backend.model.dto.SupplierCollaboratorResponseDTO;
+import com.everywhere.backend.model.entity.Supplier;
+import com.everywhere.backend.model.entity.SupplierCollaborator;
 import com.everywhere.backend.repository.ProveedorColaboradorRepository;
 import com.everywhere.backend.repository.ProveedorRepository;
 import com.everywhere.backend.service.ProveedorColaboradorService;
@@ -24,56 +24,56 @@ public class ProveedorColaboradorServiceImpl implements ProveedorColaboradorServ
     private final ProveedorColaboradorMapper mapper;
 
     @Override
-    public List<ProveedorColaboradorResponseDTO> findAll() {
+    public List<SupplierCollaboratorResponseDTO> findAll() {
         return repository.findAll().stream()
                 .map(mapper::toResponseDTO)
                 .toList();
     }
 
     @Override
-    public ProveedorColaboradorResponseDTO findById(Integer id) {
-        ProveedorColaborador entity = repository.findById(id)
+    public SupplierCollaboratorResponseDTO findById(Integer id) {
+        SupplierCollaborator entity = repository.findById(id)
                 .orElseThrow(
                         () -> new ResourceNotFoundException("Colaborador de proveedor no encontrado con ID: " + id));
         return mapper.toResponseDTO(entity);
     }
 
     @Override
-    public List<ProveedorColaboradorResponseDTO> findByProveedorId(Integer proveedorId) {
+    public List<SupplierCollaboratorResponseDTO> findByProveedorId(Integer proveedorId) {
         return repository.findByProveedorId(proveedorId).stream()
                 .map(mapper::toResponseDTO)
                 .toList();
     }
 
     @Override
-    public ProveedorColaboradorResponseDTO save(ProveedorColaboradorRequestDTO dto) {
-        ProveedorColaborador entity = mapper.toEntity(dto);
+    public SupplierCollaboratorResponseDTO save(SupplierCollaboratorRequestDTO dto) {
+        SupplierCollaborator entity = mapper.toEntity(dto);
 
         // Validar y asignar proveedor si está presente
-        if (dto.getProveedorId() != null) {
-            Proveedor proveedor = proveedorRepository.findById(dto.getProveedorId())
+        if (dto.getSupplierId() != null) {
+            Supplier proveedor = proveedorRepository.findById(dto.getSupplierId())
                     .orElseThrow(
-                            () -> new BadRequestException("Proveedor no encontrado con ID: " + dto.getProveedorId()));
-            entity.setProveedor(proveedor);
+                            () -> new BadRequestException("Proveedor no encontrado con ID: " + dto.getSupplierId()));
+            entity.setSupplier(proveedor);
         }
 
         return mapper.toResponseDTO(repository.save(entity));
     }
 
     @Override
-    public ProveedorColaboradorResponseDTO update(Integer id, ProveedorColaboradorRequestDTO dto) {
-        ProveedorColaborador existing = repository.findById(id)
+    public SupplierCollaboratorResponseDTO update(Integer id, SupplierCollaboratorRequestDTO dto) {
+        SupplierCollaborator existing = repository.findById(id)
                 .orElseThrow(
                         () -> new ResourceNotFoundException("Colaborador de proveedor no encontrado con ID: " + id));
 
         mapper.updateEntityFromDTO(dto, existing);
 
         // Actualizar proveedor si se proporciona
-        if (dto.getProveedorId() != null) {
-            Proveedor proveedor = proveedorRepository.findById(dto.getProveedorId())
+        if (dto.getSupplierId() != null) {
+            Supplier proveedor = proveedorRepository.findById(dto.getSupplierId())
                     .orElseThrow(
-                            () -> new BadRequestException("Proveedor no encontrado con ID: " + dto.getProveedorId()));
-            existing.setProveedor(proveedor);
+                            () -> new BadRequestException("Proveedor no encontrado con ID: " + dto.getSupplierId()));
+            existing.setSupplier(proveedor);
         }
 
         return mapper.toResponseDTO(repository.save(existing));

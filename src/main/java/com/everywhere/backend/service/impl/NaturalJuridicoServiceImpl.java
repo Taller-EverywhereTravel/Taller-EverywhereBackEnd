@@ -1,11 +1,11 @@
 package com.everywhere.backend.service.impl;
 
-import com.everywhere.backend.model.dto.NaturalJuridicoRequestDTO;
-import com.everywhere.backend.model.dto.NaturalJuridicoResponseDTO;
-import com.everywhere.backend.model.dto.NaturalJuridicoPatchDTO;
-import com.everywhere.backend.model.entity.NaturalJuridico;
-import com.everywhere.backend.model.entity.PersonaNatural;
-import com.everywhere.backend.model.entity.PersonaJuridica;
+import com.everywhere.backend.model.dto.NaturalJuridicRequestDTO;
+import com.everywhere.backend.model.dto.NaturalJuridicResponseDTO;
+import com.everywhere.backend.model.dto.NaturalJuridicPatchDTO;
+import com.everywhere.backend.model.entity.NaturalJuridic;
+import com.everywhere.backend.model.entity.PersonNatural;
+import com.everywhere.backend.model.entity.PersonJuridic;
 import com.everywhere.backend.repository.NaturalJuridicoRepository;
 import com.everywhere.backend.repository.PersonaNaturalRepository;
 import com.everywhere.backend.repository.PersonaJuridicaRepository;
@@ -34,31 +34,31 @@ public class NaturalJuridicoServiceImpl implements NaturalJuridicoService {
 
     @Override
     @Transactional
-    public List<NaturalJuridicoResponseDTO> crearRelaciones(NaturalJuridicoRequestDTO naturalJuridicoRequestDTO) {
-        if (!personaNaturalRepository.existsById(naturalJuridicoRequestDTO.getPersonaNaturalId()))
-            throw new ResourceNotFoundException("Persona natural no encontrada con ID: " + naturalJuridicoRequestDTO.getPersonaNaturalId());
+    public List<NaturalJuridicResponseDTO> crearRelaciones(NaturalJuridicRequestDTO naturalJuridicoRequestDTO) {
+        if (!personaNaturalRepository.existsById(naturalJuridicoRequestDTO.getPersonNaturalId()))
+            throw new ResourceNotFoundException("Persona natural no encontrada con ID: " + naturalJuridicoRequestDTO.getPersonNaturalId());
 
-        for (Integer personaJuridicaId : naturalJuridicoRequestDTO.getPersonasJuridicasIds()) {
+        for (Integer personaJuridicaId : naturalJuridicoRequestDTO.getPersonJuridicIds()) {
             if (!personaJuridicaRepository.existsById(personaJuridicaId))
                 throw new ResourceNotFoundException("Persona jurídica no encontrada con ID: " + personaJuridicaId);
                 
-            Optional<NaturalJuridico> naturalJuridicOptional = naturalJuridicoRepository
-                    .findByPersonaNaturalIdAndPersonaJuridicaId(naturalJuridicoRequestDTO.getPersonaNaturalId(), personaJuridicaId);
+            Optional<NaturalJuridic> naturalJuridicOptional = naturalJuridicoRepository
+                    .findByPersonaNaturalIdAndPersonaJuridicaId(naturalJuridicoRequestDTO.getPersonNaturalId(), personaJuridicaId);
 
             if (naturalJuridicOptional.isPresent())
                 throw new DataIntegrityViolationException("Ya existe una relación entre la persona natural " + 
-                    naturalJuridicoRequestDTO.getPersonaNaturalId() + " y la persona jurídica " + personaJuridicaId);
+                    naturalJuridicoRequestDTO.getPersonNaturalId() + " y la persona jurídica " + personaJuridicaId);
         }
 
-        PersonaNatural personaNatural = personaNaturalRepository.findById(naturalJuridicoRequestDTO.getPersonaNaturalId()).get();
-        List<NaturalJuridico> naturalJuridicoList = new ArrayList<>();
+        PersonNatural personaNatural = personaNaturalRepository.findById(naturalJuridicoRequestDTO.getPersonNaturalId()).get();
+        List<NaturalJuridic> naturalJuridicoList = new ArrayList<>();
 
-        for (Integer personaJuridicaId : naturalJuridicoRequestDTO.getPersonasJuridicasIds()) {
-            PersonaJuridica personaJuridica = personaJuridicaRepository.findById(personaJuridicaId).get();
+        for (Integer personaJuridicaId : naturalJuridicoRequestDTO.getPersonJuridicIds()) {
+            PersonJuridic personaJuridica = personaJuridicaRepository.findById(personaJuridicaId).get();
 
-            NaturalJuridico nuevaRelacion = new NaturalJuridico();
-            nuevaRelacion.setPersonaNatural(personaNatural);
-            nuevaRelacion.setPersonaJuridica(personaJuridica);
+            NaturalJuridic nuevaRelacion = new NaturalJuridic();
+            nuevaRelacion.setPersonNatural(personaNatural);
+            nuevaRelacion.setPersonJuridic(personaJuridica);
 
             naturalJuridicoList.add(naturalJuridicoRepository.save(nuevaRelacion));
         }
@@ -66,22 +66,22 @@ public class NaturalJuridicoServiceImpl implements NaturalJuridicoService {
     }
 
     @Override
-    public List<NaturalJuridicoResponseDTO> findByPersonaNaturalId(Integer personaNaturalId) {
+    public List<NaturalJuridicResponseDTO> findByPersonaNaturalId(Integer personaNaturalId) {
         if (!personaNaturalRepository.existsById(personaNaturalId))
             throw new ResourceNotFoundException("Persona natural no encontrada con ID: " + personaNaturalId); 
         return mapToResponseList(naturalJuridicoRepository.findByPersonaNaturalId(personaNaturalId));
     }
 
     @Override
-    public List<NaturalJuridicoResponseDTO> findByPersonaJuridicaId(Integer personaJuridicaId) {
+    public List<NaturalJuridicResponseDTO> findByPersonaJuridicaId(Integer personaJuridicaId) {
         if (!personaJuridicaRepository.existsById(personaJuridicaId))
             throw new ResourceNotFoundException("Persona jurídica no encontrada con ID: " + personaJuridicaId);
         return mapToResponseList(naturalJuridicoRepository.findByPersonaJuridicaId(personaJuridicaId));
     }
 
     @Override
-    public NaturalJuridicoResponseDTO findById(Integer id) {
-        NaturalJuridico naturalJuridico = naturalJuridicoRepository.findById(id)
+    public NaturalJuridicResponseDTO findById(Integer id) {
+        NaturalJuridic naturalJuridico = naturalJuridicoRepository.findById(id)
             .orElseThrow(() -> new ResourceNotFoundException("Relación no encontrada con ID: " + id));
         return naturalJuridicoMapper.toResponseDTO(naturalJuridico);
     }
@@ -97,55 +97,55 @@ public class NaturalJuridicoServiceImpl implements NaturalJuridicoService {
     @Override
     @Transactional
     public void deleteByPersonas(Integer personaNaturalId, Integer personaJuridicaId) {
-        Optional<NaturalJuridico> naturalJuridicoOptional = naturalJuridicoRepository.findByPersonaNaturalIdAndPersonaJuridicaId(personaNaturalId, personaJuridicaId);
+        Optional<NaturalJuridic> naturalJuridicoOptional = naturalJuridicoRepository.findByPersonaNaturalIdAndPersonaJuridicaId(personaNaturalId, personaJuridicaId);
         if (naturalJuridicoOptional.isEmpty())
             throw new ResourceNotFoundException("No existe relación entre la persona natural " + personaNaturalId + " y la persona jurídica " + personaJuridicaId);      
         naturalJuridicoRepository.deleteByPersonaNaturalIdAndPersonaJuridicaId(personaNaturalId, personaJuridicaId);
     }
 
     @Override
-    public List<NaturalJuridicoResponseDTO> findAll() { 
+    public List<NaturalJuridicResponseDTO> findAll() { 
         return mapToResponseList(naturalJuridicoRepository.findAll());
     }
 
     @Override
     @Transactional
-    public List<NaturalJuridicoResponseDTO> patchRelacionesPersonaNatural(Integer personaNaturalId, NaturalJuridicoPatchDTO naturalJuridicoPatchDTO) {
+    public List<NaturalJuridicResponseDTO> patchRelacionesPersonaNatural(Integer personaNaturalId, NaturalJuridicPatchDTO naturalJuridicoPatchDTO) {
         if (!personaNaturalRepository.existsById(personaNaturalId))
             throw new ResourceNotFoundException("Persona natural no encontrada con ID: " + personaNaturalId);
 
-        if (naturalJuridicoPatchDTO.getAgregar() != null && !naturalJuridicoPatchDTO.getAgregar().isEmpty()) {
-            for (Integer personaJuridicaId : naturalJuridicoPatchDTO.getAgregar()) {
+        if (naturalJuridicoPatchDTO.getAdd() != null && !naturalJuridicoPatchDTO.getAdd().isEmpty()) {
+            for (Integer personaJuridicaId : naturalJuridicoPatchDTO.getAdd()) {
                 if (!personaJuridicaRepository.existsById(personaJuridicaId))
                     throw new ResourceNotFoundException("Persona jurídica no encontrada con ID: " + personaJuridicaId);
             }
         }
 
-        PersonaNatural personaNatural = null;
+        PersonNatural personaNatural = null;
 
-        if (naturalJuridicoPatchDTO.getEliminar() != null && !naturalJuridicoPatchDTO.getEliminar().isEmpty()) {
-            for (Integer personaJuridicaId : naturalJuridicoPatchDTO.getEliminar()) {
-                Optional<NaturalJuridico> relacionExistente = naturalJuridicoRepository
+        if (naturalJuridicoPatchDTO.getRemove() != null && !naturalJuridicoPatchDTO.getRemove().isEmpty()) {
+            for (Integer personaJuridicaId : naturalJuridicoPatchDTO.getRemove()) {
+                Optional<NaturalJuridic> relacionExistente = naturalJuridicoRepository
                         .findByPersonaNaturalIdAndPersonaJuridicaId(personaNaturalId, personaJuridicaId);
 
                 if (relacionExistente.isPresent()) naturalJuridicoRepository.deleteById(relacionExistente.get().getId());
             }
         }
 
-        if (naturalJuridicoPatchDTO.getAgregar() != null && !naturalJuridicoPatchDTO.getAgregar().isEmpty()) {
+        if (naturalJuridicoPatchDTO.getAdd() != null && !naturalJuridicoPatchDTO.getAdd().isEmpty()) {
             if (personaNatural == null)
                 personaNatural = personaNaturalRepository.findById(personaNaturalId).get();
             
-            for (Integer personaJuridicaId : naturalJuridicoPatchDTO.getAgregar()) {
-                Optional<NaturalJuridico> relacionExistente = naturalJuridicoRepository
+            for (Integer personaJuridicaId : naturalJuridicoPatchDTO.getAdd()) {
+                Optional<NaturalJuridic> relacionExistente = naturalJuridicoRepository
                         .findByPersonaNaturalIdAndPersonaJuridicaId(personaNaturalId, personaJuridicaId);
                 
                 if (relacionExistente.isEmpty()) {
-                    PersonaJuridica personaJuridica = personaJuridicaRepository.findById(personaJuridicaId).get();
+                    PersonJuridic personaJuridica = personaJuridicaRepository.findById(personaJuridicaId).get();
                     
-                    NaturalJuridico nuevaRelacion = new NaturalJuridico();
-                    nuevaRelacion.setPersonaNatural(personaNatural);
-                    nuevaRelacion.setPersonaJuridica(personaJuridica);
+                    NaturalJuridic nuevaRelacion = new NaturalJuridic();
+                    nuevaRelacion.setPersonNatural(personaNatural);
+                    nuevaRelacion.setPersonJuridic(personaJuridica);
                     naturalJuridicoRepository.save(nuevaRelacion);
                 }
             }
@@ -153,7 +153,7 @@ public class NaturalJuridicoServiceImpl implements NaturalJuridicoService {
         return findByPersonaNaturalId(personaNaturalId);
     }
 
-    private List<NaturalJuridicoResponseDTO> mapToResponseList(List<NaturalJuridico> naturalJuridicos) {
+    private List<NaturalJuridicResponseDTO> mapToResponseList(List<NaturalJuridic> naturalJuridicos) {
         return naturalJuridicos.stream().map(naturalJuridicoMapper::toResponseDTO).toList();
     }
 }

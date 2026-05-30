@@ -10,11 +10,11 @@ import com.everywhere.backend.repository.CategoriaPersonaRepository;
 import com.everywhere.backend.repository.PersonaNaturalRepository;
 import com.everywhere.backend.mapper.CategoriaPersonaMapper;
 import com.everywhere.backend.mapper.PersonaNaturalMapper;
-import com.everywhere.backend.model.dto.CategoriaPersonaRequestDTO;
-import com.everywhere.backend.model.dto.CategoriaPersonaResponseDTO;
-import com.everywhere.backend.model.dto.PersonaNaturalResponseDTO;
-import com.everywhere.backend.model.entity.CategoriaPersona;
-import com.everywhere.backend.model.entity.PersonaNatural;
+import com.everywhere.backend.model.dto.CategoryPersonaRequestDTO;
+import com.everywhere.backend.model.dto.CategoryPersonaResponseDTO;
+import com.everywhere.backend.model.dto.PersonNaturalResponseDTO;
+import com.everywhere.backend.model.entity.CategoryPerson;
+import com.everywhere.backend.model.entity.PersonNatural;
 import com.everywhere.backend.exceptions.ResourceNotFoundException;
 
 import java.util.List;
@@ -30,45 +30,45 @@ public class CategoriaPersonaServiceImpl implements CategoriaPersonaService {
     private final PersonaNaturalMapper personaNaturalMapper;
 
     @Override
-    public List<CategoriaPersonaResponseDTO> findAll() {
+    public List<CategoryPersonaResponseDTO> findAll() {
         return mapToResponseList(categoriaPersonaRepository.findAll());
     }
 
     @Override
-    public CategoriaPersonaResponseDTO findById(Integer id) {
-        CategoriaPersona categoria = categoriaPersonaRepository.findById(id)
+    public CategoryPersonaResponseDTO findById(Integer id) {
+        CategoryPerson categoria = categoriaPersonaRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Categoría de persona no encontrada con ID: " + id));
         return categoriaPersonaMapper.toResponseDTO(categoria);
     }
 
     @Override
-    public List<CategoriaPersonaResponseDTO> findByNombre(String nombre) { 
+    public List<CategoryPersonaResponseDTO> findByNombre(String nombre) { 
         return mapToResponseList(categoriaPersonaRepository.findByNombreContainingIgnoreCase(nombre));
     }
 
     @Override
     @Transactional
-    public CategoriaPersonaResponseDTO save(CategoriaPersonaRequestDTO categoriaPersonaRequestDTO) {
-        if (categoriaPersonaRepository.existsByNombreIgnoreCase(categoriaPersonaRequestDTO.getNombre()))
-            throw new DataIntegrityViolationException("Ya existe una categoría con el nombre: " + categoriaPersonaRequestDTO.getNombre());
-        CategoriaPersona categoria = categoriaPersonaMapper.toEntity(categoriaPersonaRequestDTO); 
+    public CategoryPersonaResponseDTO save(CategoryPersonaRequestDTO categoriaPersonaRequestDTO) {
+        if (categoriaPersonaRepository.existsByNombreIgnoreCase(categoriaPersonaRequestDTO.getName()))
+            throw new DataIntegrityViolationException("Ya existe una categoría con el nombre: " + categoriaPersonaRequestDTO.getName());
+        CategoryPerson categoria = categoriaPersonaMapper.toEntity(categoriaPersonaRequestDTO); 
         return categoriaPersonaMapper.toResponseDTO(categoriaPersonaRepository.save(categoria));
     }
 
     @Override
     @Transactional
-    public CategoriaPersonaResponseDTO patch(Integer id, CategoriaPersonaRequestDTO categoriaPersonaRequestDTO) {
+    public CategoryPersonaResponseDTO patch(Integer id, CategoryPersonaRequestDTO categoriaPersonaRequestDTO) {
         if (!categoriaPersonaRepository.existsById(id))
             throw new ResourceNotFoundException("Categoría de persona no encontrada con ID: " + id);
         
-        if (categoriaPersonaRequestDTO.getNombre() != null && 
-            categoriaPersonaRepository.existsByNombreIgnoreCase(categoriaPersonaRequestDTO.getNombre())) {
-            CategoriaPersona existing = categoriaPersonaRepository.findById(id).get();
-            if (!categoriaPersonaRequestDTO.getNombre().equalsIgnoreCase(existing.getNombre())) 
-                throw new DataIntegrityViolationException("Ya existe una categoría con el nombre: " + categoriaPersonaRequestDTO.getNombre());
+        if (categoriaPersonaRequestDTO.getName() != null && 
+            categoriaPersonaRepository.existsByNombreIgnoreCase(categoriaPersonaRequestDTO.getName())) {
+            CategoryPerson existing = categoriaPersonaRepository.findById(id).get();
+            if (!categoriaPersonaRequestDTO.getName().equalsIgnoreCase(existing.getName())) 
+                throw new DataIntegrityViolationException("Ya existe una categoría con el nombre: " + categoriaPersonaRequestDTO.getName());
         }
         
-        CategoriaPersona categoriaPersona = categoriaPersonaRepository.findById(id).get();
+        CategoryPerson categoriaPersona = categoriaPersonaRepository.findById(id).get();
         categoriaPersonaMapper.updateEntityFromDTO(categoriaPersonaRequestDTO, categoriaPersona); 
         return categoriaPersonaMapper.toResponseDTO(categoriaPersonaRepository.save(categoriaPersona));
     }
@@ -92,54 +92,54 @@ public class CategoriaPersonaServiceImpl implements CategoriaPersonaService {
 
     @Override
     @Transactional
-    public PersonaNaturalResponseDTO asignarCategoria(Integer personaNaturalId, Integer categoriaId) {
+    public PersonNaturalResponseDTO asignarCategoria(Integer personaNaturalId, Integer categoriaId) {
         if (!personaNaturalRepository.existsById(personaNaturalId))
             throw new ResourceNotFoundException("Persona natural no encontrada con ID: " + personaNaturalId);
         
         if (!categoriaPersonaRepository.existsById(categoriaId))
             throw new ResourceNotFoundException("Categoría no encontrada con ID: " + categoriaId);
         
-        PersonaNatural personaNatural = personaNaturalRepository.findById(personaNaturalId).get();
-        CategoriaPersona categoria = categoriaPersonaRepository.findById(categoriaId).get();
+        PersonNatural personaNatural = personaNaturalRepository.findById(personaNaturalId).get();
+        CategoryPerson categoria = categoriaPersonaRepository.findById(categoriaId).get();
         
-        personaNatural.setCategoriaPersona(categoria); 
+        personaNatural.setCategoryPerson(categoria); 
         return personaNaturalMapper.toResponseDTO(personaNaturalRepository.save(personaNatural));
     }
 
     @Override
     @Transactional
-    public PersonaNaturalResponseDTO desasignarCategoria(Integer personaNaturalId) {
+    public PersonNaturalResponseDTO desasignarCategoria(Integer personaNaturalId) {
         if (!personaNaturalRepository.existsById(personaNaturalId))
             throw new ResourceNotFoundException("Persona natural no encontrada con ID: " + personaNaturalId);
 
-        PersonaNatural personaNatural = personaNaturalRepository.findById(personaNaturalId).get();
-        personaNatural.setCategoriaPersona(null);
+        PersonNatural personaNatural = personaNaturalRepository.findById(personaNaturalId).get();
+        personaNatural.setCategoryPerson(null);
         return personaNaturalMapper.toResponseDTO(personaNaturalRepository.save(personaNatural));
     }
 
     @Override
-    public List<PersonaNaturalResponseDTO> findPersonasPorCategoria(Integer categoriaId) {
+    public List<PersonNaturalResponseDTO> findPersonasPorCategoria(Integer categoriaId) {
         if (!categoriaPersonaRepository.existsById(categoriaId))
             throw new ResourceNotFoundException("Categoría no encontrada con ID: " + categoriaId);
 
-        List<PersonaNatural> personasNaturales = personaNaturalRepository.findByCategoriaPersonaId(categoriaId);
+        List<PersonNatural> personasNaturales = personaNaturalRepository.findByCategoriaPersonaId(categoriaId);
         return personasNaturales.stream().map(personaNaturalMapper::toResponseDTO).toList();
     }
 
     @Override
-    public CategoriaPersonaResponseDTO getCategoriaDePersona(Integer personaNaturalId) { 
+    public CategoryPersonaResponseDTO getCategoriaDePersona(Integer personaNaturalId) { 
         if (!personaNaturalRepository.existsById(personaNaturalId))
             throw new ResourceNotFoundException("Persona natural no encontrada con ID: " + personaNaturalId);
 
-        PersonaNatural personaNatural = personaNaturalRepository.findById(personaNaturalId).get();
-        CategoriaPersona categoriaPersona = personaNatural.getCategoriaPersona();
+        PersonNatural personaNatural = personaNaturalRepository.findById(personaNaturalId).get();
+        CategoryPerson categoriaPersona = personaNatural.getCategoryPerson();
         if (categoriaPersona == null)
             throw new ResourceNotFoundException("La persona natural con ID: " + personaNaturalId + " no tiene categoría asignada.");
             
         return categoriaPersonaMapper.toResponseDTO(categoriaPersona);
     }
 
-    private List<CategoriaPersonaResponseDTO> mapToResponseList(List<CategoriaPersona> categorias) {
+    private List<CategoryPersonaResponseDTO> mapToResponseList(List<CategoryPerson> categorias) {
         return categorias.stream().map(categoriaPersonaMapper::toResponseDTO).toList();
     }
 }

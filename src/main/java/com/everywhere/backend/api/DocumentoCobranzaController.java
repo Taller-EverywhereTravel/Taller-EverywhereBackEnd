@@ -1,7 +1,7 @@
 package com.everywhere.backend.api;
 
-import com.everywhere.backend.model.dto.DocumentoCobranzaResponseDTO;
-import com.everywhere.backend.model.dto.DocumentoCobranzaUpdateDTO;
+import com.everywhere.backend.model.dto.DocumentCollectionResponseDTO;
+import com.everywhere.backend.model.dto.DocumentCollectionUpdateDTO;
 import com.everywhere.backend.security.RequirePermission;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -16,14 +16,14 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/documentos-cobranza")
+@RequestMapping("/document-collection")
 public class DocumentoCobranzaController {
 
     private final DocumentoCobranzaService documentoCobranzaService;
 
     @PostMapping
     @RequirePermission(module = "DOCUMENTOS_COBRANZA", permission = "CREATE")
-    public ResponseEntity<DocumentoCobranzaResponseDTO> createDocumentoCobranza(
+    public ResponseEntity<DocumentCollectionResponseDTO> createDocumentoCobranza(
             @RequestParam Integer cotizacionId,
             @RequestParam(required = false) Integer personaJuridicaId,
             @RequestParam(required = false) Integer sucursalId) {
@@ -33,7 +33,7 @@ public class DocumentoCobranzaController {
 
     @GetMapping
     @RequirePermission(module = "DOCUMENTOS_COBRANZA", permission = "READ")
-    public ResponseEntity<List<DocumentoCobranzaResponseDTO>> getAllDocumentos() {
+    public ResponseEntity<List<DocumentCollectionResponseDTO>> getAllDocumentos() {
         return ResponseEntity.ok(documentoCobranzaService.findAll());
     }
 
@@ -46,7 +46,7 @@ public class DocumentoCobranzaController {
     @PatchMapping("/{id}")
     @RequirePermission(module = "DOCUMENTOS_COBRANZA", permission = "UPDATE")
     public ResponseEntity<?> updateDocumento(@PathVariable Long id,
-            @Valid @RequestBody DocumentoCobranzaUpdateDTO documentoCobranzaUpdateDTO) {
+            @Valid @RequestBody DocumentCollectionUpdateDTO documentoCobranzaUpdateDTO) {
         return ResponseEntity.ok(documentoCobranzaService.patchDocumento(id, documentoCobranzaUpdateDTO));
     }
 
@@ -54,19 +54,19 @@ public class DocumentoCobranzaController {
 
     @GetMapping("/carpeta/{carpetaId}")
     @RequirePermission(module = "DOCUMENTOS_COBRANZA", permission = "READ")
-    public ResponseEntity<List<DocumentoCobranzaResponseDTO>> findByCarpeta(@PathVariable Integer carpetaId) {
+    public ResponseEntity<List<DocumentCollectionResponseDTO>> findByCarpeta(@PathVariable Integer carpetaId) {
         return ResponseEntity.ok(documentoCobranzaService.findByCarpeta(carpetaId));
     }
 
     @GetMapping("/sin-carpeta")
     @RequirePermission(module = "DOCUMENTOS_COBRANZA", permission = "READ")
-    public ResponseEntity<List<DocumentoCobranzaResponseDTO>> findSinCarpeta() {
+    public ResponseEntity<List<DocumentCollectionResponseDTO>> findSinCarpeta() {
         return ResponseEntity.ok(documentoCobranzaService.findSinCarpeta());
     }
 
     @PatchMapping("/{id}/carpeta")
     @RequirePermission(module = "DOCUMENTOS_COBRANZA", permission = "UPDATE")
-    public ResponseEntity<DocumentoCobranzaResponseDTO> updateCarpeta(
+    public ResponseEntity<DocumentCollectionResponseDTO> updateCarpeta(
             @PathVariable Long id,
             @RequestParam(required = false) Integer carpetaId) {
         return ResponseEntity.ok(documentoCobranzaService.updateCarpeta(id, carpetaId));

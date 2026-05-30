@@ -1,25 +1,25 @@
 package com.everywhere.backend.service;
 
-import com.everywhere.backend.model.dto.CarpetaRequestDto;
-import com.everywhere.backend.model.dto.CarpetaResponseDto;
+import com.everywhere.backend.model.dto.FolderRequestDto;
+import com.everywhere.backend.model.dto.FolderResponseDto;
 
 import java.time.LocalDate;
 import java.util.List;
 
 public interface CarpetaService {
 
-    CarpetaResponseDto create(CarpetaRequestDto carpetaRequestDto, Integer carpetaPadreId);
-    CarpetaResponseDto findById(Integer id);
-    List<CarpetaResponseDto> findAll();
-    CarpetaResponseDto update(Integer id, CarpetaRequestDto carpetaRequestDto);
+    FolderResponseDto create(FolderRequestDto carpetaRequestDto, Integer carpetaPadreId);
+    FolderResponseDto findById(Integer id);
+    List<FolderResponseDto> findAll();
+    FolderResponseDto update(Integer id, FolderRequestDto carpetaRequestDto);
     void delete(Integer id);
-    List<CarpetaResponseDto> findByCarpetaPadreId(Integer carpetaPadreId);
-    List<CarpetaResponseDto> findByNivel(Integer nivel);
-    List<CarpetaResponseDto> findByNombre(String nombre);
-    List<CarpetaResponseDto> findByMes(int mes);
-    List<CarpetaResponseDto> findByFechaCreacionBetween(LocalDate inicio, LocalDate fin);
-    List<CarpetaResponseDto> findRecent(int limit);
-    List<CarpetaResponseDto> findRaices();
-    List<CarpetaResponseDto> findCamino(Integer carpetaId);
-    List<CarpetaResponseDto> findHijosByPadreId(Integer carpetaPadreId);
+    List<FolderResponseDto> findByCarpetaPadreId(Integer carpetaPadreId);
+    List<FolderResponseDto> findByNivel(Integer nivel);
+    List<FolderResponseDto> findByNombre(String nombre);
+    List<FolderResponseDto> findByMes(int mes);
+    List<FolderResponseDto> findByFechaCreacionBetween(LocalDate inicio, LocalDate fin);
+    List<FolderResponseDto> findRecent(int limit);
+    List<FolderResponseDto> findRaices();
+    List<FolderResponseDto> findCamino(Integer carpetaId);
+    List<FolderResponseDto> findHijosByPadreId(Integer carpetaPadreId);
 }

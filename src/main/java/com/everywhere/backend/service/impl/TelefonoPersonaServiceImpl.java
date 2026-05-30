@@ -2,10 +2,10 @@ package com.everywhere.backend.service.impl;
 
 import com.everywhere.backend.exceptions.ResourceNotFoundException;
 import com.everywhere.backend.mapper.TelefonoPersonaMapper;
-import com.everywhere.backend.model.dto.TelefonoPersonaRequestDTO;
-import com.everywhere.backend.model.dto.TelefonoPersonaResponseDTO;
-import com.everywhere.backend.model.entity.Personas;
-import com.everywhere.backend.model.entity.TelefonoPersona;
+import com.everywhere.backend.model.dto.PhonePersonRequestDTO;
+import com.everywhere.backend.model.dto.PhonePersonResponseDTO;
+import com.everywhere.backend.model.entity.Person;
+import com.everywhere.backend.model.entity.PhonePerson;
 import com.everywhere.backend.repository.PersonaRepository;
 import com.everywhere.backend.repository.TelefonoPersonaRepository;
 import com.everywhere.backend.service.TelefonoPersonaService;
@@ -24,19 +24,19 @@ public class TelefonoPersonaServiceImpl implements TelefonoPersonaService {
     private final TelefonoPersonaMapper telefonoPersonaMapper;
 
     @Override
-    public List<TelefonoPersonaResponseDTO> findAll() {
+    public List<PhonePersonResponseDTO> findAll() {
         return telefonoPersonaRepository.findAll()
                 .stream().map(telefonoPersonaMapper::toResponseDTO).toList();
     }
 
     @Override
-    public Optional<TelefonoPersonaResponseDTO> findById(Integer telefonoId, Integer personaId) {
+    public Optional<PhonePersonResponseDTO> findById(Integer telefonoId, Integer personaId) {
         return telefonoPersonaRepository.findByIdAndPersonaId(telefonoId, personaId)
                 .map(telefonoPersonaMapper::toResponseDTO);
     }
 
     @Override
-    public List<TelefonoPersonaResponseDTO> findByPersonaId(Integer personaId) {
+    public List<PhonePersonResponseDTO> findByPersonaId(Integer personaId) {
         return telefonoPersonaRepository.findByPersonaId(personaId)
                 .stream()
                 .map(telefonoPersonaMapper::toResponseDTO)
@@ -44,20 +44,20 @@ public class TelefonoPersonaServiceImpl implements TelefonoPersonaService {
     }
 
     @Override
-    public TelefonoPersonaResponseDTO save(TelefonoPersonaRequestDTO telefonoPersonaRequestDTO, Integer personaId) {
-        Personas persona = personaRepository.findById(personaId)
+    public PhonePersonResponseDTO save(PhonePersonRequestDTO telefonoPersonaRequestDTO, Integer personaId) {
+        Person persona = personaRepository.findById(personaId)
                 .orElseThrow(() -> new ResourceNotFoundException("Persona no encontrada con ID: " + personaId));
 
-        TelefonoPersona telefono = telefonoPersonaMapper.toEntity(telefonoPersonaRequestDTO);
-        telefono.setPersona(persona);
+        PhonePerson telefono = telefonoPersonaMapper.toEntity(telefonoPersonaRequestDTO);
+        telefono.setPerson(persona);
         return telefonoPersonaMapper.toResponseDTO(telefonoPersonaRepository.save(telefono));
     }
 
 
 
     @Override
-    public TelefonoPersonaResponseDTO update(Integer personaId, TelefonoPersonaRequestDTO telefonoPersonaRequestDTO, Integer telefonoId) {
-        TelefonoPersona telefono = telefonoPersonaRepository.findByIdAndPersonaId(telefonoId, personaId)
+    public PhonePersonResponseDTO update(Integer personaId, PhonePersonRequestDTO telefonoPersonaRequestDTO, Integer telefonoId) {
+        PhonePerson telefono = telefonoPersonaRepository.findByIdAndPersonaId(telefonoId, personaId)
                 .orElseThrow(() -> new ResourceNotFoundException("Teléfono no encontrado con ID: " + telefonoId + " para la persona con ID: "+ personaId));
 
         telefonoPersonaMapper.updateEntityFromDTO(telefonoPersonaRequestDTO, telefono);

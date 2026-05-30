@@ -1,11 +1,11 @@
 package com.everywhere.backend.service.impl;
 
 import com.everywhere.backend.mapper.PersonaNaturalMapper;
-import com.everywhere.backend.model.dto.ViajeroConPersonaResponseDTO;
-import com.everywhere.backend.model.dto.ViajeroRequestDTO;
-import com.everywhere.backend.model.dto.ViajeroResponseDTO;
-import com.everywhere.backend.model.entity.Viajero;
-import com.everywhere.backend.model.entity.PersonaNatural;
+import com.everywhere.backend.model.dto.TravelerWithPersonResponseDTO;
+import com.everywhere.backend.model.dto.TravelerRequestDTO;
+import com.everywhere.backend.model.dto.TravelerResponseDTO;
+import com.everywhere.backend.model.entity.Traveler;
+import com.everywhere.backend.model.entity.PersonNatural;
 import com.everywhere.backend.repository.ViajeroRepository;
 import com.everywhere.backend.repository.PersonaNaturalRepository;
 import com.everywhere.backend.service.ViajeroService;
@@ -28,57 +28,57 @@ public class ViajeroServiceImpl implements ViajeroService {
     private final ViajeroMapper viajeroMapper;
 
     @Override
-    public List<ViajeroResponseDTO> findAll() {
+    public List<TravelerResponseDTO> findAll() {
         return mapToResponseList(viajeroRepository.findAll());
     }
 
     @Override
-    public ViajeroResponseDTO findById(Integer id) {
-        Viajero viajero = viajeroRepository.findById(id)
+    public TravelerResponseDTO findById(Integer id) {
+        Traveler viajero = viajeroRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Viajero no encontrado con ID: " + id));
         return viajeroMapper.toResponseDTO(viajero);
     }
 
     @Override
-    public List<ViajeroResponseDTO> findByNacionalidad(String nacionalidad) {
+    public List<TravelerResponseDTO> findByNacionalidad(String nacionalidad) {
         return mapToResponseList(viajeroRepository.findByNacionalidadIgnoreAccents(nacionalidad));
     }
 
     @Override
-    public List<ViajeroResponseDTO> findByResidencia(String residencia) {
+    public List<TravelerResponseDTO> findByResidencia(String residencia) {
         return mapToResponseList(viajeroRepository.findByResidenciaIgnoreAccents(residencia));
     }
 
     @Override
-    public ViajeroResponseDTO save(ViajeroRequestDTO viajeroRequestDTO) {
-        Viajero viajero = viajeroMapper.toEntity(viajeroRequestDTO);
+    public TravelerResponseDTO save(TravelerRequestDTO viajeroRequestDTO) {
+        Traveler viajero = viajeroMapper.toEntity(viajeroRequestDTO);
         // Si viene personaNaturalId, buscar la PersonaNatural y enlazarla
-        if (viajeroRequestDTO.getPersonaNaturalId() != null) {
-            PersonaNatural personaNatural = personaNaturalRepository.findById(viajeroRequestDTO.getPersonaNaturalId())
-                    .orElseThrow(() -> new DataIntegrityViolationException("PersonaNatural no encontrada con ID: " + viajeroRequestDTO.getPersonaNaturalId()));
+        if (viajeroRequestDTO.getPersonNaturalId() != null) {
+            PersonNatural personaNatural = personaNaturalRepository.findById(viajeroRequestDTO.getPersonNaturalId())
+                    .orElseThrow(() -> new DataIntegrityViolationException("PersonaNatural no encontrada con ID: " + viajeroRequestDTO.getPersonNaturalId()));
 
             // Guardar primero el viajero (aún sin asignar en la persona)
-            Viajero savedViajero = viajeroRepository.save(viajero);
+            Traveler savedViajero = viajeroRepository.save(viajero);
 
             // Ahora asignar la referencia en la entidad propietaria (PersonaNatural) y guardar
-            personaNatural.setViajero(savedViajero);
+            personaNatural.setTraveler(savedViajero);
             personaNaturalRepository.save(personaNatural);
 
             // Asegurar que el DTO resultante refleje ambas relaciones
-            savedViajero.setPersonaNatural(personaNatural);
+            savedViajero.setPersonNatural(personaNatural);
             return viajeroMapper.toResponseDTO(savedViajero);
         }
 
-        Viajero savedViajero = viajeroRepository.save(viajero);
+        Traveler savedViajero = viajeroRepository.save(viajero);
         return viajeroMapper.toResponseDTO(savedViajero);
     }
 
     @Override
-    public ViajeroResponseDTO patch(Integer id, ViajeroRequestDTO viajeroRequestDTO) {
+    public TravelerResponseDTO patch(Integer id, TravelerRequestDTO viajeroRequestDTO) {
         if (!viajeroRepository.existsById(id))
             throw new ResourceNotFoundException("Viajero no encontrado con ID: " + id);
 
-        Viajero existingViajero = viajeroRepository.findById(id).get();
+        Traveler existingViajero = viajeroRepository.findById(id).get();
         viajeroMapper.updateEntityFromDTO(viajeroRequestDTO, existingViajero);
         existingViajero = viajeroRepository.save(existingViajero);
         return viajeroMapper.toResponseDTO(existingViajero);
@@ -91,22 +91,22 @@ public class ViajeroServiceImpl implements ViajeroService {
         viajeroRepository.deleteById(id);
     }
 
-    private List<ViajeroResponseDTO> mapToResponseList(List<Viajero> viajeros) {
+    private List<TravelerResponseDTO> mapToResponseList(List<Traveler> viajeros) {
         return viajeros.stream().map(viajeroMapper::toResponseDTO).toList();
     }
 
     @Override
-    public List<ViajeroConPersonaResponseDTO> findAllWithPersonaNatural() {
+    public List<TravelerWithPersonResponseDTO> findAllWithPersonaNatural() {
         return viajeroRepository.findAll().stream()
-                .filter(viajero -> viajero.getPersonaNatural() != null)
-                .map(viajero -> ViajeroConPersonaResponseDTO.builder()
+                .filter(viajero -> viajero.getPersonNatural() != null)
+                .map(viajero -> TravelerWithPersonResponseDTO.builder()
                         .id(viajero.getId())
-                        .fechaNacimiento(viajero.getFechaNacimiento())
-                        .nacionalidad(viajero.getNacionalidad())
-                        .residencia(viajero.getResidencia())
-                        .creado(viajero.getCreado())
-                        .actualizado(viajero.getActualizado())
-                        .personaNatural(personaNaturalMapper.toSinViajeroResponseDTO(viajero.getPersonaNatural()))
+                        .dateBirth(viajero.getDateBirth())
+                        .nationality(viajero.getNationality())
+                        .residence(viajero.getResidence())
+                        .created(viajero.getCreated())
+                        .updated(viajero.getUpdated())
+                        .personNatural(personaNaturalMapper.toSinViajeroResponseDTO(viajero.getPersonNatural()))
                         .build())
                 .collect(Collectors.toList());
     }

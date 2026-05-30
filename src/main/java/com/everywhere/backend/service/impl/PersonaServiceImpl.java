@@ -1,7 +1,7 @@
 package com.everywhere.backend.service.impl;
 
 import com.everywhere.backend.model.dto.*;
-import com.everywhere.backend.model.entity.Personas;
+import com.everywhere.backend.model.entity.Person;
 import com.everywhere.backend.repository.PersonaJuridicaRepository;
 import com.everywhere.backend.repository.PersonaNaturalRepository;
 import com.everywhere.backend.repository.PersonaRepository;
@@ -24,43 +24,43 @@ public class PersonaServiceImpl implements PersonaService {
     private final PersonaJuridicaRepository personaJuridicaRepository;
 
     @Override
-    public List<PersonaResponseDTO> findAll() {
+    public List<PersonResponseDTO> findAll() {
         return personaRepository.findAll().stream().map(personaMapper::toResponseDTO).collect(Collectors.toList());
     }
 
     @Override
-    public PersonaResponseDTO findById(Integer id) {
-        Personas persona = personaRepository.findByIdWithTelefonos(id)
+    public PersonResponseDTO findById(Integer id) {
+        Person persona = personaRepository.findByIdWithTelefonos(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Persona no encontrada con ID: " + id));
         return personaMapper.toResponseDTO(persona);
     }
 
 
     @Override
-    public List<PersonaResponseDTO> findByEmail(String email) {
-        List<Personas> personas = personaRepository.findByEmailContainingIgnoreCase(email);
+    public List<PersonResponseDTO> findByEmail(String email) {
+        List<Person> personas = personaRepository.findByEmailContainingIgnoreCase(email);
         return personas.stream().map(personaMapper::toResponseDTO).toList();
     }
 
     @Override
-    public List<PersonaResponseDTO> findByTelefono(String telefono) {
-        List<Personas> personas = personaRepository.findByTelefonoContainingIgnoreCase(telefono);
+    public List<PersonResponseDTO> findByTelefono(String telefono) {
+        List<Person> personas = personaRepository.findByTelefonoContainingIgnoreCase(telefono);
         return personas.stream().map(personaMapper::toResponseDTO).toList();
     }
 
     @Override
-    public PersonaResponseDTO save(PersonaRequestDTO personaRequestDTO) {
-        Personas persona = personaMapper.toEntity(personaRequestDTO);
+    public PersonResponseDTO save(PersonRequestDTO personaRequestDTO) {
+        Person persona = personaMapper.toEntity(personaRequestDTO);
         return personaMapper.toResponseDTO(personaRepository.save(persona));
     }
 
     @Override
-    public PersonaResponseDTO patch(Integer id, PersonaRequestDTO personaRequestDTO) {
+    public PersonResponseDTO patch(Integer id, PersonRequestDTO personaRequestDTO) {
         // 🚀 OPTIMIZACIÓN: Validar existencia ANTES de buscar el objeto
         if (!personaRepository.existsById(id))
             throw new ResourceNotFoundException("Persona no encontrada con ID: " + id);
 
-        Personas existingPersona = personaRepository.findById(id).get();
+        Person existingPersona = personaRepository.findById(id).get();
         personaMapper.updateEntityFromDTO(personaRequestDTO, existingPersona); 
         return personaMapper.toResponseDTO(personaRepository.save(existingPersona));
     }
@@ -73,7 +73,7 @@ public class PersonaServiceImpl implements PersonaService {
     }
 
     @Override
-    public PersonaDisplayDto findPersonaNaturalOrJuridicaById(Integer id) {
+    public PersonDisplayDto findPersonaNaturalOrJuridicaById(Integer id) {
     personaRepository.findById(id)
         .orElseThrow(() -> new ResourceNotFoundException("Persona no encontrada con ID " + id));
 

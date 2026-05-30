@@ -1,15 +1,15 @@
 package com.everywhere.backend.service;
 
-import com.everywhere.backend.model.dto.DetalleDocumentoCobranzaRequestDTO;
-import com.everywhere.backend.model.dto.DetalleDocumentoCobranzaResponseDTO;
+import com.everywhere.backend.model.dto.DetailDocumentCollectionRequestDTO;
+import com.everywhere.backend.model.dto.DetailDocumentCollectionResponseDTO;
 
 import java.util.List;
 
 public interface DetalleDocumentoCobranzaService {
-    List<DetalleDocumentoCobranzaResponseDTO> findAll();
-    DetalleDocumentoCobranzaResponseDTO findById(Long id);
-    List<DetalleDocumentoCobranzaResponseDTO> findByDocumentoCobranzaId(Long documentoId);
-    DetalleDocumentoCobranzaResponseDTO save(DetalleDocumentoCobranzaRequestDTO detalleDocumentoCobranzaRequestDTO);
-    DetalleDocumentoCobranzaResponseDTO patch(Long id, DetalleDocumentoCobranzaRequestDTO detalleDocumentoCobranzaRequestDTO);
+    List<DetailDocumentCollectionResponseDTO> findAll();
+    DetailDocumentCollectionResponseDTO findById(Long id);
+    List<DetailDocumentCollectionResponseDTO> findByDocumentoCobranzaId(Long documentoId);
+    DetailDocumentCollectionResponseDTO save(DetailDocumentCollectionRequestDTO detalleDocumentoCobranzaRequestDTO);
+    DetailDocumentCollectionResponseDTO patch(Long id, DetailDocumentCollectionRequestDTO detalleDocumentoCobranzaRequestDTO);
     void deleteById(Long id);
 }

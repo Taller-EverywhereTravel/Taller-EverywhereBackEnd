@@ -1,9 +1,9 @@
 package com.everywhere.backend.service.impl;
  
-import com.everywhere.backend.model.dto.PersonaJuridicaRequestDTO;
-import com.everywhere.backend.model.dto.PersonaJuridicaResponseDTO;
-import com.everywhere.backend.model.entity.PersonaJuridica;
-import com.everywhere.backend.model.entity.Personas;
+import com.everywhere.backend.model.dto.PersonJuridicRequestDTO;
+import com.everywhere.backend.model.dto.PersonJuridicResponseDTO;
+import com.everywhere.backend.model.entity.PersonJuridic;
+import com.everywhere.backend.model.entity.Person;
 import com.everywhere.backend.repository.PersonaJuridicaRepository;
 import com.everywhere.backend.repository.PersonaRepository;
 import com.everywhere.backend.service.PersonaJuridicaService; 
@@ -28,35 +28,35 @@ public class PersonaJuridicaServiceImpl implements PersonaJuridicaService {
     private final PersonaMapper personaMapper;
 
     @Override
-    public List<PersonaJuridicaResponseDTO> findAll() {
+    public List<PersonJuridicResponseDTO> findAll() {
         return personaJuridicaRepository.findAll().stream().map(personaJuridicaMapper::toResponseDTO).toList();
     }
 
     @Override
-    public PersonaJuridicaResponseDTO findById(Integer id) {
-        PersonaJuridica personaJuridica = personaJuridicaRepository.findById(id)
+    public PersonJuridicResponseDTO findById(Integer id) {
+        PersonJuridic personaJuridica = personaJuridicaRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Persona jurídica no encontrada con ID: " + id));
         return personaJuridicaMapper.toResponseDTO(personaJuridica);
     }
 
     @Override
-    public List<PersonaJuridicaResponseDTO> findByRuc(String ruc) {
-        Optional<PersonaJuridica> personaJuridOptional = personaJuridicaRepository.findByRucIgnoreCase(ruc);
+    public List<PersonJuridicResponseDTO> findByRuc(String ruc) {
+        Optional<PersonJuridic> personaJuridOptional = personaJuridicaRepository.findByRucIgnoreCase(ruc);
         if (personaJuridOptional.isEmpty())
             throw new ResourceNotFoundException("No se encontró persona jurídica con RUC: " + ruc);
         return List.of(personaJuridicaMapper.toResponseDTO(personaJuridOptional.get()));
     }
 
     @Override
-    public List<PersonaJuridicaResponseDTO> findByRazonSocial(String razonSocial) {
-        List<PersonaJuridica> personaJuridicaList = personaJuridicaRepository.findByRazonSocialIgnoreAccents(razonSocial);
+    public List<PersonJuridicResponseDTO> findByRazonSocial(String razonSocial) {
+        List<PersonJuridic> personaJuridicaList = personaJuridicaRepository.findByRazonSocialIgnoreAccents(razonSocial);
         if (personaJuridicaList.isEmpty())
             throw new ResourceNotFoundException("No se encontraron personas jurídicas con razón social: " + razonSocial);
         return personaJuridicaList.stream().map(personaJuridicaMapper::toResponseDTO).toList();
     }
 
     @Override
-    public PersonaJuridicaResponseDTO save(PersonaJuridicaRequestDTO personaJuridicaRequestDTO) {
+    public PersonJuridicResponseDTO save(PersonJuridicRequestDTO personaJuridicaRequestDTO) {
         // Validar que no exista ya una persona con el mismo RUC
         if (personaJuridicaRequestDTO.getRuc() != null && !personaJuridicaRequestDTO.getRuc().trim().isEmpty()) { 
             if (personaJuridicaRepository.findByRucIgnoreCase(personaJuridicaRequestDTO.getRuc().trim()).isPresent())
@@ -64,19 +64,19 @@ public class PersonaJuridicaServiceImpl implements PersonaJuridicaService {
         }
 
         // Crear la persona base
-        Personas persona = (personaJuridicaRequestDTO.getPersona() != null) 
-            ? personaMapper.toEntity(personaJuridicaRequestDTO.getPersona())
-            : new Personas(); 
+        Person persona = (personaJuridicaRequestDTO.getPerson() != null) 
+            ? personaMapper.toEntity(personaJuridicaRequestDTO.getPerson())
+            : new Person(); 
 
         // Crear la persona jurídica
-        PersonaJuridica personaJuridica = personaJuridicaMapper.toEntity(personaJuridicaRequestDTO);
-        personaJuridica.setPersonas(personaRepository.save(persona)); 
+        PersonJuridic personaJuridica = personaJuridicaMapper.toEntity(personaJuridicaRequestDTO);
+        personaJuridica.setPerson(personaRepository.save(persona)); 
 
         return personaJuridicaMapper.toResponseDTO(personaJuridicaRepository.save(personaJuridica));
     }
 
     @Override
-    public PersonaJuridicaResponseDTO patch(Integer id, PersonaJuridicaRequestDTO personaJuridicaRequestDTO) {
+    public PersonJuridicResponseDTO patch(Integer id, PersonJuridicRequestDTO personaJuridicaRequestDTO) {
         // 🚀 OPTIMIZACIÓN 1: Validar existencia ANTES de buscar el objeto
         if (!personaJuridicaRepository.existsById(id))
             throw new ResourceNotFoundException("Persona jurídica no encontrada con ID: " + id);
@@ -90,7 +90,7 @@ public class PersonaJuridicaServiceImpl implements PersonaJuridicaService {
         }
 
         // Solo ahora buscar el objeto para hacer el update
-        PersonaJuridica existingPersonaJuridica = personaJuridicaRepository.findById(id).get();
+        PersonJuridic existingPersonaJuridica = personaJuridicaRepository.findById(id).get();
         personaJuridicaMapper.updateEntityFromDTO(personaJuridicaRequestDTO, existingPersonaJuridica); 
         return personaJuridicaMapper.toResponseDTO(personaJuridicaRepository.save(existingPersonaJuridica));
     }

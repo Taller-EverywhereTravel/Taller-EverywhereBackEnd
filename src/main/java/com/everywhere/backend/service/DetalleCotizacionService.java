@@ -1,21 +1,21 @@
 package com.everywhere.backend.service;
 
-import com.everywhere.backend.model.dto.DetalleCotizacionRequestDto;
-import com.everywhere.backend.model.dto.DetalleCotizacionResponseDto;
+import com.everywhere.backend.model.dto.DetailQuotationRequestDto;
+import com.everywhere.backend.model.dto.DetailQuotationResponseDto;
 
 import java.util.List;
 
 public interface DetalleCotizacionService {
 
-    List<DetalleCotizacionResponseDto> findAll();
+    List<DetailQuotationResponseDto> findAll();
 
-    DetalleCotizacionResponseDto findById(Integer id);
+    DetailQuotationResponseDto findById(Integer id);
 
-    List<DetalleCotizacionResponseDto> findByCotizacionId(Integer cotizacionId);
+    List<DetailQuotationResponseDto> findByCotizacionId(Integer cotizacionId);
 
-    DetalleCotizacionResponseDto create(DetalleCotizacionRequestDto dto, Integer cotizacionId);
+    DetailQuotationResponseDto create(DetailQuotationRequestDto dto, Integer cotizacionId);
 
-    DetalleCotizacionResponseDto patch(Integer id, DetalleCotizacionRequestDto dto);
+    DetailQuotationResponseDto patch(Integer id, DetailQuotationRequestDto dto);
 
     void delete(Integer id);
 }

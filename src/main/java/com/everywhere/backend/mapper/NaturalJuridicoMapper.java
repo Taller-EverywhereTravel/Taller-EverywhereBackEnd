@@ -1,7 +1,7 @@
 package com.everywhere.backend.mapper;
 
-import com.everywhere.backend.model.dto.NaturalJuridicoResponseDTO;
-import com.everywhere.backend.model.entity.NaturalJuridico;
+import com.everywhere.backend.model.dto.NaturalJuridicResponseDTO;
+import com.everywhere.backend.model.entity.NaturalJuridic;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
 import lombok.RequiredArgsConstructor;
@@ -14,12 +14,12 @@ public class NaturalJuridicoMapper {
     private final PersonaNaturalMapper personaNaturalMapper;
     private final PersonaJuridicaMapper personaJuridicaMapper;
 
-    public NaturalJuridicoResponseDTO toResponseDTO(NaturalJuridico naturalJuridico) {
-        NaturalJuridicoResponseDTO dto = modelMapper.map(naturalJuridico, NaturalJuridicoResponseDTO.class);
-        if (naturalJuridico.getPersonaNatural() != null)
-            dto.setPersonaNatural(personaNaturalMapper.toResponseDTO(naturalJuridico.getPersonaNatural()));
-        if (naturalJuridico.getPersonaJuridica() != null)
-            dto.setPersonaJuridica(personaJuridicaMapper.toResponseDTO(naturalJuridico.getPersonaJuridica()));
+    public NaturalJuridicResponseDTO toResponseDTO(NaturalJuridic naturalJuridico) {
+        NaturalJuridicResponseDTO dto = modelMapper.map(naturalJuridico, NaturalJuridicResponseDTO.class);
+        if (naturalJuridico.getPersonNatural() != null)
+            dto.setPersonNatural(personaNaturalMapper.toResponseDTO(naturalJuridico.getPersonNatural()));
+        if (naturalJuridico.getPersonJuridic() != null)
+            dto.setPersonJuridic(personaJuridicaMapper.toResponseDTO(naturalJuridico.getPersonJuridic()));
         return dto;
     }
 }

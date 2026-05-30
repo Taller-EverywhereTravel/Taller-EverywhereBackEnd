@@ -1,7 +1,7 @@
 package com.everywhere.backend.api;
 
-import com.everywhere.backend.model.dto.DocumentoCobranzaResponseDTO;
-import com.everywhere.backend.model.dto.ReciboResponseDTO;
+import com.everywhere.backend.model.dto.DocumentCollectionResponseDTO;
+import com.everywhere.backend.model.dto.ReceiptResponseDTO;
 import com.everywhere.backend.security.RequirePermission;
 import com.everywhere.backend.service.DocumentoCobranzaService;
 import com.everywhere.backend.service.ReciboService;
@@ -23,13 +23,13 @@ public class PdfController {
     private final DocumentoCobranzaService documentoCobranzaService;
     private final ReciboService reciboService;
 
-    @GetMapping("/documento-cobranza/{id}")
+    @GetMapping("/document-collection/{id}")
     @RequirePermission(module = "DOCUMENTOS_COBRANZA", permission = "READ")
     public ResponseEntity<InputStreamResource> generateDocumentoCobranzaPdf(@PathVariable Long id) {
 
         try {
             // Verificar que el documento existe usando el DTO
-            DocumentoCobranzaResponseDTO documentoDto = documentoCobranzaService.findById(id);
+            DocumentCollectionResponseDTO documentoDto = documentoCobranzaService.findById(id);
             
             if (documentoDto == null) return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
             
@@ -39,7 +39,7 @@ public class PdfController {
             
 
             HttpHeaders headers = new HttpHeaders();
-            String filename = String.format("%s-%09d", documentoDto.getSerie(), documentoDto.getCorrelativo());
+            String filename = String.format("%s-%09d", documentoDto.getSerie(), documentoDto.getCorrelative());
             headers.add("Content-Disposition", "inline; filename=" + filename + ".pdf");
 
             return ResponseEntity.ok()
@@ -53,13 +53,13 @@ public class PdfController {
         }
     }
 
-    @GetMapping("/recibo/{id}")
+    @GetMapping("/receipt/{id}")
     @RequirePermission(module = "DOCUMENTOS_COBRANZA", permission = "READ")
     public ResponseEntity<InputStreamResource> generateReciboPdf(@PathVariable Integer id) {
 
         try {
             // Verificar que el recibo existe usando el DTO
-            ReciboResponseDTO reciboDto = reciboService.findById(id);
+            ReceiptResponseDTO reciboDto = reciboService.findById(id);
             
             if (reciboDto == null) return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
             
@@ -68,7 +68,7 @@ public class PdfController {
             if (pdfStream == null) return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
             
             HttpHeaders headers = new HttpHeaders();
-            String filename = String.format("%s-%09d", reciboDto.getSerie(), reciboDto.getCorrelativo());
+            String filename = String.format("%s-%09d", reciboDto.getSerie(), reciboDto.getCorrelative());
             headers.add("Content-Disposition", "inline; filename=" + filename + ".pdf");
 
             return ResponseEntity.ok()

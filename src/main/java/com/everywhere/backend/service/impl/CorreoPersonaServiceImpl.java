@@ -1,10 +1,10 @@
 package com.everywhere.backend.service.impl;
 
 import com.everywhere.backend.mapper.CorreoPersonaMapper;
-import com.everywhere.backend.model.dto.CorreoPersonaRequestDTO;
-import com.everywhere.backend.model.dto.CorreoPersonaResponseDTO;
-import com.everywhere.backend.model.entity.CorreoPersona;
-import com.everywhere.backend.model.entity.Personas;
+import com.everywhere.backend.model.dto.MailPersonRequestDTO;
+import com.everywhere.backend.model.dto.MailPersonResponseDTO;
+import com.everywhere.backend.model.entity.MailPerson;
+import com.everywhere.backend.model.entity.Person;
 import com.everywhere.backend.repository.CorreoPersonaRepository;
 import com.everywhere.backend.repository.PersonaRepository;
 import com.everywhere.backend.service.CorreoPersonaService;
@@ -23,7 +23,7 @@ public class CorreoPersonaServiceImpl implements CorreoPersonaService {
     private final PersonaRepository personaRepository;
 
     @Override
-    public List<CorreoPersonaResponseDTO> findAll() {
+    public List<MailPersonResponseDTO> findAll() {
         return correoPersonaRepository.findAll()
                 .stream()
                 .map(correoPersonaMapper::toResponseDTO)
@@ -31,13 +31,13 @@ public class CorreoPersonaServiceImpl implements CorreoPersonaService {
     }
 
     @Override
-    public Optional<CorreoPersonaResponseDTO> findById(Integer id) {
+    public Optional<MailPersonResponseDTO> findById(Integer id) {
         return correoPersonaRepository.findById(id)
                 .map(correoPersonaMapper::toResponseDTO);
     }
 
     @Override
-    public List<CorreoPersonaResponseDTO> findByPersonaId(Integer personaId) {
+    public List<MailPersonResponseDTO> findByPersonaId(Integer personaId) {
         return correoPersonaRepository.findByPersonaId(personaId)
                 .stream()
                 .map(correoPersonaMapper::toResponseDTO)
@@ -45,27 +45,27 @@ public class CorreoPersonaServiceImpl implements CorreoPersonaService {
     }
 
     @Override
-    public CorreoPersonaResponseDTO save(CorreoPersonaRequestDTO correoPersonaRequestDTO, Integer personaId) {
-        Personas persona = personaRepository.findById(personaId)
+    public MailPersonResponseDTO save(MailPersonRequestDTO correoPersonaRequestDTO, Integer personaId) {
+        Person persona = personaRepository.findById(personaId)
                 .orElseThrow(() -> new RuntimeException("Persona no encontrada con ID: " + personaId));
 
-        CorreoPersona correoPersona = correoPersonaMapper.toEntity(correoPersonaRequestDTO);
-        correoPersona.setPersona(persona);
+        MailPerson correoPersona = correoPersonaMapper.toEntity(correoPersonaRequestDTO);
+        correoPersona.setPerson(persona);
 
         return correoPersonaMapper.toResponseDTO(correoPersonaRepository.save(correoPersona));
     }
 
 
     @Override
-    public CorreoPersonaResponseDTO update(Integer personaId, CorreoPersonaRequestDTO correoPersonaRequestDTO, Integer correoPersonaId) {
-        CorreoPersona correo = correoPersonaRepository.findById(correoPersonaId)
+    public MailPersonResponseDTO update(Integer personaId, MailPersonRequestDTO correoPersonaRequestDTO, Integer correoPersonaId) {
+        MailPerson correo = correoPersonaRepository.findById(correoPersonaId)
                 .orElseThrow(() -> new RuntimeException("Correo no encontrado con ID: " + correoPersonaId));
 
-        Personas persona = personaRepository.findById(personaId)
+        Person persona = personaRepository.findById(personaId)
                 .orElseThrow(() -> new RuntimeException("Persona no encontrada con ID: " + personaId));
 
         correoPersonaMapper.updateEntityFromDTO(correo, correoPersonaRequestDTO);
-        correo.setPersona(persona);
+        correo.setPerson(persona);
         return correoPersonaMapper.toResponseDTO(correoPersonaRepository.save(correo));
     }
 

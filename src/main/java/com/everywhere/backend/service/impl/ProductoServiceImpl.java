@@ -3,9 +3,9 @@ package com.everywhere.backend.service.impl;
 import com.everywhere.backend.exceptions.ConflictException;
 import com.everywhere.backend.exceptions.ResourceNotFoundException;
 import com.everywhere.backend.mapper.ProductoMapper;
-import com.everywhere.backend.model.dto.ProductoRequestDTO;
-import com.everywhere.backend.model.dto.ProductoResponseDTO; 
-import com.everywhere.backend.model.entity.Producto;
+import com.everywhere.backend.model.dto.ProductRequestDTO;
+import com.everywhere.backend.model.dto.ProductResponseDTO; 
+import com.everywhere.backend.model.entity.Product;
 import com.everywhere.backend.repository.DetalleCotizacionRepository;
 import com.everywhere.backend.repository.DetalleLiquidacionRepository;
 import com.everywhere.backend.repository.ProductoRepository;
@@ -27,22 +27,22 @@ public class ProductoServiceImpl implements ProductoService {
     private final DetalleLiquidacionRepository detalleLiquidacionRepository;
 
     @Override
-    public ProductoResponseDTO create(ProductoRequestDTO productoRequestDTO) {
-        Producto producto = productoMapper.toEntity(productoRequestDTO);
+    public ProductResponseDTO create(ProductRequestDTO productoRequestDTO) {
+        Product producto = productoMapper.toEntity(productoRequestDTO);
         return productoMapper.toResponseDTO(productoRepository.save(producto));
     }
 
     @Override
-    public ProductoResponseDTO update(Integer id, ProductoRequestDTO productoRequestDTO) {
+    public ProductResponseDTO update(Integer id, ProductRequestDTO productoRequestDTO) {
         if (!productoRepository.existsById(id))
             throw new ResourceNotFoundException("Producto no encontrado con ID: " + id);
 
-        Producto producto = productoRepository.findById(id).get();
+        Product producto = productoRepository.findById(id).get();
         
-        if (productoRequestDTO.getTipo() != null && 
-            productoRepository.existsProductosByTipo(productoRequestDTO.getTipo()) &&
-            !productoRequestDTO.getTipo().equals(producto.getTipo())) {
-            throw new DataIntegrityViolationException("Ya existe un producto con el tipo: " + productoRequestDTO.getTipo());
+        if (productoRequestDTO.getType() != null && 
+            productoRepository.existsProductosByTipo(productoRequestDTO.getType()) &&
+            !productoRequestDTO.getType().equals(producto.getType())) {
+            throw new DataIntegrityViolationException("Ya existe un producto con el tipo: " + productoRequestDTO.getType());
         }
 
         productoMapper.updateEntityFromDTO(productoRequestDTO, producto);
@@ -50,14 +50,14 @@ public class ProductoServiceImpl implements ProductoService {
     }
 
     @Override
-    public ProductoResponseDTO getById(Integer id) {
-        Producto producto = productoRepository.findById(id)
+    public ProductResponseDTO getById(Integer id) {
+        Product producto = productoRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Producto no encontrado con ID: " + id));
         return productoMapper.toResponseDTO(producto);
     }
 
     @Override
-    public List<ProductoResponseDTO> getAll() {
+    public List<ProductResponseDTO> getAll() {
         return mapToResponseList(productoRepository.findAll());
     }
 
@@ -86,7 +86,7 @@ public class ProductoServiceImpl implements ProductoService {
         productoRepository.deleteById(id);
     }
 
-    private List<ProductoResponseDTO> mapToResponseList(List<Producto> productos) {
+    private List<ProductResponseDTO> mapToResponseList(List<Product> productos) {
         return productos.stream()
                 .map(productoMapper::toResponseDTO)
                 .collect(Collectors.toList());

@@ -36,7 +36,7 @@ public class UserMapper {
         authResponseDTO.setRole(role.getName());
 
         authResponseDTO.setPermissions(role.getModulePermissions()); // Cargar permisos desde el rol, no desde el usuario
-        authResponseDTO.setName(user.getNombre()); // Usar email como nombre temporal
+        authResponseDTO.setName(user.getName()); // Usar email como nombre temporal
         authResponseDTO.setPermissions(role.getModulePermissions());
 
         return authResponseDTO;
@@ -46,8 +46,8 @@ public class UserMapper {
     public UserBasicDTO toUserBasicDTO(User user) {
         UserBasicDTO userBasicDTO = new UserBasicDTO();
         userBasicDTO.setId(user.getId());
-        userBasicDTO.setEmail(user.getEmail());
-        userBasicDTO.setName(user.getNombre()); // Usar email como identificador
+        userBasicDTO.setMail(user.getMail());
+        userBasicDTO.setName(user.getName()); // Usar email como identificador
         return userBasicDTO;
     }
 
@@ -58,13 +58,13 @@ public class UserMapper {
 
         UserProfileDTO profile = new UserProfileDTO();
         profile.setId(user.getId());
-        profile.setName(user.getNombre());
-        profile.setEmail(user.getEmail());
+        profile.setName(user.getName());
+        profile.setMail(user.getMail());
         profile.setRole(user.getRole() != null ? user.getRole().getName() : null);
 
-        if (user.getSucursal() != null) {
-            SucursalResponseDTO sucursal = modelMapper.map(user.getSucursal(), SucursalResponseDTO.class);
-            profile.setSucursal(sucursal);
+        if (user.getBranch() != null) {
+            BranchResponseDTO sucursal = modelMapper.map(user.getBranch(), BranchResponseDTO.class);
+            profile.setBranch(sucursal);
         }
 
         return profile;

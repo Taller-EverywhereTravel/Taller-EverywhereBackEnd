@@ -55,17 +55,17 @@ public class CotizacionServiceImpl implements CotizacionService {
     private static final DateTimeFormatter DOCX_FECHA_EMISION_FORMATTER = DateTimeFormatter.ofPattern("dd-MM-yyyy',' HH:mm:ss");
 
     @Override
-    public CotizacionResponseDto create(CotizacionRequestDto cotizacionRequestDto, Integer personaId) {
+    public QuotationResponseDto create(QuotationRequestDto cotizacionRequestDto, Integer personaId) {
 
-        Cotizacion cotizacion = cotizacionMapper.toEntity(cotizacionRequestDto);
-        cotizacion.setCodigoCotizacion(generateCodigoCotizacion());
+        Quotation cotizacion = cotizacionMapper.toEntity(cotizacionRequestDto);
+        cotizacion.setCodeQuotation(generateCodigoCotizacion());
 
         if (personaId == null)
             throw new DataIntegrityViolationException("PersonaId es obligatorio para crear una cotización");
 
-        Personas persona = personasRepository.findById(personaId)
+        Person persona = personasRepository.findById(personaId)
                 .orElseThrow(() -> new ResourceNotFoundException("Persona no encontrada con id " + personaId));
-        cotizacion.setPersonas(persona);
+        cotizacion.setPerson(persona);
 
         if (cotizacionRequestDto.getCounterId() != null) {
             Counter counter = counterRepository.findById(cotizacionRequestDto.getCounterId())
@@ -74,35 +74,35 @@ public class CotizacionServiceImpl implements CotizacionService {
             cotizacion.setCounter(counter);
         }
 
-        if (cotizacionRequestDto.getFormaPagoId() != null) {
-            FormaPago formaPago = formaPagoRepository.findById(cotizacionRequestDto.getFormaPagoId())
+        if (cotizacionRequestDto.getMethodPaymentId() != null) {
+            MethodPayment formaPago = formaPagoRepository.findById(cotizacionRequestDto.getMethodPaymentId())
                     .orElseThrow(() -> new ResourceNotFoundException(
-                            "Forma de pago no encontrada con id " + cotizacionRequestDto.getFormaPagoId()));
-            cotizacion.setFormaPago(formaPago);
+                            "Forma de pago no encontrada con id " + cotizacionRequestDto.getMethodPaymentId()));
+            cotizacion.setMethodPayment(formaPago);
         }
 
-        if (cotizacionRequestDto.getEstadoCotizacionId() != null) {
-            EstadoCotizacion estado = estadoCotizacionRepository.findById(cotizacionRequestDto.getEstadoCotizacionId())
+        if (cotizacionRequestDto.getStatusQuotationId() != null) {
+            StatusQuotation estado = estadoCotizacionRepository.findById(cotizacionRequestDto.getStatusQuotationId())
                     .orElseThrow(() -> new ResourceNotFoundException("Estado de cotización no encontrado con id "
-                            + cotizacionRequestDto.getEstadoCotizacionId()));
-            cotizacion.setEstadoCotizacion(estado);
+                            + cotizacionRequestDto.getStatusQuotationId()));
+            cotizacion.setStatusQuotation(estado);
         }
 
-        if (cotizacionRequestDto.getSucursalId() != null) {
-            Sucursal sucursal = sucursalRepository.findById(cotizacionRequestDto.getSucursalId())
+        if (cotizacionRequestDto.getBranchId() != null) {
+            Branch sucursal = sucursalRepository.findById(cotizacionRequestDto.getBranchId())
                     .orElseThrow(() -> new ResourceNotFoundException(
-                            "Sucursal no encontrada con id " + cotizacionRequestDto.getSucursalId()));
-            cotizacion.setSucursal(sucursal);
+                            "Sucursal no encontrada con id " + cotizacionRequestDto.getBranchId()));
+            cotizacion.setBranch(sucursal);
         }
 
-        if (cotizacionRequestDto.getCarpetaId() != null) {
-            Carpeta carpeta = carpetaRepository.findById(cotizacionRequestDto.getCarpetaId())
+        if (cotizacionRequestDto.getFolderId() != null) {
+            Folder carpeta = carpetaRepository.findById(cotizacionRequestDto.getFolderId())
                     .orElseThrow(() -> new ResourceNotFoundException(
-                            "Carpeta no encontrada con id " + cotizacionRequestDto.getCarpetaId()));
-            cotizacion.setCarpeta(carpeta);
+                            "Carpeta no encontrada con id " + cotizacionRequestDto.getFolderId()));
+            cotizacion.setFolder(carpeta);
         }
 
-        Cotizacion savedCotizacion = cotizacionRepository.save(cotizacion);
+        Quotation savedCotizacion = cotizacionRepository.save(cotizacion);
         registrarHistorialSiTieneEstado(savedCotizacion,
             "Registro inicial del estado de la cotización");
 
@@ -110,23 +110,23 @@ public class CotizacionServiceImpl implements CotizacionService {
     }
 
     @Override
-    public CotizacionResponseDto findById(Integer id) {
+    public QuotationResponseDto findById(Integer id) {
         return cotizacionRepository.findById(id).map(cotizacionMapper::toResponse)
                 .orElseThrow(() -> new ResourceNotFoundException("Cotización no encontrada con ID: " + id));
     }
 
     @Override
-    public List<CotizacionResponseDto> findAll() {
+    public List<QuotationResponseDto> findAll() {
         return mapToResponseList(cotizacionRepository.findAll());
     }
 
     @Override
-    public CotizacionResponseDto update(Integer id, CotizacionRequestDto cotizacionRequestDto) {
-        Cotizacion cotizacion = cotizacionRepository.findById(id)
+    public QuotationResponseDto update(Integer id, QuotationRequestDto cotizacionRequestDto) {
+        Quotation cotizacion = cotizacionRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Cotización no encontrada con ID: " + id));
 
-        Integer estadoAnteriorId = cotizacion.getEstadoCotizacion() != null
-            ? cotizacion.getEstadoCotizacion().getId()
+        Integer estadoAnteriorId = cotizacion.getStatusQuotation() != null
+            ? cotizacion.getStatusQuotation().getId()
             : null;
 
         cotizacionMapper.updateEntityFromRequest(cotizacion, cotizacionRequestDto);
@@ -138,37 +138,37 @@ public class CotizacionServiceImpl implements CotizacionService {
             cotizacion.setCounter(counter);
         }
 
-        if (cotizacionRequestDto.getFormaPagoId() != null) {
-            FormaPago formaPago = formaPagoRepository.findById(cotizacionRequestDto.getFormaPagoId())
+        if (cotizacionRequestDto.getMethodPaymentId() != null) {
+            MethodPayment formaPago = formaPagoRepository.findById(cotizacionRequestDto.getMethodPaymentId())
                     .orElseThrow(() -> new ResourceNotFoundException(
-                            "Forma de pago no encontrada con id " + cotizacionRequestDto.getFormaPagoId()));
-            cotizacion.setFormaPago(formaPago);
+                            "Forma de pago no encontrada con id " + cotizacionRequestDto.getMethodPaymentId()));
+            cotizacion.setMethodPayment(formaPago);
         }
 
-        if (cotizacionRequestDto.getEstadoCotizacionId() != null) {
-            EstadoCotizacion estado = estadoCotizacionRepository.findById(cotizacionRequestDto.getEstadoCotizacionId())
+        if (cotizacionRequestDto.getStatusQuotationId() != null) {
+            StatusQuotation estado = estadoCotizacionRepository.findById(cotizacionRequestDto.getStatusQuotationId())
                     .orElseThrow(() -> new ResourceNotFoundException("Estado de cotización no encontrado con id "
-                            + cotizacionRequestDto.getEstadoCotizacionId()));
-            cotizacion.setEstadoCotizacion(estado);
+                            + cotizacionRequestDto.getStatusQuotationId()));
+            cotizacion.setStatusQuotation(estado);
         }
 
-        if (cotizacionRequestDto.getSucursalId() != null) {
-            Sucursal sucursal = sucursalRepository.findById(cotizacionRequestDto.getSucursalId())
+        if (cotizacionRequestDto.getBranchId() != null) {
+            Branch sucursal = sucursalRepository.findById(cotizacionRequestDto.getBranchId())
                     .orElseThrow(() -> new ResourceNotFoundException(
-                            "Sucursal no encontrada con id " + cotizacionRequestDto.getSucursalId()));
-            cotizacion.setSucursal(sucursal);
+                            "Sucursal no encontrada con id " + cotizacionRequestDto.getBranchId()));
+            cotizacion.setBranch(sucursal);
         }
 
-        if (cotizacionRequestDto.getCarpetaId() != null) {
-            Carpeta carpeta = carpetaRepository.findById(cotizacionRequestDto.getCarpetaId())
+        if (cotizacionRequestDto.getFolderId() != null) {
+            Folder carpeta = carpetaRepository.findById(cotizacionRequestDto.getFolderId())
                     .orElseThrow(() -> new ResourceNotFoundException(
-                            "Carpeta no encontrada con id " + cotizacionRequestDto.getCarpetaId()));
-            cotizacion.setCarpeta(carpeta);
+                            "Carpeta no encontrada con id " + cotizacionRequestDto.getFolderId()));
+            cotizacion.setFolder(carpeta);
         }
 
-        Cotizacion updatedCotizacion = cotizacionRepository.save(cotizacion);
-        Integer estadoActualId = updatedCotizacion.getEstadoCotizacion() != null
-            ? updatedCotizacion.getEstadoCotizacion().getId()
+        Quotation updatedCotizacion = cotizacionRepository.save(cotizacion);
+        Integer estadoActualId = updatedCotizacion.getStatusQuotation() != null
+            ? updatedCotizacion.getStatusQuotation().getId()
             : null;
 
         if (!Objects.equals(estadoAnteriorId, estadoActualId)) {
@@ -201,62 +201,62 @@ public class CotizacionServiceImpl implements CotizacionService {
     }
 
     @Override
-    public CotizacionConDetallesResponseDTO findByIdWithDetalles(Integer id) {
-        Cotizacion cotizacion = cotizacionRepository.findById(id)
+    public QuotationWithDetailResponseDTO findByIdWithDetalles(Integer id) {
+        Quotation cotizacion = cotizacionRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Cotización no encontrada con ID: " + id));
 
-        CotizacionResponseDto cotizacionDTO = cotizacionMapper.toResponse(cotizacion);
-        List<DetalleCotizacionResponseDto> detallesCompletos = detalleCotizacionService.findByCotizacionId(id);
-        List<DetalleCotizacionSimpleDTO> detallesSimples = detallesCompletos.stream()
+        QuotationResponseDto cotizacionDTO = cotizacionMapper.toResponse(cotizacion);
+        List<DetailQuotationResponseDto> detallesCompletos = detalleCotizacionService.findByCotizacionId(id);
+        List<DetailQuotationSimpleDTO> detallesSimples = detallesCompletos.stream()
                 .map(cotizacionMapper::toDetalleSimple).toList();
         return cotizacionMapper.toResponseWithDetalles(cotizacionDTO, detallesSimples);
     }
 
     @Override
-    public List<CotizacionResponseDto> findCotizacionesSinLiquidacion() {
+    public List<QuotationResponseDto> findCotizacionesSinLiquidacion() {
         return mapToResponseList(cotizacionRepository.findCotizacionesSinLiquidacion());
     }
 
-    private List<CotizacionResponseDto> mapToResponseList(List<Cotizacion> cotizaciones) {
+    private List<QuotationResponseDto> mapToResponseList(List<Quotation> cotizaciones) {
         return cotizaciones.stream().map(cotizacionMapper::toResponse).toList();
     }
 
-    private void registrarHistorialSiTieneEstado(Cotizacion cotizacion, String observacion) {
-        if (cotizacion.getEstadoCotizacion() == null) {
+    private void registrarHistorialSiTieneEstado(Quotation cotizacion, String observacion) {
+        if (cotizacion.getStatusQuotation() == null) {
             return;
         }
 
         historialCotizacionService.registrarCambioEstado(
                 cotizacion.getId(),
-                cotizacion.getEstadoCotizacion().getId(),
+                cotizacion.getStatusQuotation().getId(),
                 observacion);
     }
 
-    private Map<String, Object> agruparDetallesPorTipoProducto(List<DetalleCotizacionSimpleDTO> detalles) {
+    private Map<String, Object> agruparDetallesPorTipoProducto(List<DetailQuotationSimpleDTO> detalles) {
         Map<String, Object> resultado = new LinkedHashMap<>();
 
         // Separar productos FIJOS (categoría id=1) de OPCIONES (otras categorías)
-        List<DetalleCotizacionSimpleDTO> detallesFijos = detalles.stream()
-                .filter(detalle -> detalle.getCategoria() != null && detalle.getCategoria().getId() == 1)
+        List<DetailQuotationSimpleDTO> detallesFijos = detalles.stream()
+                .filter(detalle -> detalle.getCategory() != null && detalle.getCategory().getId() == 1)
                 .toList();
 
-        List<DetalleCotizacionSimpleDTO> detallesOpciones = detalles.stream()
-                .filter(detalle -> detalle.getCategoria() != null && detalle.getCategoria().getId() != 1)
+        List<DetailQuotationSimpleDTO> detallesOpciones = detalles.stream()
+                .filter(detalle -> detalle.getCategory() != null && detalle.getCategory().getId() != 1)
                 .toList();
 
         // Agrupar detalles FIJOS por tipo de producto
-        Map<String, List<DetalleCotizacionSimpleDTO>> detallesFijosPorTipo = detallesFijos.stream()
-                .filter(detalle -> detalle.getProducto() != null && detalle.getProducto().getTipo() != null)
+        Map<String, List<DetailQuotationSimpleDTO>> detallesFijosPorTipo = detallesFijos.stream()
+                .filter(detalle -> detalle.getProduct() != null && detalle.getProduct().getType() != null)
                 .collect(Collectors.groupingBy(
-                        detalle -> detalle.getProducto().getTipo(),
+                        detalle -> detalle.getProduct().getType(),
                         LinkedHashMap::new,
                         Collectors.toList()));
 
         // Agrupar detalles OPCIONES por nombre de categoría
-        Map<String, List<DetalleCotizacionSimpleDTO>> detallesOpcionesPorCategoria = detallesOpciones.stream()
-                .filter(detalle -> detalle.getCategoria() != null && detalle.getCategoria().getNombre() != null)
+        Map<String, List<DetailQuotationSimpleDTO>> detallesOpcionesPorCategoria = detallesOpciones.stream()
+                .filter(detalle -> detalle.getCategory() != null && detalle.getCategory().getName() != null)
                 .collect(Collectors.groupingBy(
-                        detalle -> detalle.getCategoria().getNombre(),
+                        detalle -> detalle.getCategory().getName(),
                         LinkedHashMap::new,
                         Collectors.toList()));
 
@@ -264,9 +264,9 @@ public class CotizacionServiceImpl implements CotizacionService {
         List<Map<String, Object>> gruposProductosFijos = new ArrayList<>();
         BigDecimal importeTotalFijos = BigDecimal.ZERO;
 
-        for (Map.Entry<String, List<DetalleCotizacionSimpleDTO>> entry : detallesFijosPorTipo.entrySet()) {
+        for (Map.Entry<String, List<DetailQuotationSimpleDTO>> entry : detallesFijosPorTipo.entrySet()) {
             String tipoProducto = entry.getKey();
-            List<DetalleCotizacionSimpleDTO> detallesDelTipo = entry.getValue();
+            List<DetailQuotationSimpleDTO> detallesDelTipo = entry.getValue();
 
             BigDecimal importeTotalGrupo = detallesDelTipo.stream()
                     .map(this::calcularImporteDetalle)
@@ -288,9 +288,9 @@ public class CotizacionServiceImpl implements CotizacionService {
         String[] colores = { "FFF9C4", "FFECB3", "FFE0B2", "FFCCBC", "D7CCC8", "F5F5F5", "CFD8DC", "B2DFDB" }; // Colores suaves
         int colorIndex = 0;
 
-        for (Map.Entry<String, List<DetalleCotizacionSimpleDTO>> entry : detallesOpcionesPorCategoria.entrySet()) {
+        for (Map.Entry<String, List<DetailQuotationSimpleDTO>> entry : detallesOpcionesPorCategoria.entrySet()) {
             String nombreCategoria = entry.getKey();
-            List<DetalleCotizacionSimpleDTO> detallesDeCategoria = entry.getValue();
+            List<DetailQuotationSimpleDTO> detallesDeCategoria = entry.getValue();
 
             BigDecimal importeTotalCategoria = detallesDeCategoria.stream()
                     .map(this::calcularImporteDetalle)
@@ -323,18 +323,18 @@ public class CotizacionServiceImpl implements CotizacionService {
     @Override
     public ByteArrayInputStream generateDocx(Integer cotizacionId) {
         // Obtener la cotización con todos sus detalles
-        CotizacionConDetallesResponseDTO cotizacion = findByIdWithDetalles(cotizacionId);
+        QuotationWithDetailResponseDTO cotizacion = findByIdWithDetalles(cotizacionId);
 
         if (cotizacion == null) {
             throw new ResourceNotFoundException("Cotización no encontrada con ID: " + cotizacionId);
         }
 
         // Detectar si hay productos de tipo TKT (vuelos)
-        boolean tieneVuelos = cotizacion.getDetalles().stream()
-                .anyMatch(detalle -> detalle.getProducto() != null && "TKT".equals(detalle.getProducto().getTipo()));
+        boolean tieneVuelos = cotizacion.getDetail().stream()
+                .anyMatch(detalle -> detalle.getProduct() != null && "TKT".equals(detalle.getProduct().getType()));
 
         // Agrupar detalles por tipo de producto
-        Map<String, Object> datosAgrupados = agruparDetallesPorTipoProducto(cotizacion.getDetalles());
+        Map<String, Object> datosAgrupados = agruparDetallesPorTipoProducto(cotizacion.getDetail());
 
         try {
             // Cargar la plantilla DOCX existente
@@ -393,7 +393,7 @@ public class CotizacionServiceImpl implements CotizacionService {
 
             // 3. Tabla completa de productos FIJOS
             @SuppressWarnings("unchecked")
-            List<DetalleCotizacionSimpleDTO> detallesFijos = (List<DetalleCotizacionSimpleDTO>) datosAgrupados
+            List<DetailQuotationSimpleDTO> detallesFijos = (List<DetailQuotationSimpleDTO>) datosAgrupados
                     .get("detallesFijos");
             addTodosLosDetallesTable(document, detallesFijos);
 
@@ -409,7 +409,7 @@ public class CotizacionServiceImpl implements CotizacionService {
             }
 
             // 7. Sección de Importe a Pagar (total de cotización más económica)
-            int totalPersonas = cotizacion.getCantAdultos() + cotizacion.getCantNinos();
+            int totalPersonas = cotizacion.getNumAdult() + cotizacion.getNumChild();
 
             // Debug: Si totalPersonas es 0, usar 1 para evitar división por cero
             if (totalPersonas == 0) {
@@ -435,70 +435,70 @@ public class CotizacionServiceImpl implements CotizacionService {
         }
     }
 
-    private void addCotizacionInfo(XWPFDocument document, CotizacionConDetallesResponseDTO cotizacion) {
+    private void addCotizacionInfo(XWPFDocument document, QuotationWithDetailResponseDTO cotizacion) {
         XWPFParagraph infoParagraph = document.createParagraph();
         infoParagraph.setSpacingBefore(0);
         infoParagraph.setSpacingAfter(120);
 
         XWPFRun infoRun = infoParagraph.createRun();
-        infoRun.setText("Fecha Emisión: " + formatFechaEmision(cotizacion.getFechaEmision()));
+        infoRun.setText("Fecha Emisión: " + formatFechaEmision(cotizacion.getDateIssue()));
         infoRun.addBreak();
-        infoRun.setText("Fecha Vencimiento: " + formatFechaEmision(cotizacion.getFechaVencimiento()));
+        infoRun.setText("Fecha Vencimiento: " + formatFechaEmision(cotizacion.getDateExpiration()));
         infoRun.addBreak();
 
         // Obtener nombre completo del cliente
         String clienteInfo = "N/A";
-        if (cotizacion.getPersonas() != null) {
+        if (cotizacion.getPerson() != null) {
             try {
-                PersonaNatural personaNatural = personaNaturalRepository
-                        .findByPersonasId(cotizacion.getPersonas().getId()).orElse(null);
+                PersonNatural personaNatural = personaNaturalRepository
+                        .findByPersonasId(cotizacion.getPerson().getId()).orElse(null);
                 if (personaNatural != null) {
                     StringBuilder nombreCompleto = new StringBuilder();
-                    if (personaNatural.getNombres() != null) {
-                        nombreCompleto.append(personaNatural.getNombres());
+                    if (personaNatural.getName() != null) {
+                        nombreCompleto.append(personaNatural.getName());
                     }
-                    if (personaNatural.getApellidosPaterno() != null) {
+                    if (personaNatural.getSurnamePaternal() != null) {
                         if (nombreCompleto.length() > 0)
                             nombreCompleto.append(" ");
-                        nombreCompleto.append(personaNatural.getApellidosPaterno());
+                        nombreCompleto.append(personaNatural.getSurnamePaternal());
                     }
-                    if (personaNatural.getApellidosMaterno() != null) {
+                    if (personaNatural.getSurnameMaternal() != null) {
                         if (nombreCompleto.length() > 0)
                             nombreCompleto.append(" ");
-                        nombreCompleto.append(personaNatural.getApellidosMaterno());
+                        nombreCompleto.append(personaNatural.getSurnameMaternal());
                     }
                     clienteInfo = nombreCompleto.length() > 0 ? nombreCompleto.toString()
-                            : cotizacion.getPersonas().getEmail();
+                            : cotizacion.getPerson().getMailPrimary();
                 } else {
-                    clienteInfo = cotizacion.getPersonas().getEmail() != null ? cotizacion.getPersonas().getEmail()
-                            : "ID: " + cotizacion.getPersonas().getId();
+                    clienteInfo = cotizacion.getPerson().getMailPrimary() != null ? cotizacion.getPerson().getMailPrimary()
+                            : "ID: " + cotizacion.getPerson().getId();
                 }
             } catch (Exception e) {
-                clienteInfo = cotizacion.getPersonas().getEmail() != null ? cotizacion.getPersonas().getEmail()
-                        : "ID: " + cotizacion.getPersonas().getId();
+                clienteInfo = cotizacion.getPerson().getMailPrimary() != null ? cotizacion.getPerson().getMailPrimary()
+                        : "ID: " + cotizacion.getPerson().getId();
             }
         }
         infoRun.setText("Cliente: " + clienteInfo);
         infoRun.addBreak();
-        infoRun.setText("Adultos: " + cotizacion.getCantAdultos() + " | Niños: " + cotizacion.getCantNinos());
+        infoRun.setText("Adultos: " + cotizacion.getNumAdult() + " | Niños: " + cotizacion.getNumChild());
         infoRun.setFontSize(11);
     }
 
-    private String resolveDocxTitle(CotizacionConDetallesResponseDTO cotizacion) {
-        if (cotizacion.getNombreCotizacion() != null && !cotizacion.getNombreCotizacion().trim().isEmpty()) {
-            return cotizacion.getNombreCotizacion().trim();
+    private String resolveDocxTitle(QuotationWithDetailResponseDTO cotizacion) {
+        if (cotizacion.getNameQuotation() != null && !cotizacion.getNameQuotation().trim().isEmpty()) {
+            return cotizacion.getNameQuotation().trim();
         }
 
-        if (cotizacion.getCodigoCotizacion() != null && !cotizacion.getCodigoCotizacion().trim().isEmpty()) {
-            return "Cotización " + cotizacion.getCodigoCotizacion().trim();
+        if (cotizacion.getCodeQuotation() != null && !cotizacion.getCodeQuotation().trim().isEmpty()) {
+            return "Cotización " + cotizacion.getCodeQuotation().trim();
         }
 
         return "Cotización";
     }
 
-    private String resolveDuracionViaje(CotizacionConDetallesResponseDTO cotizacion) {
-        LocalDate fechaSalida = cotizacion.getFechaSalida();
-        LocalDate fechaRegreso = cotizacion.getFechaRegreso();
+    private String resolveDuracionViaje(QuotationWithDetailResponseDTO cotizacion) {
+        LocalDate fechaSalida = cotizacion.getDateDeparture();
+        LocalDate fechaRegreso = cotizacion.getDateReturn();
 
         if (fechaSalida == null || fechaRegreso == null) {
             return "0 DIAS / 0 NOCHES";
@@ -513,9 +513,9 @@ public class CotizacionServiceImpl implements CotizacionService {
         return dias + " DIAS / " + noches + " NOCHES";
     }
 
-    private String resolveRutaCotizacion(CotizacionConDetallesResponseDTO cotizacion) {
-        return cotizacion.getOrigenDestino() != null && !cotizacion.getOrigenDestino().trim().isEmpty()
-                ? cotizacion.getOrigenDestino().trim()
+    private String resolveRutaCotizacion(QuotationWithDetailResponseDTO cotizacion) {
+        return cotizacion.getOriginDestination() != null && !cotizacion.getOriginDestination().trim().isEmpty()
+                ? cotizacion.getOriginDestination().trim()
                 : "N/A";
     }
 
@@ -526,14 +526,14 @@ public class CotizacionServiceImpl implements CotizacionService {
         return fechaEmision.format(DOCX_FECHA_EMISION_FORMATTER);
     }
 
-    private BigDecimal calcularImporteDetalle(DetalleCotizacionSimpleDTO detalle) {
-        BigDecimal precio = detalle.getPrecioHistorico() != null ? detalle.getPrecioHistorico() : BigDecimal.ZERO;
-        BigDecimal comision = detalle.getComision() != null ? detalle.getComision() : BigDecimal.ZERO;
-        Integer cantidad = detalle.getCantidad() != null ? detalle.getCantidad() : 1;
+    private BigDecimal calcularImporteDetalle(DetailQuotationSimpleDTO detalle) {
+        BigDecimal precio = detalle.getPriceHistory() != null ? detalle.getPriceHistory() : BigDecimal.ZERO;
+        BigDecimal comision = detalle.getComission() != null ? detalle.getComission() : BigDecimal.ZERO;
+        Integer cantidad = detalle.getQuantity() != null ? detalle.getQuantity() : 1;
         return precio.add(comision).multiply(BigDecimal.valueOf(cantidad));
     }
 
-    private void addTodosLosDetallesTable(XWPFDocument document, List<DetalleCotizacionSimpleDTO> detalles) {
+    private void addTodosLosDetallesTable(XWPFDocument document, List<DetailQuotationSimpleDTO> detalles) {
         if (detalles == null || detalles.isEmpty()) {
             return;
         }
@@ -559,23 +559,23 @@ public class CotizacionServiceImpl implements CotizacionService {
         //headerRow.addNewTableCell().setText("Total");
 
         // Agregar detalles
-        for (DetalleCotizacionSimpleDTO detalle : detalles) {
+        for (DetailQuotationSimpleDTO detalle : detalles) {
             XWPFTableRow row = table.createRow();
 
             // Cantidad
-            row.getCell(0).setText(detalle.getCantidad() != null ? detalle.getCantidad().toString() : "0");
+            row.getCell(0).setText(detalle.getQuantity() != null ? detalle.getQuantity().toString() : "0");
 
             // Tipo de producto
             String tipo = "N/A";
-            if (detalle.getProducto() != null && detalle.getProducto().getTipo() != null) {
-                tipo = detalle.getProducto().getTipo();
+            if (detalle.getProduct() != null && detalle.getProduct().getType() != null) {
+                tipo = detalle.getProduct().getType();
             }
             row.getCell(1).setText(tipo);
 
             // Operador
             String operador = "N/A";
-            if (detalle.getOperador() != null && detalle.getOperador().getNombre() != null) {
-                operador = detalle.getOperador().getNombre();
+            if (detalle.getOperator() != null && detalle.getOperator().getName() != null) {
+                operador = detalle.getOperator().getName();
             }
             row.getCell(2).setText(operador);
 
@@ -691,7 +691,7 @@ public class CotizacionServiceImpl implements CotizacionService {
 
         for (Map<String, Object> grupo : gruposOpciones) {
             String nombreCategoria = (String) grupo.get("nombreCategoria");
-            List<DetalleCotizacionSimpleDTO> detalles = (List<DetalleCotizacionSimpleDTO>) grupo.get("detalles");
+            List<DetailQuotationSimpleDTO> detalles = (List<DetailQuotationSimpleDTO>) grupo.get("detalles");
             String color = (String) grupo.get("color");
 
             // Subtítulo de la categoría
@@ -725,32 +725,32 @@ public class CotizacionServiceImpl implements CotizacionService {
             totalCell.setColor(color);
 
             // Agregar detalles de la categoría
-            for (DetalleCotizacionSimpleDTO detalle : detalles) {
+            for (DetailQuotationSimpleDTO detalle : detalles) {
                 XWPFTableRow row = table.createRow();
 
                 // Aplicar color de fondo a todas las celdas
-                row.getCell(0).setText(detalle.getDescripcion() != null ? detalle.getDescripcion() : "");
+                row.getCell(0).setText(detalle.getDescription() != null ? detalle.getDescription() : "");
                 row.getCell(0).setColor(color);
 
                 String operador = "N/A";
-                if (detalle.getOperador() != null && detalle.getOperador().getNombre() != null) {
-                    operador = detalle.getOperador().getNombre();
+                if (detalle.getOperator() != null && detalle.getOperator().getName() != null) {
+                    operador = detalle.getOperator().getName();
                 }
                 row.getCell(1).setText(operador);
                 row.getCell(1).setColor(color);
 
-                row.getCell(2).setText(detalle.getCantidad() != null ? detalle.getCantidad().toString() : "0");
+                row.getCell(2).setText(detalle.getQuantity() != null ? detalle.getQuantity().toString() : "0");
                 row.getCell(2).setColor(color);
 
                 row.getCell(3)
-                        .setText(detalle.getPrecioHistorico() != null
-                        ? "USD " + String.format("%.2f", detalle.getPrecioHistorico().add(detalle.getComision()))
+                        .setText(detalle.getPriceHistory() != null
+                        ? "USD " + String.format("%.2f", detalle.getPriceHistory().add(detalle.getComission()))
                         : "USD 0.00");
                 row.getCell(3).setColor(color);
 
                 BigDecimal total = BigDecimal.ZERO;
-                if (detalle.getCantidad() != null && detalle.getPrecioHistorico() != null && detalle.getComision() != null) {
-                    total = detalle.getPrecioHistorico().add(detalle.getComision()).multiply(BigDecimal.valueOf(detalle.getCantidad()));
+                if (detalle.getQuantity() != null && detalle.getPriceHistory() != null && detalle.getComission() != null) {
+                    total = detalle.getPriceHistory().add(detalle.getComission()).multiply(BigDecimal.valueOf(detalle.getQuantity()));
                 }
                 row.getCell(4).setText("USD " + String.format("%.2f", total));
                 row.getCell(4).setColor(color);
@@ -1129,7 +1129,7 @@ public class CotizacionServiceImpl implements CotizacionService {
     // Implementación de métodos para gestión de carpetas
 
     @Override
-    public List<CotizacionResponseDto> findByCarpeta(Integer carpetaId) {
+    public List<QuotationResponseDto> findByCarpeta(Integer carpetaId) {
         if (!carpetaRepository.existsById(carpetaId))
             throw new ResourceNotFoundException("Carpeta no encontrada con ID: " + carpetaId);
 
@@ -1137,21 +1137,21 @@ public class CotizacionServiceImpl implements CotizacionService {
     }
 
     @Override
-    public List<CotizacionResponseDto> findSinCarpeta() {
+    public List<QuotationResponseDto> findSinCarpeta() {
         return mapToResponseList(cotizacionRepository.findByCarpetaIsNull());
     }
 
     @Override
-    public CotizacionResponseDto updateCarpeta(Integer id, Integer carpetaId) {
-        Cotizacion cotizacion = cotizacionRepository.findById(id)
+    public QuotationResponseDto updateCarpeta(Integer id, Integer carpetaId) {
+        Quotation cotizacion = cotizacionRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Cotizacion no encontrada con ID: " + id));
 
         if (carpetaId != null) { // Asociar a una carpeta
-            Carpeta carpeta = carpetaRepository.findById(carpetaId)
+            Folder carpeta = carpetaRepository.findById(carpetaId)
                     .orElseThrow(() -> new ResourceNotFoundException("Carpeta no encontrada con ID: " + carpetaId));
-            cotizacion.setCarpeta(carpeta);
+            cotizacion.setFolder(carpeta);
         } else {
-            cotizacion.setCarpeta(null);
+            cotizacion.setFolder(null);
         }
         return cotizacionMapper.toResponse(cotizacionRepository.save(cotizacion));
     }

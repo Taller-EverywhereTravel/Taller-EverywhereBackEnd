@@ -10,5 +10,5 @@ import lombok.NoArgsConstructor;
 public class UserBasicDTO {
     private Integer id;
     private String name;
-    private String email;
+    private String mail;
 }

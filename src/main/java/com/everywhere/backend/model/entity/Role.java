@@ -21,9 +21,9 @@ public class Role {
 
     @CreationTimestamp
     @Column(name = "prov_cre_tmp", updatable = false)
-    private LocalDateTime creado;
+    private LocalDateTime created;
 
     @UpdateTimestamp
     @Column(name = "prov_upd_tmp")
-    private LocalDateTime actualizado;
+    private LocalDateTime updated;
 }

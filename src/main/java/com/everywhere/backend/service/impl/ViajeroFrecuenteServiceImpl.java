@@ -2,10 +2,10 @@ package com.everywhere.backend.service.impl;
 
 import com.everywhere.backend.exceptions.ResourceNotFoundException;
 import com.everywhere.backend.mapper.ViajeroFrecuenteMapper;
-import com.everywhere.backend.model.dto.ViajeroFrecuenteRequestDto;
-import com.everywhere.backend.model.dto.ViajeroFrecuenteResponseDto;
-import com.everywhere.backend.model.entity.Viajero;
-import com.everywhere.backend.model.entity.ViajeroFrecuente;
+import com.everywhere.backend.model.dto.TravelerFrequentRequestDto;
+import com.everywhere.backend.model.dto.TravelerFrequentResponseDto;
+import com.everywhere.backend.model.entity.Traveler;
+import com.everywhere.backend.model.entity.TravelerFrequent;
 import com.everywhere.backend.repository.ViajeroFrecuenteRepository;
 import com.everywhere.backend.repository.ViajeroRepository;
 import com.everywhere.backend.service.ViajeroFrecuenteService;
@@ -25,33 +25,33 @@ public class ViajeroFrecuenteServiceImpl implements ViajeroFrecuenteService {
     private final ViajeroFrecuenteMapper viajeroFrecuenteMapper;
 
     @Override
-    public List<ViajeroFrecuenteResponseDto> findAll() {
+    public List<TravelerFrequentResponseDto> findAll() {
         return mapToResponseList(viajeroFrecuenteRepository.findAll());
     }
 
     @Override
-    public ViajeroFrecuenteResponseDto crear(Integer viajeroId, ViajeroFrecuenteRequestDto viajeroFrecuenteRequestDto) {
+    public TravelerFrequentResponseDto crear(Integer viajeroId, TravelerFrequentRequestDto viajeroFrecuenteRequestDto) {
         if (viajeroId == null) throw new IllegalArgumentException("El ID del viajero no puede ser nulo");
 
         if (!viajeroRepository.existsById(viajeroId))
             throw new ResourceNotFoundException("Viajero no encontrado con id: " + viajeroId);
 
-        Viajero viajero = viajeroRepository.findById(viajeroId).get();
-        ViajeroFrecuente viajeroFrecuente = viajeroFrecuenteMapper.toEntity(viajeroFrecuenteRequestDto); 
-        viajeroFrecuente.setViajero(viajero);
+        Traveler viajero = viajeroRepository.findById(viajeroId).get();
+        TravelerFrequent viajeroFrecuente = viajeroFrecuenteMapper.toEntity(viajeroFrecuenteRequestDto); 
+        viajeroFrecuente.setTraveler(viajero);
         return viajeroFrecuenteMapper.toResponse(viajeroFrecuenteRepository.save(viajeroFrecuente));
     }
 
     @Override
-    public ViajeroFrecuenteResponseDto buscarPorId(Integer id) {
-        ViajeroFrecuente viajeroFrecuente = viajeroFrecuenteRepository.findById(id)
+    public TravelerFrequentResponseDto buscarPorId(Integer id) {
+        TravelerFrequent viajeroFrecuente = viajeroFrecuenteRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("ViajeroFrecuente no encontrado con id: " + id));
 
         return viajeroFrecuenteMapper.toResponse(viajeroFrecuente);
     }
 
     @Override
-    public List<ViajeroFrecuenteResponseDto> listarPorViajero(Integer viajeroId) {
+    public List<TravelerFrequentResponseDto> listarPorViajero(Integer viajeroId) {
         return mapToResponseList(viajeroFrecuenteRepository.findByViajero_Id(viajeroId));
     }
 
@@ -63,19 +63,19 @@ public class ViajeroFrecuenteServiceImpl implements ViajeroFrecuenteService {
     }
 
     @Override
-    public ViajeroFrecuenteResponseDto actualizar(Integer id, ViajeroFrecuenteRequestDto viajeroFrecuenteRequestDto) {
+    public TravelerFrequentResponseDto actualizar(Integer id, TravelerFrequentRequestDto viajeroFrecuenteRequestDto) {
         if (!viajeroFrecuenteRepository.existsById(id))
             throw new ResourceNotFoundException("ViajeroFrecuente no encontrado con id: " + id);
 
-        ViajeroFrecuente viajeroFrecuente = viajeroFrecuenteRepository.findById(id).get();
+        TravelerFrequent viajeroFrecuente = viajeroFrecuenteRepository.findById(id).get();
         
         if (viajeroFrecuenteRepository.existsByAreolineaAndCodigo(
-                viajeroFrecuenteRequestDto.getAreolinea(),
-                viajeroFrecuenteRequestDto.getCodigo())) {
+                viajeroFrecuenteRequestDto.getAirline(),
+                viajeroFrecuenteRequestDto.getCode())) {
             throw new IllegalArgumentException(
                     "Ya existe un viajero frecuente con la aerolínea " +
-                            viajeroFrecuenteRequestDto.getAreolinea() +
-                            " y el código " + viajeroFrecuenteRequestDto.getCodigo()
+                            viajeroFrecuenteRequestDto.getAirline() +
+                            " y el código " + viajeroFrecuenteRequestDto.getCode()
             );
         }
 
@@ -84,11 +84,11 @@ public class ViajeroFrecuenteServiceImpl implements ViajeroFrecuenteService {
     }
 
     @Override
-    public List<ViajeroFrecuenteResponseDto> buscarPorViajeroId(Integer viajeroId) {
+    public List<TravelerFrequentResponseDto> buscarPorViajeroId(Integer viajeroId) {
         return mapToResponseList(viajeroFrecuenteRepository.findByViajero_Id(viajeroId));
     }
 
-    private List<ViajeroFrecuenteResponseDto> mapToResponseList(List<ViajeroFrecuente> viajerosFrecuentes) {
+    private List<TravelerFrequentResponseDto> mapToResponseList(List<TravelerFrequent> viajerosFrecuentes) {
         return viajerosFrecuentes.stream().map(viajeroFrecuenteMapper::toResponse).toList();
     }
 }

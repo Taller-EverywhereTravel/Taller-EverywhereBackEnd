@@ -16,17 +16,17 @@ public class Counter {
     private int id;
 
     @Column(name = "cou_nom_vac", length = 150)
-    private String nombre;
+    private String name;
 
     @Column(name = "cou_est_bol")
-    private Boolean estado;
+    private Boolean status;
 
     @Column (name = "cou_cod_vac", length = 50)
-    private String codigo;
+    private String code;
 
     @Column (name = "cou_fec_crea_tmp", updatable = false)
-    private LocalDateTime fechaCreacion;
+    private LocalDateTime dateCreation;
 
     @Column (name = "cou_fec_actu_tmp")
-    private LocalDateTime fechaActualizacion;
+    private LocalDateTime dateUpdate;
 }

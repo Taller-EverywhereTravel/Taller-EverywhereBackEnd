@@ -1,6 +1,6 @@
 package com.everywhere.backend.repository;
 
-import com.everywhere.backend.model.entity.ProveedorContacto;
+import com.everywhere.backend.model.entity.SupplierContact;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -8,11 +8,11 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface ProveedorContactoRepository extends JpaRepository<ProveedorContacto, Integer> {
+public interface ProveedorContactoRepository extends JpaRepository<SupplierContact, Integer> {
 
-    List<ProveedorContacto> findByProveedorId(Integer proveedorId);
+    List<SupplierContact> findByProveedorId(Integer proveedorId);
 
-    List<ProveedorContacto> findByGrupoContactoId(Integer grupoContactoId);
+    List<SupplierContact> findByGrupoContactoId(Integer grupoContactoId);
 
-    Optional<ProveedorContacto> findByEmail(String email);
+    Optional<SupplierContact> findByEmail(String email);
 }

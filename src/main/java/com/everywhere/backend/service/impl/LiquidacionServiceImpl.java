@@ -1,20 +1,20 @@
 package com.everywhere.backend.service.impl;
 
-import com.everywhere.backend.model.dto.LiquidacionRequestDTO;
-import com.everywhere.backend.model.dto.LiquidacionResponseDTO;
-import com.everywhere.backend.model.dto.LiquidacionConDetallesResponseDTO;
-import com.everywhere.backend.model.dto.DetalleLiquidacionResponseDTO;
-import com.everywhere.backend.model.dto.DetalleLiquidacionSimpleDTO;
-import com.everywhere.backend.model.dto.DetalleCotizacionResponseDto;
-import com.everywhere.backend.model.dto.PagoPaxResponseDTO;
-import com.everywhere.backend.model.entity.Carpeta;
-import com.everywhere.backend.model.entity.Cotizacion;
-import com.everywhere.backend.model.entity.DetalleLiquidacion;
-import com.everywhere.backend.model.entity.FormaPago;
-import com.everywhere.backend.model.dto.ObservacionLiquidacionResponseDTO;
-import com.everywhere.backend.model.dto.ObservacionLiquidacionSimpleDTO;
-import com.everywhere.backend.model.entity.Liquidacion;
-import com.everywhere.backend.model.entity.Producto;
+import com.everywhere.backend.model.dto.LiquidationRequestDTO;
+import com.everywhere.backend.model.dto.LiquidationResponseDTO;
+import com.everywhere.backend.model.dto.LiquidationWithDetailResponseDTO;
+import com.everywhere.backend.model.dto.DetailLiquidationResponseDTO;
+import com.everywhere.backend.model.dto.DetailLiquidationSimpleDTO;
+import com.everywhere.backend.model.dto.DetailQuotationResponseDto;
+import com.everywhere.backend.model.dto.PaymentPaxResponseDTO;
+import com.everywhere.backend.model.entity.Folder;
+import com.everywhere.backend.model.entity.Quotation;
+import com.everywhere.backend.model.entity.DetailLiquidation;
+import com.everywhere.backend.model.entity.MethodPayment;
+import com.everywhere.backend.model.dto.ObservationLiquidationResponseDTO;
+import com.everywhere.backend.model.dto.ObservationLiquidationSimpleDTO;
+import com.everywhere.backend.model.entity.Liquidation;
+import com.everywhere.backend.model.entity.Product;
 import com.everywhere.backend.repository.CarpetaRepository;
 import com.everywhere.backend.repository.CotizacionRepository;
 import com.everywhere.backend.repository.DetalleLiquidacionRepository;
@@ -74,64 +74,64 @@ public class LiquidacionServiceImpl implements LiquidacionService {
     private final ProductoRepository productoRepository;
 
     @Override
-    public List<LiquidacionResponseDTO> findAll() {
+    public List<LiquidationResponseDTO> findAll() {
         return liquidacionRepository.findAll().stream().map(liquidacionMapper::toResponseDTO).toList();
     }
 
     @Override
-    public LiquidacionResponseDTO findById(Integer id) {
-        Liquidacion liquidacion = liquidacionRepository.findById(id)
+    public LiquidationResponseDTO findById(Integer id) {
+        Liquidation liquidacion = liquidacionRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Liquidación no encontrada con ID: " + id));
         return liquidacionMapper.toResponseDTO(liquidacion);
     }
 
     @Override
     @Transactional
-    public LiquidacionResponseDTO update(Integer id, LiquidacionRequestDTO liquidacionRequestDTO) {
+    public LiquidationResponseDTO update(Integer id, LiquidationRequestDTO liquidacionRequestDTO) {
         if (!liquidacionRepository.existsById(id))
             throw new ResourceNotFoundException("Liquidación no encontrada con ID: " + id);
 
-        if (liquidacionRequestDTO.getCotizacionId() != null &&
-                !cotizacionRepository.existsById(liquidacionRequestDTO.getCotizacionId()))
+        if (liquidacionRequestDTO.getQuotationId() != null &&
+                !cotizacionRepository.existsById(liquidacionRequestDTO.getQuotationId()))
             throw new ResourceNotFoundException(
-                    "Cotización no encontrada con ID: " + liquidacionRequestDTO.getCotizacionId());
+                    "Cotización no encontrada con ID: " + liquidacionRequestDTO.getQuotationId());
 
-        if (liquidacionRequestDTO.getProductoId() != null &&
-                !productoRepository.existsById(liquidacionRequestDTO.getProductoId()))
+        if (liquidacionRequestDTO.getProductId() != null &&
+                !productoRepository.existsById(liquidacionRequestDTO.getProductId()))
             throw new ResourceNotFoundException(
-                    "Producto no encontrado con ID: " + liquidacionRequestDTO.getProductoId());
+                    "Producto no encontrado con ID: " + liquidacionRequestDTO.getProductId());
 
-        if (liquidacionRequestDTO.getFormaPagoId() != null &&
-                !formaPagoRepository.existsById(liquidacionRequestDTO.getFormaPagoId()))
+        if (liquidacionRequestDTO.getMethodPaymentId() != null &&
+                !formaPagoRepository.existsById(liquidacionRequestDTO.getMethodPaymentId()))
             throw new ResourceNotFoundException(
-                    "Forma de pago no encontrada con ID: " + liquidacionRequestDTO.getFormaPagoId());
+                    "Forma de pago no encontrada con ID: " + liquidacionRequestDTO.getMethodPaymentId());
 
-        if (liquidacionRequestDTO.getCarpetaId() != null &&
-                !carpetaRepository.existsById(liquidacionRequestDTO.getCarpetaId()))
+        if (liquidacionRequestDTO.getFolderId() != null &&
+                !carpetaRepository.existsById(liquidacionRequestDTO.getFolderId()))
             throw new ResourceNotFoundException(
-                    "Carpeta no encontrada con ID: " + liquidacionRequestDTO.getCarpetaId());
+                    "Carpeta no encontrada con ID: " + liquidacionRequestDTO.getFolderId());
 
-        Liquidacion liquidacion = liquidacionRepository.findById(id).get();
+        Liquidation liquidacion = liquidacionRepository.findById(id).get();
         liquidacionMapper.updateEntityFromRequest(liquidacion, liquidacionRequestDTO);
 
-        if (liquidacionRequestDTO.getCotizacionId() != null) {
-            Cotizacion cotizacion = cotizacionRepository.findById(liquidacionRequestDTO.getCotizacionId()).get();
-            liquidacion.setCotizacion(cotizacion);
+        if (liquidacionRequestDTO.getQuotationId() != null) {
+            Quotation cotizacion = cotizacionRepository.findById(liquidacionRequestDTO.getQuotationId()).get();
+            liquidacion.setQuotation(cotizacion);
         }
 
-        if (liquidacionRequestDTO.getProductoId() != null) {
-            Producto producto = productoRepository.findById(liquidacionRequestDTO.getProductoId()).get();
-            liquidacion.setProducto(producto);
+        if (liquidacionRequestDTO.getProductId() != null) {
+            Product producto = productoRepository.findById(liquidacionRequestDTO.getProductId()).get();
+            liquidacion.setProduct(producto);
         }
 
-        if (liquidacionRequestDTO.getFormaPagoId() != null) {
-            FormaPago formaPago = formaPagoRepository.findById(liquidacionRequestDTO.getFormaPagoId()).get();
-            liquidacion.setFormaPago(formaPago);
+        if (liquidacionRequestDTO.getMethodPaymentId() != null) {
+            MethodPayment formaPago = formaPagoRepository.findById(liquidacionRequestDTO.getMethodPaymentId()).get();
+            liquidacion.setMethodPayment(formaPago);
         }
 
-        if (liquidacionRequestDTO.getCarpetaId() != null) {
-            Carpeta carpeta = carpetaRepository.findById(liquidacionRequestDTO.getCarpetaId()).get();
-            liquidacion.setCarpeta(carpeta);
+        if (liquidacionRequestDTO.getFolderId() != null) {
+            Folder carpeta = carpetaRepository.findById(liquidacionRequestDTO.getFolderId()).get();
+            liquidacion.setFolder(carpeta);
         }
 
         return liquidacionMapper.toResponseDTO(liquidacionRepository.save(liquidacion));
@@ -146,42 +146,42 @@ public class LiquidacionServiceImpl implements LiquidacionService {
     }
 
     @Override
-    public LiquidacionConDetallesResponseDTO findByIdWithDetalles(Integer id) {
-        Liquidacion liquidacion = liquidacionRepository.findById(id)
+    public LiquidationWithDetailResponseDTO findByIdWithDetalles(Integer id) {
+        Liquidation liquidacion = liquidacionRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Liquidación no encontrada con ID: " + id));
 
-        LiquidacionResponseDTO liquidacionResponseDTO = liquidacionMapper.toResponseDTO(liquidacion);
+        LiquidationResponseDTO liquidacionResponseDTO = liquidacionMapper.toResponseDTO(liquidacion);
 
-        List<DetalleLiquidacionResponseDTO> detalleLiquidacionResponseDTOs = detalleLiquidacionService
+        List<DetailLiquidationResponseDTO> detalleLiquidacionResponseDTOs = detalleLiquidacionService
                 .findByLiquidacionId(id);
-        List<DetalleLiquidacionSimpleDTO> detalleLiquidacionSimpleDTOs = detalleLiquidacionResponseDTOs.stream()
+        List<DetailLiquidationSimpleDTO> detalleLiquidacionSimpleDTOs = detalleLiquidacionResponseDTOs.stream()
                 .map(this::convertirADetalleSimple).toList();
 
-        List<ObservacionLiquidacionResponseDTO> observacionLiquidacionResponseDTOS = observacionLiquidacionService
+        List<ObservationLiquidationResponseDTO> observacionLiquidacionResponseDTOS = observacionLiquidacionService
                 .findByLiquidacionId(id);
-        List<ObservacionLiquidacionSimpleDTO> observacionLiquidacionSimpleDTOs = observacionLiquidacionResponseDTOS
+        List<ObservationLiquidationSimpleDTO> observacionLiquidacionSimpleDTOs = observacionLiquidacionResponseDTOS
                 .stream().map(this::convertirAObservacionSimple).toList();
 
-        LiquidacionConDetallesResponseDTO liquidacionConDetallesResponseDTO = new LiquidacionConDetallesResponseDTO();
+        LiquidationWithDetailResponseDTO liquidacionConDetallesResponseDTO = new LiquidationWithDetailResponseDTO();
         liquidacionConDetallesResponseDTO.setId(liquidacionResponseDTO.getId());
-        liquidacionConDetallesResponseDTO.setNumero(liquidacionResponseDTO.getNumero());
-        liquidacionConDetallesResponseDTO.setFechaCompra(liquidacionResponseDTO.getFechaCompra());
-        liquidacionConDetallesResponseDTO.setDestino(liquidacionResponseDTO.getDestino());
-        liquidacionConDetallesResponseDTO.setNumeroPasajeros(liquidacionResponseDTO.getNumeroPasajeros());
-        liquidacionConDetallesResponseDTO.setCreado(liquidacionResponseDTO.getCreado());
-        liquidacionConDetallesResponseDTO.setActualizado(liquidacionResponseDTO.getActualizado());
-        liquidacionConDetallesResponseDTO.setProducto(liquidacionResponseDTO.getProducto());
-        liquidacionConDetallesResponseDTO.setFormaPago(liquidacionResponseDTO.getFormaPago());
-        liquidacionConDetallesResponseDTO.setDetalles(detalleLiquidacionSimpleDTOs);
-        liquidacionConDetallesResponseDTO.setObservaciones(observacionLiquidacionSimpleDTOs);
+        liquidacionConDetallesResponseDTO.setNumber(liquidacionResponseDTO.getNumber());
+        liquidacionConDetallesResponseDTO.setDatePurchase(liquidacionResponseDTO.getDatePurchase());
+        liquidacionConDetallesResponseDTO.setDestiny(liquidacionResponseDTO.getDestiny());
+        liquidacionConDetallesResponseDTO.setNumberPassenger(liquidacionResponseDTO.getNumberPassenger());
+        liquidacionConDetallesResponseDTO.setCreated(liquidacionResponseDTO.getCreated());
+        liquidacionConDetallesResponseDTO.setUpdated(liquidacionResponseDTO.getUpdated());
+        liquidacionConDetallesResponseDTO.setProduct(liquidacionResponseDTO.getProduct());
+        liquidacionConDetallesResponseDTO.setMethodPayment(liquidacionResponseDTO.getMethodPayment());
+        liquidacionConDetallesResponseDTO.setDetail(detalleLiquidacionSimpleDTOs);
+        liquidacionConDetallesResponseDTO.setObservation(observacionLiquidacionSimpleDTOs);
 
         return liquidacionConDetallesResponseDTO;
     }
 
     @Override
     public ByteArrayInputStream generateExcel(Integer liquidacionId) {
-        LiquidacionConDetallesResponseDTO liquidacion = findByIdWithDetalles(liquidacionId);
-        List<PagoPaxResponseDTO> pagosPax = pagoPaxService.findByLiquidacionId(liquidacionId);
+        LiquidationWithDetailResponseDTO liquidacion = findByIdWithDetalles(liquidacionId);
+        List<PaymentPaxResponseDTO> pagosPax = pagoPaxService.findByLiquidacionId(liquidacionId);
 
         try (Workbook workbook = new XSSFWorkbook();
                 ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
@@ -189,8 +189,8 @@ public class LiquidacionServiceImpl implements LiquidacionService {
             CellStyle moneyStyle = createMoneyStyle(workbook);
 
             createResumenSheet(workbook, liquidacion, pagosPax, headerStyle, moneyStyle);
-            createDetallesSheet(workbook, liquidacion.getDetalles(), headerStyle, moneyStyle);
-            createObservacionesSheet(workbook, liquidacion.getObservaciones(), headerStyle, moneyStyle);
+            createDetallesSheet(workbook, liquidacion.getDetail(), headerStyle, moneyStyle);
+            createObservacionesSheet(workbook, liquidacion.getObservation(), headerStyle, moneyStyle);
             createPagosPaxSheet(workbook, pagosPax, headerStyle, moneyStyle);
 
             workbook.write(outputStream);
@@ -200,8 +200,8 @@ public class LiquidacionServiceImpl implements LiquidacionService {
         }
     }
 
-    private void createResumenSheet(Workbook workbook, LiquidacionConDetallesResponseDTO liquidacion,
-            List<PagoPaxResponseDTO> pagosPax, CellStyle headerStyle, CellStyle moneyStyle) {
+    private void createResumenSheet(Workbook workbook, LiquidationWithDetailResponseDTO liquidacion,
+            List<PaymentPaxResponseDTO> pagosPax, CellStyle headerStyle, CellStyle moneyStyle) {
         Sheet sheet = workbook.createSheet("Resumen");
 
         Row headerRow = sheet.createRow(0);
@@ -213,25 +213,25 @@ public class LiquidacionServiceImpl implements LiquidacionService {
         valorHeader.setCellStyle(headerStyle);
 
         int rowIndex = 1;
-        addResumenValue(sheet, rowIndex++, "Número", toText(liquidacion.getNumero()));
-        addResumenValue(sheet, rowIndex++, "Fecha Compra", formatDate(liquidacion.getFechaCompra()));
-        addResumenValue(sheet, rowIndex++, "Destino", toText(liquidacion.getDestino()));
-        addResumenValue(sheet, rowIndex++, "Número de Pasajeros", toText(liquidacion.getNumeroPasajeros()));
+        addResumenValue(sheet, rowIndex++, "Número", toText(liquidacion.getNumber()));
+        addResumenValue(sheet, rowIndex++, "Fecha Compra", formatDate(liquidacion.getDatePurchase()));
+        addResumenValue(sheet, rowIndex++, "Destino", toText(liquidacion.getDestiny()));
+        addResumenValue(sheet, rowIndex++, "Número de Pasajeros", toText(liquidacion.getNumberPassenger()));
         addResumenValue(sheet, rowIndex++, "Producto", getLiquidacionProducto(liquidacion));
         addResumenValue(sheet, rowIndex++, "Forma de Pago", getLiquidacionFormaPago(liquidacion));
-        addResumenValue(sheet, rowIndex++, "Creado", formatDateTime(liquidacion.getCreado()));
-        addResumenValue(sheet, rowIndex++, "Actualizado", formatDateTime(liquidacion.getActualizado()));
+        addResumenValue(sheet, rowIndex++, "Creado", formatDateTime(liquidacion.getCreated()));
+        addResumenValue(sheet, rowIndex++, "Actualizado", formatDateTime(liquidacion.getUpdated()));
 
         rowIndex++;
 
         addResumenMoneyValue(sheet, rowIndex++, "Total Costo Ticket",
-                sumDetalles(liquidacion.getDetalles(), DetalleLiquidacionSimpleDTO::getCostoTicket), moneyStyle);
+                sumDetalles(liquidacion.getDetail(), DetailLiquidationSimpleDTO::getCostTicket), moneyStyle);
         addResumenMoneyValue(sheet, rowIndex++, "Total Cargo Servicio",
-                sumDetalles(liquidacion.getDetalles(), DetalleLiquidacionSimpleDTO::getCargoServicio), moneyStyle);
+                sumDetalles(liquidacion.getDetail(), DetailLiquidationSimpleDTO::getChargeService), moneyStyle);
         addResumenMoneyValue(sheet, rowIndex++, "Total Valor Venta",
-                sumDetalles(liquidacion.getDetalles(), DetalleLiquidacionSimpleDTO::getValorVenta), moneyStyle);
+                sumDetalles(liquidacion.getDetail(), DetailLiquidationSimpleDTO::getValueSale), moneyStyle);
         addResumenMoneyValue(sheet, rowIndex++, "Total Monto Descuento",
-                sumDetalles(liquidacion.getDetalles(), DetalleLiquidacionSimpleDTO::getMontoDescuento), moneyStyle);
+                sumDetalles(liquidacion.getDetail(), DetailLiquidationSimpleDTO::getAmountDiscount), moneyStyle);
         addResumenMoneyValue(sheet, rowIndex++, "Total Pagos PAX USD",
                 sumPagosPaxByMoneda(pagosPax, "USD"), moneyStyle);
         addResumenMoneyValue(sheet, rowIndex++, "Total Pagos PAX PEN",
@@ -241,7 +241,7 @@ public class LiquidacionServiceImpl implements LiquidacionService {
         autoSizeColumns(sheet, 2);
     }
 
-    private void createDetallesSheet(Workbook workbook, List<DetalleLiquidacionSimpleDTO> detalles, CellStyle headerStyle,
+    private void createDetallesSheet(Workbook workbook, List<DetailLiquidationSimpleDTO> detalles, CellStyle headerStyle,
             CellStyle moneyStyle) {
         Sheet sheet = workbook.createSheet("Detalles");
 
@@ -277,42 +277,42 @@ public class LiquidacionServiceImpl implements LiquidacionService {
 
         int rowIndex = 1;
         int nro = 1;
-        for (DetalleLiquidacionSimpleDTO detalle : detalles) {
+        for (DetailLiquidationSimpleDTO detalle : detalles) {
             Row row = sheet.createRow(rowIndex++);
             int col = 0;
 
             row.createCell(col++).setCellValue(nro++);
             row.createCell(col++).setCellValue(getViajeroNombre(detalle));
             row.createCell(col++).setCellValue(getProductoNombre(detalle));
-            row.createCell(col++).setCellValue(detalle.getProveedor() != null ? toText(detalle.getProveedor().getNombre()) : "");
-            row.createCell(col++).setCellValue(detalle.getOperador() != null ? toText(detalle.getOperador().getNombre()) : "");
+            row.createCell(col++).setCellValue(detalle.getSupplier() != null ? toText(detalle.getSupplier().getName()) : "");
+            row.createCell(col++).setCellValue(detalle.getOperator() != null ? toText(detalle.getOperator().getName()) : "");
             row.createCell(col++).setCellValue(toText(detalle.getTicket()));
-            row.createCell(col++).setCellValue(toText(detalle.getDocumentoCobro()));
-            setMoneyCell(row, col++, detalle.getCostoTicket(), moneyStyle);
-            setMoneyCell(row, col++, detalle.getCargoServicio(), moneyStyle);
-            setMoneyCell(row, col++, detalle.getValorVenta(), moneyStyle);
+            row.createCell(col++).setCellValue(toText(detalle.getDocumentCollection()));
+            setMoneyCell(row, col++, detalle.getCostTicket(), moneyStyle);
+            setMoneyCell(row, col++, detalle.getChargeService(), moneyStyle);
+            setMoneyCell(row, col++, detalle.getValueSale(), moneyStyle);
             row.createCell(col++).setCellValue(toText(detalle.getFeeEmision()));
-            row.createCell(col++).setCellValue(toText(detalle.getDocumentoFee()));
-            row.createCell(col++).setCellValue(toText(detalle.getComision()));
-            row.createCell(col++).setCellValue(toText(detalle.getFacturaCompra()));
-            row.createCell(col++).setCellValue(toText(detalle.getBoletaPasajero()));
-            setMoneyCell(row, col++, detalle.getMontoDescuento(), moneyStyle);
-            row.createCell(col++).setCellValue(formatDateTime(detalle.getCreado()));
-            row.createCell(col).setCellValue(formatDateTime(detalle.getActualizado()));
+            row.createCell(col++).setCellValue(toText(detalle.getDocumentFee()));
+            row.createCell(col++).setCellValue(toText(detalle.getComission()));
+            row.createCell(col++).setCellValue(toText(detalle.getInvoicePurchase()));
+            row.createCell(col++).setCellValue(toText(detalle.getTicketPassenger()));
+            setMoneyCell(row, col++, detalle.getAmountDiscount(), moneyStyle);
+            row.createCell(col++).setCellValue(formatDateTime(detalle.getCreated()));
+            row.createCell(col).setCellValue(formatDateTime(detalle.getUpdated()));
         }
 
         Row totalRow = sheet.createRow(rowIndex);
         totalRow.createCell(0).setCellValue("TOTALES");
-        setMoneyCell(totalRow, 7, sumDetalles(detalles, DetalleLiquidacionSimpleDTO::getCostoTicket), moneyStyle);
-        setMoneyCell(totalRow, 8, sumDetalles(detalles, DetalleLiquidacionSimpleDTO::getCargoServicio), moneyStyle);
-        setMoneyCell(totalRow, 9, sumDetalles(detalles, DetalleLiquidacionSimpleDTO::getValorVenta), moneyStyle);
-        setMoneyCell(totalRow, 15, sumDetalles(detalles, DetalleLiquidacionSimpleDTO::getMontoDescuento), moneyStyle);
+        setMoneyCell(totalRow, 7, sumDetalles(detalles, DetailLiquidationSimpleDTO::getCostTicket), moneyStyle);
+        setMoneyCell(totalRow, 8, sumDetalles(detalles, DetailLiquidationSimpleDTO::getChargeService), moneyStyle);
+        setMoneyCell(totalRow, 9, sumDetalles(detalles, DetailLiquidationSimpleDTO::getValueSale), moneyStyle);
+        setMoneyCell(totalRow, 15, sumDetalles(detalles, DetailLiquidationSimpleDTO::getAmountDiscount), moneyStyle);
 
         autoSizeColumns(sheet, headers.length);
     }
 
     private void createObservacionesSheet(Workbook workbook,
-            List<ObservacionLiquidacionSimpleDTO> observaciones,
+            List<ObservationLiquidationSimpleDTO> observaciones,
             CellStyle headerStyle,
             CellStyle moneyStyle) {
         Sheet sheet = workbook.createSheet("Observaciones");
@@ -334,20 +334,20 @@ public class LiquidacionServiceImpl implements LiquidacionService {
 
         int rowIndex = 1;
         int nro = 1;
-        for (ObservacionLiquidacionSimpleDTO observacion : observaciones) {
+        for (ObservationLiquidationSimpleDTO observacion : observaciones) {
             Row row = sheet.createRow(rowIndex++);
             int col = 0;
             row.createCell(col++).setCellValue(nro++);
-            row.createCell(col++).setCellValue(toText(observacion.getDescripcion()));
-            row.createCell(col++).setCellValue(formatDateTime(observacion.getCreado()));
-            row.createCell(col).setCellValue(formatDateTime(observacion.getActualizado()));
+            row.createCell(col++).setCellValue(toText(observacion.getDescription()));
+            row.createCell(col++).setCellValue(formatDateTime(observacion.getCreated()));
+            row.createCell(col).setCellValue(formatDateTime(observacion.getUpdated()));
         }
 
         autoSizeColumns(sheet, headers.length);
     }
 
     private void createPagosPaxSheet(Workbook workbook,
-            List<PagoPaxResponseDTO> pagosPax,
+            List<PaymentPaxResponseDTO> pagosPax,
             CellStyle headerStyle,
             CellStyle moneyStyle) {
         Sheet sheet = workbook.createSheet("Pagos PAX");
@@ -372,16 +372,16 @@ public class LiquidacionServiceImpl implements LiquidacionService {
 
         int rowIndex = 1;
         int nro = 1;
-        for (PagoPaxResponseDTO pagoPax : pagosPax) {
+        for (PaymentPaxResponseDTO pagoPax : pagosPax) {
             Row row = sheet.createRow(rowIndex++);
             int col = 0;
             row.createCell(col++).setCellValue(nro++);
-            setMoneyCell(row, col++, pagoPax.getMonto(), moneyStyle);
-            row.createCell(col++).setCellValue(toText(pagoPax.getMoneda()));
-            row.createCell(col++).setCellValue(toText(pagoPax.getDetalle()));
-            row.createCell(col++).setCellValue(pagoPax.getFormaPago() != null ? toText(pagoPax.getFormaPago().getDescripcion()) : "");
-            row.createCell(col++).setCellValue(formatDateTime(pagoPax.getCreado()));
-            row.createCell(col).setCellValue(formatDateTime(pagoPax.getActualizado()));
+            setMoneyCell(row, col++, pagoPax.getAmount(), moneyStyle);
+            row.createCell(col++).setCellValue(toText(pagoPax.getCurrency()));
+            row.createCell(col++).setCellValue(toText(pagoPax.getDetail()));
+            row.createCell(col++).setCellValue(pagoPax.getMethodPayment() != null ? toText(pagoPax.getMethodPayment().getDescription()) : "");
+            row.createCell(col++).setCellValue(formatDateTime(pagoPax.getCreated()));
+            row.createCell(col).setCellValue(formatDateTime(pagoPax.getUpdated()));
         }
 
         autoSizeColumns(sheet, headers.length);
@@ -439,8 +439,8 @@ public class LiquidacionServiceImpl implements LiquidacionService {
         }
     }
 
-    private BigDecimal sumDetalles(List<DetalleLiquidacionSimpleDTO> detalles,
-            Function<DetalleLiquidacionSimpleDTO, BigDecimal> extractor) {
+    private BigDecimal sumDetalles(List<DetailLiquidationSimpleDTO> detalles,
+            Function<DetailLiquidationSimpleDTO, BigDecimal> extractor) {
         if (detalles == null || detalles.isEmpty()) {
             return BigDecimal.ZERO;
         }
@@ -451,56 +451,56 @@ public class LiquidacionServiceImpl implements LiquidacionService {
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 
-    private BigDecimal sumPagosPaxByMoneda(List<PagoPaxResponseDTO> pagosPax, String moneda) {
+    private BigDecimal sumPagosPaxByMoneda(List<PaymentPaxResponseDTO> pagosPax, String moneda) {
         if (pagosPax == null || pagosPax.isEmpty()) {
             return BigDecimal.ZERO;
         }
 
         return pagosPax.stream()
-                .filter(pago -> pago.getMoneda() != null && pago.getMoneda().trim().toUpperCase(Locale.ROOT)
+                .filter(pago -> pago.getCurrency() != null && pago.getCurrency().trim().toUpperCase(Locale.ROOT)
                         .equals(moneda.toUpperCase(Locale.ROOT)))
-                .map(PagoPaxResponseDTO::getMonto)
+                .map(PaymentPaxResponseDTO::getAmount)
                 .filter(Objects::nonNull)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 
-    private String getLiquidacionProducto(LiquidacionConDetallesResponseDTO liquidacion) {
-        if (liquidacion.getProducto() == null) {
+    private String getLiquidacionProducto(LiquidationWithDetailResponseDTO liquidacion) {
+        if (liquidacion.getProduct() == null) {
             return "";
         }
-        if (liquidacion.getProducto().getTipo() != null && !liquidacion.getProducto().getTipo().isBlank()) {
-            return liquidacion.getProducto().getTipo();
+        if (liquidacion.getProduct().getType() != null && !liquidacion.getProduct().getType().isBlank()) {
+            return liquidacion.getProduct().getType();
         }
-        return toText(liquidacion.getProducto().getDescripcion());
+        return toText(liquidacion.getProduct().getDescription());
     }
 
-    private String getLiquidacionFormaPago(LiquidacionConDetallesResponseDTO liquidacion) {
-        if (liquidacion.getFormaPago() == null) {
+    private String getLiquidacionFormaPago(LiquidationWithDetailResponseDTO liquidacion) {
+        if (liquidacion.getMethodPayment() == null) {
             return "";
         }
-        return toText(liquidacion.getFormaPago().getDescripcion());
+        return toText(liquidacion.getMethodPayment().getDescription());
     }
 
-    private String getViajeroNombre(DetalleLiquidacionSimpleDTO detalle) {
-        if (detalle.getViajero() == null || detalle.getViajero().getPersonaNatural() == null) {
+    private String getViajeroNombre(DetailLiquidationSimpleDTO detalle) {
+        if (detalle.getTraveler() == null || detalle.getTraveler().getPersonNatural() == null) {
             return "";
         }
 
-        String nombres = toText(detalle.getViajero().getPersonaNatural().getNombres());
-        String apellidoPaterno = toText(detalle.getViajero().getPersonaNatural().getApellidosPaterno());
-        String apellidoMaterno = toText(detalle.getViajero().getPersonaNatural().getApellidosMaterno());
+        String nombres = toText(detalle.getTraveler().getPersonNatural().getName());
+        String apellidoPaterno = toText(detalle.getTraveler().getPersonNatural().getSurnamePaternal());
+        String apellidoMaterno = toText(detalle.getTraveler().getPersonNatural().getSurnameMaternal());
 
         return (nombres + " " + apellidoPaterno + " " + apellidoMaterno).trim().replaceAll("\\s+", " ");
     }
 
-    private String getProductoNombre(DetalleLiquidacionSimpleDTO detalle) {
-        if (detalle.getProducto() == null) {
+    private String getProductoNombre(DetailLiquidationSimpleDTO detalle) {
+        if (detalle.getProduct() == null) {
             return "";
         }
-        if (detalle.getProducto().getTipo() != null && !detalle.getProducto().getTipo().isBlank()) {
-            return detalle.getProducto().getTipo();
+        if (detalle.getProduct().getType() != null && !detalle.getProduct().getType().isBlank()) {
+            return detalle.getProduct().getType();
         }
-        return toText(detalle.getProducto().getDescripcion());
+        return toText(detalle.getProduct().getDescription());
     }
 
     private String toText(Object value) {
@@ -515,73 +515,73 @@ public class LiquidacionServiceImpl implements LiquidacionService {
         return dateTime == null ? "" : dateTime.format(DATE_TIME_FORMATTER);
     }
 
-    private DetalleLiquidacionSimpleDTO convertirADetalleSimple(
-            DetalleLiquidacionResponseDTO detalleLiquidacionResponseDTO) {
-        DetalleLiquidacionSimpleDTO detalleLiquidacionSimpleDTO = new DetalleLiquidacionSimpleDTO();
+    private DetailLiquidationSimpleDTO convertirADetalleSimple(
+            DetailLiquidationResponseDTO detalleLiquidacionResponseDTO) {
+        DetailLiquidationSimpleDTO detalleLiquidacionSimpleDTO = new DetailLiquidationSimpleDTO();
         detalleLiquidacionSimpleDTO.setId(detalleLiquidacionResponseDTO.getId());
         detalleLiquidacionSimpleDTO.setTicket(detalleLiquidacionResponseDTO.getTicket());
-        detalleLiquidacionSimpleDTO.setDocumentoCobro(detalleLiquidacionResponseDTO.getDocumentoCobro());
-        detalleLiquidacionSimpleDTO.setCostoTicket(detalleLiquidacionResponseDTO.getCostoTicket());
-        detalleLiquidacionSimpleDTO.setCargoServicio(detalleLiquidacionResponseDTO.getCargoServicio());
-        detalleLiquidacionSimpleDTO.setValorVenta(detalleLiquidacionResponseDTO.getValorVenta());
+        detalleLiquidacionSimpleDTO.setDocumentCollection(detalleLiquidacionResponseDTO.getDocumentCollection());
+        detalleLiquidacionSimpleDTO.setCostTicket(detalleLiquidacionResponseDTO.getCostTicket());
+        detalleLiquidacionSimpleDTO.setChargeService(detalleLiquidacionResponseDTO.getChargeService());
+        detalleLiquidacionSimpleDTO.setValueSale(detalleLiquidacionResponseDTO.getValueSale());
         detalleLiquidacionSimpleDTO.setFeeEmision(detalleLiquidacionResponseDTO.getFeeEmision());
-        detalleLiquidacionSimpleDTO.setDocumentoFee(detalleLiquidacionResponseDTO.getDocumentoFee());
-        detalleLiquidacionSimpleDTO.setComision(detalleLiquidacionResponseDTO.getComision());
-        detalleLiquidacionSimpleDTO.setFacturaCompra(detalleLiquidacionResponseDTO.getFacturaCompra());
-        detalleLiquidacionSimpleDTO.setBoletaPasajero(detalleLiquidacionResponseDTO.getBoletaPasajero());
-        detalleLiquidacionSimpleDTO.setMontoDescuento(detalleLiquidacionResponseDTO.getMontoDescuento());
-        detalleLiquidacionSimpleDTO.setPagoPaxUSD(detalleLiquidacionResponseDTO.getPagoPaxUSD());
-        detalleLiquidacionSimpleDTO.setPagoPaxPEN(detalleLiquidacionResponseDTO.getPagoPaxPEN());
-        detalleLiquidacionSimpleDTO.setCreado(detalleLiquidacionResponseDTO.getCreado());
-        detalleLiquidacionSimpleDTO.setActualizado(detalleLiquidacionResponseDTO.getActualizado());
+        detalleLiquidacionSimpleDTO.setDocumentFee(detalleLiquidacionResponseDTO.getDocumentFee());
+        detalleLiquidacionSimpleDTO.setComission(detalleLiquidacionResponseDTO.getComission());
+        detalleLiquidacionSimpleDTO.setInvoicePurchase(detalleLiquidacionResponseDTO.getInvoicePurchase());
+        detalleLiquidacionSimpleDTO.setTicketPassenger(detalleLiquidacionResponseDTO.getTicketPassenger());
+        detalleLiquidacionSimpleDTO.setAmountDiscount(detalleLiquidacionResponseDTO.getAmountDiscount());
+        detalleLiquidacionSimpleDTO.setPaymentPaxUSD(detalleLiquidacionResponseDTO.getPaymentPaxUSD());
+        detalleLiquidacionSimpleDTO.setPaymentPaxPEN(detalleLiquidacionResponseDTO.getPaymentPaxPEN());
+        detalleLiquidacionSimpleDTO.setCreated(detalleLiquidacionResponseDTO.getCreated());
+        detalleLiquidacionSimpleDTO.setUpdated(detalleLiquidacionResponseDTO.getUpdated());
 
-        detalleLiquidacionSimpleDTO.setViajero(detalleLiquidacionResponseDTO.getViajero());
-        detalleLiquidacionSimpleDTO.setProducto(detalleLiquidacionResponseDTO.getProducto());
-        detalleLiquidacionSimpleDTO.setProveedor(detalleLiquidacionResponseDTO.getProveedor());
-        detalleLiquidacionSimpleDTO.setOperador(detalleLiquidacionResponseDTO.getOperador());
+        detalleLiquidacionSimpleDTO.setTraveler(detalleLiquidacionResponseDTO.getTraveler());
+        detalleLiquidacionSimpleDTO.setProduct(detalleLiquidacionResponseDTO.getProduct());
+        detalleLiquidacionSimpleDTO.setSupplier(detalleLiquidacionResponseDTO.getSupplier());
+        detalleLiquidacionSimpleDTO.setOperator(detalleLiquidacionResponseDTO.getOperator());
 
         return detalleLiquidacionSimpleDTO;
     }
 
     @Override
     @Transactional
-    public LiquidacionResponseDTO create(LiquidacionRequestDTO liquidacionRequestDTO, Integer cotizacionId) {
+    public LiquidationResponseDTO create(LiquidationRequestDTO liquidacionRequestDTO, Integer cotizacionId) {
         if (!cotizacionRepository.existsById(cotizacionId))
             throw new ResourceNotFoundException("Cotización no encontrada con ID: " + cotizacionId);
 
-        if (liquidacionRequestDTO.getProductoId() != null &&
-                !productoRepository.existsById(liquidacionRequestDTO.getProductoId()))
+        if (liquidacionRequestDTO.getProductId() != null &&
+                !productoRepository.existsById(liquidacionRequestDTO.getProductId()))
             throw new ResourceNotFoundException(
-                    "Producto no encontrado con ID: " + liquidacionRequestDTO.getProductoId());
+                    "Producto no encontrado con ID: " + liquidacionRequestDTO.getProductId());
 
-        if (liquidacionRequestDTO.getFormaPagoId() != null &&
-                !formaPagoRepository.existsById(liquidacionRequestDTO.getFormaPagoId()))
+        if (liquidacionRequestDTO.getMethodPaymentId() != null &&
+                !formaPagoRepository.existsById(liquidacionRequestDTO.getMethodPaymentId()))
             throw new ResourceNotFoundException(
-                    "Forma de pago no encontrada con ID: " + liquidacionRequestDTO.getFormaPagoId());
+                    "Forma de pago no encontrada con ID: " + liquidacionRequestDTO.getMethodPaymentId());
 
-        if (liquidacionRequestDTO.getCarpetaId() != null &&
-                !carpetaRepository.existsById(liquidacionRequestDTO.getCarpetaId()))
+        if (liquidacionRequestDTO.getFolderId() != null &&
+                !carpetaRepository.existsById(liquidacionRequestDTO.getFolderId()))
             throw new ResourceNotFoundException(
-                    "Carpeta no encontrada con ID: " + liquidacionRequestDTO.getCarpetaId());
+                    "Carpeta no encontrada con ID: " + liquidacionRequestDTO.getFolderId());
 
-        Cotizacion cotizacion = cotizacionRepository.findById(cotizacionId).get();
+        Quotation cotizacion = cotizacionRepository.findById(cotizacionId).get();
 
-        Liquidacion liquidacion = liquidacionMapper.toEntity(liquidacionRequestDTO);
-        liquidacion.setCotizacion(cotizacion);
+        Liquidation liquidacion = liquidacionMapper.toEntity(liquidacionRequestDTO);
+        liquidacion.setQuotation(cotizacion);
 
-        if (liquidacionRequestDTO.getProductoId() != null) {
-            Producto producto = productoRepository.findById(liquidacionRequestDTO.getProductoId()).get();
-            liquidacion.setProducto(producto);
+        if (liquidacionRequestDTO.getProductId() != null) {
+            Product producto = productoRepository.findById(liquidacionRequestDTO.getProductId()).get();
+            liquidacion.setProduct(producto);
         }
 
-        if (liquidacionRequestDTO.getFormaPagoId() != null) {
-            FormaPago formaPago = formaPagoRepository.findById(liquidacionRequestDTO.getFormaPagoId()).get();
-            liquidacion.setFormaPago(formaPago);
+        if (liquidacionRequestDTO.getMethodPaymentId() != null) {
+            MethodPayment formaPago = formaPagoRepository.findById(liquidacionRequestDTO.getMethodPaymentId()).get();
+            liquidacion.setMethodPayment(formaPago);
         }
 
-        if (liquidacionRequestDTO.getCarpetaId() != null) {
-            Carpeta carpeta = carpetaRepository.findById(liquidacionRequestDTO.getCarpetaId()).get();
-            liquidacion.setCarpeta(carpeta);
+        if (liquidacionRequestDTO.getFolderId() != null) {
+            Folder carpeta = carpetaRepository.findById(liquidacionRequestDTO.getFolderId()).get();
+            liquidacion.setFolder(carpeta);
         }
 
         liquidacion = liquidacionRepository.save(liquidacion); // Guardar la liquidación primero para obtener el ID
@@ -594,49 +594,49 @@ public class LiquidacionServiceImpl implements LiquidacionService {
      * Implementa la lógica de repartición: por cada detalle seleccionado de la cotización,
      * crea N detalles de liquidación donde N = cantidad del detalle de cotización.
      */
-    private void crearDetallesDesdeCotizacion(Liquidacion liquidacion, Integer cotizacionId) {
+    private void crearDetallesDesdeCotizacion(Liquidation liquidacion, Integer cotizacionId) {
         // Obtener todos los detalles de la cotizacion
-        List<DetalleCotizacionResponseDto> detallesCotizacion = detalleCotizacionService
+        List<DetailQuotationResponseDto> detallesCotizacion = detalleCotizacionService
                 .findByCotizacionId(cotizacionId);
 
         // Filtrar solo los detalles seleccionados
-        List<DetalleCotizacionResponseDto> detallesSeleccionados = detallesCotizacion.stream()
-                .filter(detalle -> detalle.getSeleccionado() != null && detalle.getSeleccionado())
+        List<DetailQuotationResponseDto> detallesSeleccionados = detallesCotizacion.stream()
+                .filter(detalle -> detalle.getSelected() != null && detalle.getSelected())
                 .toList();
 
         // Por cada detalle seleccionado, crear N detalles de liquidación (donde N = cantidad)
-        for (DetalleCotizacionResponseDto detalleCot : detallesSeleccionados) {
-            int cantidad = detalleCot.getCantidad() != null ? detalleCot.getCantidad() : 1;
+        for (DetailQuotationResponseDto detalleCot : detallesSeleccionados) {
+            int cantidad = detalleCot.getQuantity() != null ? detalleCot.getQuantity() : 1;
 
             // Crear un detalle de liquidación por cada unidad de cantidad
             for (int i = 0; i < cantidad; i++) {
-                DetalleLiquidacion detalleLiq = new DetalleLiquidacion();
+                DetailLiquidation detalleLiq = new DetailLiquidation();
 
                 // Asignar la liquidación
-                detalleLiq.setLiquidacion(liquidacion);
+                detalleLiq.setLiquidation(liquidacion);
 
                 // Mapear datos desde el detalle de cotización
-                detalleLiq.setCostoTicket(
-                        detalleCot.getPrecioHistorico() != null ? detalleCot.getPrecioHistorico() : BigDecimal.ZERO);
-                detalleLiq.setCargoServicio(
-                        detalleCot.getComision() != null ? detalleCot.getComision() : BigDecimal.ZERO);
+                detalleLiq.setCostTicket(
+                        detalleCot.getPriceHistory() != null ? detalleCot.getPriceHistory() : BigDecimal.ZERO);
+                detalleLiq.setChargeService(
+                        detalleCot.getComission() != null ? detalleCot.getComission() : BigDecimal.ZERO);
 
                 // Asignar producto y proveedor si existen
-                if (detalleCot.getProducto() != null) {
-                    detalleLiq.setProducto(detalleCot.getProducto());
+                if (detalleCot.getProduct() != null) {
+                    detalleLiq.setProduct(detalleCot.getProduct());
                 }
-                if (detalleCot.getProveedor() != null) {
-                    detalleLiq.setProveedor(detalleCot.getProveedor());
+                if (detalleCot.getSupplier() != null) {
+                    detalleLiq.setSupplier(detalleCot.getSupplier());
                 }
 
                 // Inicializar otros campos con valores por defecto (se llenarán después)
                 detalleLiq.setTicket("");
-                detalleLiq.setValorVenta(BigDecimal.ZERO);
-                detalleLiq.setFacturaCompra("");
-                detalleLiq.setBoletaPasajero("");
-                detalleLiq.setMontoDescuento(BigDecimal.ZERO);
-                detalleLiq.setPagoPaxUSD(BigDecimal.ZERO);
-                detalleLiq.setPagoPaxPEN(BigDecimal.ZERO);
+                detalleLiq.setValueSale(BigDecimal.ZERO);
+                detalleLiq.setInvoicePurchase("");
+                detalleLiq.setTicketPassenger("");
+                detalleLiq.setAmountDiscount(BigDecimal.ZERO);
+                detalleLiq.setPaymentPaxUSD(BigDecimal.ZERO);
+                detalleLiq.setPaymentPaxPEN(BigDecimal.ZERO);
                 // Viajero y Operador se quedan null para ser asignados después
                 
                 detalleLiquidacionRepository.save(detalleLiq);
@@ -644,23 +644,23 @@ public class LiquidacionServiceImpl implements LiquidacionService {
         }
     }
 
-    private ObservacionLiquidacionSimpleDTO convertirAObservacionSimple(
-            ObservacionLiquidacionResponseDTO observacionLiquidacionResponseDTO) {
-        ObservacionLiquidacionSimpleDTO observacionLiquidacionSimpleDTO = new ObservacionLiquidacionSimpleDTO();
+    private ObservationLiquidationSimpleDTO convertirAObservacionSimple(
+            ObservationLiquidationResponseDTO observacionLiquidacionResponseDTO) {
+        ObservationLiquidationSimpleDTO observacionLiquidacionSimpleDTO = new ObservationLiquidationSimpleDTO();
         observacionLiquidacionSimpleDTO.setId(observacionLiquidacionResponseDTO.getId());
-        observacionLiquidacionSimpleDTO.setDescripcion(observacionLiquidacionResponseDTO.getDescripcion());
-        observacionLiquidacionSimpleDTO.setValor(observacionLiquidacionResponseDTO.getValor());
-        observacionLiquidacionSimpleDTO.setDocumento(observacionLiquidacionResponseDTO.getDocumento());
-        observacionLiquidacionSimpleDTO.setNumeroDocumento(observacionLiquidacionResponseDTO.getNumeroDocumento());
-        observacionLiquidacionSimpleDTO.setCreado(observacionLiquidacionResponseDTO.getCreado());
-        observacionLiquidacionSimpleDTO.setActualizado(observacionLiquidacionResponseDTO.getActualizado());
+        observacionLiquidacionSimpleDTO.setDescription(observacionLiquidacionResponseDTO.getDescription());
+        observacionLiquidacionSimpleDTO.setValue(observacionLiquidacionResponseDTO.getValue());
+        observacionLiquidacionSimpleDTO.setDocument(observacionLiquidacionResponseDTO.getDocument());
+        observacionLiquidacionSimpleDTO.setNumberDocument(observacionLiquidacionResponseDTO.getNumberDocument());
+        observacionLiquidacionSimpleDTO.setCreated(observacionLiquidacionResponseDTO.getCreated());
+        observacionLiquidacionSimpleDTO.setUpdated(observacionLiquidacionResponseDTO.getUpdated());
         return observacionLiquidacionSimpleDTO;
     }
 
     // Implementación de métodos para gestión de carpetas
 
     @Override
-    public List<LiquidacionResponseDTO> findByCarpeta(Integer carpetaId) {
+    public List<LiquidationResponseDTO> findByCarpeta(Integer carpetaId) {
         if (!carpetaRepository.existsById(carpetaId))
             throw new ResourceNotFoundException("Carpeta no encontrada con ID: " + carpetaId);
 
@@ -670,7 +670,7 @@ public class LiquidacionServiceImpl implements LiquidacionService {
     }
 
     @Override
-    public List<LiquidacionResponseDTO> findSinCarpeta() {
+    public List<LiquidationResponseDTO> findSinCarpeta() {
         return liquidacionRepository.findByCarpetaIsNull().stream()
                 .map(liquidacionMapper::toResponseDTO)
                 .toList();
@@ -678,18 +678,18 @@ public class LiquidacionServiceImpl implements LiquidacionService {
 
     @Override
     @Transactional
-    public LiquidacionResponseDTO updateCarpeta(Integer id, Integer carpetaId) {
-        Liquidacion liquidacion = liquidacionRepository.findById(id)
+    public LiquidationResponseDTO updateCarpeta(Integer id, Integer carpetaId) {
+        Liquidation liquidacion = liquidacionRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Liquidación no encontrada con ID: " + id));
 
         if (carpetaId != null) {
             // Asociar a una carpeta
-            Carpeta carpeta = carpetaRepository.findById(carpetaId)
+            Folder carpeta = carpetaRepository.findById(carpetaId)
                     .orElseThrow(() -> new ResourceNotFoundException("Carpeta no encontrada con ID: " + carpetaId));
-            liquidacion.setCarpeta(carpeta);
+            liquidacion.setFolder(carpeta);
         } else {
             // Desasociar de la carpeta
-            liquidacion.setCarpeta(null);
+            liquidacion.setFolder(null);
         }
 
         return liquidacionMapper.toResponseDTO(liquidacionRepository.save(liquidacion));

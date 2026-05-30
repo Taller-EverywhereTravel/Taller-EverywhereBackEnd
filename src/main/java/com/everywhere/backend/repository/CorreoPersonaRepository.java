@@ -1,12 +1,12 @@
 package com.everywhere.backend.repository;
 
-import com.everywhere.backend.model.entity.CorreoPersona;
+import com.everywhere.backend.model.entity.MailPerson;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
 
-public interface CorreoPersonaRepository extends JpaRepository<CorreoPersona,Integer> {
-    List<CorreoPersona> findByPersonaId(Integer personaId);
+public interface CorreoPersonaRepository extends JpaRepository<MailPerson,Integer> {
+    List<MailPerson> findByPersonaId(Integer personaId);
     boolean existsByEmail(String email);
 
 }

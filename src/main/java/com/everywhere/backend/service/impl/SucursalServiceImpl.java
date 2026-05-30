@@ -3,9 +3,9 @@ package com.everywhere.backend.service.impl;
 import com.everywhere.backend.exceptions.BadRequestException;
 import com.everywhere.backend.exceptions.ResourceNotFoundException;
 import com.everywhere.backend.mapper.SucursalMapper;
-import com.everywhere.backend.model.dto.SucursalRequestDTO;
-import com.everywhere.backend.model.dto.SucursalResponseDTO;
-import com.everywhere.backend.model.entity.Sucursal;
+import com.everywhere.backend.model.dto.BranchRequestDTO;
+import com.everywhere.backend.model.dto.BranchResponseDTO;
+import com.everywhere.backend.model.entity.Branch;
 import com.everywhere.backend.repository.SucursalRepository;
 import com.everywhere.backend.service.SucursalService;
 import lombok.RequiredArgsConstructor;
@@ -22,77 +22,77 @@ public class SucursalServiceImpl implements SucursalService {
     private final SucursalMapper sucursalMapper;
 
     @Override
-    public List<SucursalResponseDTO> findAll() {
+    public List<BranchResponseDTO> findAll() {
         return mapToResponseList(sucursalRepository.findAll());
     }
 
     @Override
-    public SucursalResponseDTO findById(Integer id) {
-        Sucursal sucursal = sucursalRepository.findById(id)
+    public BranchResponseDTO findById(Integer id) {
+        Branch sucursal = sucursalRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Sucursal no encontrada con ID: " + id));
         return sucursalMapper.toResponseDTO(sucursal);
     }
 
     @Override
-    public List<SucursalResponseDTO> findByDescripcion(String descripcion) {
+    public List<BranchResponseDTO> findByDescripcion(String descripcion) {
         return mapToResponseList(sucursalRepository.findByDescripcionContainingIgnoreCase(descripcion));
     }
 
     @Override
-    public SucursalResponseDTO findByDescripcionExacta(String descripcion) {
-        Sucursal sucursal = sucursalRepository.findByDescripcionIgnoreCase(descripcion)
+    public BranchResponseDTO findByDescripcionExacta(String descripcion) {
+        Branch sucursal = sucursalRepository.findByDescripcionIgnoreCase(descripcion)
                 .orElseThrow(() -> new ResourceNotFoundException("Sucursal no encontrada con descripción: " + descripcion));
         return sucursalMapper.toResponseDTO(sucursal);
     }
 
     @Override
-    public List<SucursalResponseDTO> findByEstado(Boolean estado) {
+    public List<BranchResponseDTO> findByEstado(Boolean estado) {
         return mapToResponseList(sucursalRepository.findByEstado(estado));
     }
 
     @Override
-    public List<SucursalResponseDTO> findByEstadoAndDescripcion(Boolean estado, String descripcion) {
+    public List<BranchResponseDTO> findByEstadoAndDescripcion(Boolean estado, String descripcion) {
         return mapToResponseList(sucursalRepository.findByEstadoAndDescripcionContainingIgnoreCase(estado, descripcion));
     }
 
     @Override
-    public List<SucursalResponseDTO> findByDireccion(String direccion) {
+    public List<BranchResponseDTO> findByDireccion(String direccion) {
         return mapToResponseList(sucursalRepository.findByDireccionContainingIgnoreCase(direccion));
     }
 
     @Override
-    public SucursalResponseDTO findByEmail(String email) {
-        Sucursal sucursal = sucursalRepository.findByEmail(email)
+    public BranchResponseDTO findByEmail(String email) {
+        Branch sucursal = sucursalRepository.findByEmail(email)
                 .orElseThrow(() -> new ResourceNotFoundException("Sucursal no encontrada con email: " + email));
         return sucursalMapper.toResponseDTO(sucursal);
     }
 
     @Override
-    public SucursalResponseDTO save(SucursalRequestDTO sucursalRequestDTO) {
-        if (sucursalRequestDTO.getEmail() != null &&
-                !sucursalRequestDTO.getEmail().trim().isEmpty() &&
-                sucursalRepository.existsByEmail(sucursalRequestDTO.getEmail())) {
-            throw new DataIntegrityViolationException("Ya existe una sucursal con el email: " + sucursalRequestDTO.getEmail());
+    public BranchResponseDTO save(BranchRequestDTO sucursalRequestDTO) {
+        if (sucursalRequestDTO.getMail() != null &&
+                !sucursalRequestDTO.getMail().trim().isEmpty() &&
+                sucursalRepository.existsByEmail(sucursalRequestDTO.getMail())) {
+            throw new DataIntegrityViolationException("Ya existe una sucursal con el email: " + sucursalRequestDTO.getMail());
         }
 
-        Sucursal sucursal = sucursalMapper.toEntity(sucursalRequestDTO);
-        if (sucursal.getEstado() == null) sucursal.setEstado(true);
+        Branch sucursal = sucursalMapper.toEntity(sucursalRequestDTO);
+        if (sucursal.getStatus() == null) sucursal.setStatus(true);
 
         return sucursalMapper.toResponseDTO(sucursalRepository.save(sucursal));
     }
 
     @Override
-    public SucursalResponseDTO update(Integer id, SucursalRequestDTO sucursalRequestDTO) {
+    public BranchResponseDTO update(Integer id, BranchRequestDTO sucursalRequestDTO) {
         if (!sucursalRepository.existsById(id))
             throw new ResourceNotFoundException("Sucursal no encontrada con ID: " + id);
 
-        Sucursal existing = sucursalRepository.findById(id).get();
+        Branch existing = sucursalRepository.findById(id).get();
 
-        if (sucursalRequestDTO.getEmail() != null &&
-                !sucursalRequestDTO.getEmail().trim().isEmpty() &&
-                !sucursalRequestDTO.getEmail().equals(existing.getEmail()) &&
-                sucursalRepository.existsByEmail(sucursalRequestDTO.getEmail())) {
-            throw new BadRequestException("Ya existe una sucursal con el email: " + sucursalRequestDTO.getEmail());
+        if (sucursalRequestDTO.getMail() != null &&
+                !sucursalRequestDTO.getMail().trim().isEmpty() &&
+                !sucursalRequestDTO.getMail().equals(existing.getMail()) &&
+                sucursalRepository.existsByEmail(sucursalRequestDTO.getMail())) {
+            throw new BadRequestException("Ya existe una sucursal con el email: " + sucursalRequestDTO.getMail());
         }
 
         sucursalMapper.updateEntityFromDTO(sucursalRequestDTO, existing);
@@ -107,16 +107,16 @@ public class SucursalServiceImpl implements SucursalService {
     }
 
     @Override
-    public SucursalResponseDTO cambiarEstado(Integer id, Boolean estado) {
+    public BranchResponseDTO cambiarEstado(Integer id, Boolean estado) {
         if (!sucursalRepository.existsById(id))
             throw new ResourceNotFoundException("Sucursal no encontrada con ID: " + id);
 
-        Sucursal sucursal = sucursalRepository.findById(id).get();
-        sucursal.setEstado(estado);
+        Branch sucursal = sucursalRepository.findById(id).get();
+        sucursal.setStatus(estado);
         return sucursalMapper.toResponseDTO(sucursalRepository.save(sucursal));
     }
 
-    private List<SucursalResponseDTO> mapToResponseList(List<Sucursal> sucursales) {
+    private List<BranchResponseDTO> mapToResponseList(List<Branch> sucursales) {
         return sucursales.stream().map(sucursalMapper::toResponseDTO).toList();
     }
 }

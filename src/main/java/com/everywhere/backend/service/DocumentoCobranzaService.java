@@ -3,18 +3,18 @@ package com.everywhere.backend.service;
 import java.io.ByteArrayInputStream;
 import java.util.List;
 
-import com.everywhere.backend.model.dto.DocumentoCobranzaResponseDTO;
-import com.everywhere.backend.model.dto.DocumentoCobranzaUpdateDTO;
+import com.everywhere.backend.model.dto.DocumentCollectionResponseDTO;
+import com.everywhere.backend.model.dto.DocumentCollectionUpdateDTO;
 
 public interface DocumentoCobranzaService {
-    DocumentoCobranzaResponseDTO createDocumentoCobranza(Integer cotizacionId, Integer personaJuridicaId, Integer sucursalId);
+    DocumentCollectionResponseDTO createDocumentoCobranza(Integer cotizacionId, Integer personaJuridicaId, Integer sucursalId);
     ByteArrayInputStream generatePdf(Long documentoId);
-    DocumentoCobranzaResponseDTO findById(Long id);
-    DocumentoCobranzaResponseDTO findBySerieAndCorrelativo(String serie, Integer correlativo);
-    List<DocumentoCobranzaResponseDTO> findAll();
-    DocumentoCobranzaResponseDTO findByCotizacionId(Integer cotizacionId);
-    DocumentoCobranzaResponseDTO patchDocumento(Long id, DocumentoCobranzaUpdateDTO documentoCobranzaUpdateDTO);
-    List<DocumentoCobranzaResponseDTO> findByCarpeta(Integer carpetaId);
-    List<DocumentoCobranzaResponseDTO> findSinCarpeta();
-    DocumentoCobranzaResponseDTO updateCarpeta(Long id, Integer carpetaId);
+    DocumentCollectionResponseDTO findById(Long id);
+    DocumentCollectionResponseDTO findBySerieAndCorrelativo(String serie, Integer correlativo);
+    List<DocumentCollectionResponseDTO> findAll();
+    DocumentCollectionResponseDTO findByCotizacionId(Integer cotizacionId);
+    DocumentCollectionResponseDTO patchDocumento(Long id, DocumentCollectionUpdateDTO documentoCobranzaUpdateDTO);
+    List<DocumentCollectionResponseDTO> findByCarpeta(Integer carpetaId);
+    List<DocumentCollectionResponseDTO> findSinCarpeta();
+    DocumentCollectionResponseDTO updateCarpeta(Long id, Integer carpetaId);
 }

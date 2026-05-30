@@ -1,8 +1,8 @@
 package com.everywhere.backend.mapper;
 
-import com.everywhere.backend.model.dto.LiquidacionRequestDTO;
-import com.everywhere.backend.model.dto.LiquidacionResponseDTO;
-import com.everywhere.backend.model.entity.Liquidacion;
+import com.everywhere.backend.model.dto.LiquidationRequestDTO;
+import com.everywhere.backend.model.dto.LiquidationResponseDTO;
+import com.everywhere.backend.model.entity.Liquidation;
 
 import jakarta.annotation.PostConstruct;
 
@@ -18,25 +18,25 @@ public class LiquidacionMapper {
 
     @PostConstruct
     public void configureMapping() {
-        modelMapper.typeMap(LiquidacionRequestDTO.class, Liquidacion.class).addMappings(mapper -> {
-            mapper.skip(Liquidacion::setCotizacion);
-            mapper.skip(Liquidacion::setProducto);
-            mapper.skip(Liquidacion::setFormaPago);
-            mapper.skip(Liquidacion::setCarpeta);
+        modelMapper.typeMap(LiquidationRequestDTO.class, Liquidation.class).addMappings(mapper -> {
+            mapper.skip(Liquidation::setQuotation);
+            mapper.skip(Liquidation::setProduct);
+            mapper.skip(Liquidation::setMethodPayment);
+            mapper.skip(Liquidation::setFolder);
         });
     }
 
-    public LiquidacionResponseDTO toResponseDTO(Liquidacion liquidacion) {
-        LiquidacionResponseDTO liquidacionResponseDTO = modelMapper.map(liquidacion, LiquidacionResponseDTO.class);
+    public LiquidationResponseDTO toResponseDTO(Liquidation liquidacion) {
+        LiquidationResponseDTO liquidacionResponseDTO = modelMapper.map(liquidacion, LiquidationResponseDTO.class);
         return liquidacionResponseDTO;
     }
 
-    public Liquidacion toEntity(LiquidacionRequestDTO liquidacionRequestDTO) {
-        Liquidacion liquidacion = modelMapper.map(liquidacionRequestDTO, Liquidacion.class);
+    public Liquidation toEntity(LiquidationRequestDTO liquidacionRequestDTO) {
+        Liquidation liquidacion = modelMapper.map(liquidacionRequestDTO, Liquidation.class);
         return liquidacion;
     }
 
-    public void updateEntityFromRequest(Liquidacion liquidacion, LiquidacionRequestDTO liquidacionRequestDTO) {
+    public void updateEntityFromRequest(Liquidation liquidacion, LiquidationRequestDTO liquidacionRequestDTO) {
         modelMapper.map(liquidacionRequestDTO, liquidacion);
     }
 }

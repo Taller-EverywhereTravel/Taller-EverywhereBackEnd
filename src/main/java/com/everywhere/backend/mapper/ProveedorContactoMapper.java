@@ -1,8 +1,8 @@
 package com.everywhere.backend.mapper;
 
-import com.everywhere.backend.model.dto.ProveedorContactoRequestDTO;
-import com.everywhere.backend.model.dto.ProveedorContactoResponseDTO;
-import com.everywhere.backend.model.entity.ProveedorContacto;
+import com.everywhere.backend.model.dto.SupplierContactRequestDTO;
+import com.everywhere.backend.model.dto.SupplierContactResponseDTO;
+import com.everywhere.backend.model.entity.SupplierContact;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
@@ -13,24 +13,24 @@ public class ProveedorContactoMapper {
 
     private final ModelMapper modelMapper;
 
-    public ProveedorContactoResponseDTO toResponseDTO(ProveedorContacto entity) {
-        ProveedorContactoResponseDTO dto = modelMapper.map(entity, ProveedorContactoResponseDTO.class);
-        if (entity.getProveedor() != null) {
-            dto.setProveedorId(entity.getProveedor().getId());
-            dto.setProveedorNombre(entity.getProveedor().getNombre());
+    public SupplierContactResponseDTO toResponseDTO(SupplierContact entity) {
+        SupplierContactResponseDTO dto = modelMapper.map(entity, SupplierContactResponseDTO.class);
+        if (entity.getSupplier() != null) {
+            dto.setSupplierId(entity.getSupplier().getId());
+            dto.setSupplierName(entity.getSupplier().getName());
         }
-        if (entity.getGrupoContacto() != null) {
-            dto.setGrupoContactoId(entity.getGrupoContacto().getId());
-            dto.setGrupoContactoNombre(entity.getGrupoContacto().getNombre());
+        if (entity.getGroupContact() != null) {
+            dto.setGroupContactId(entity.getGroupContact().getId());
+            dto.setGroupContactName(entity.getGroupContact().getName());
         }
         return dto;
     }
 
-    public ProveedorContacto toEntity(ProveedorContactoRequestDTO dto) {
-        return modelMapper.map(dto, ProveedorContacto.class);
+    public SupplierContact toEntity(SupplierContactRequestDTO dto) {
+        return modelMapper.map(dto, SupplierContact.class);
     }
 
-    public void updateEntityFromDTO(ProveedorContactoRequestDTO dto, ProveedorContacto entity) {
+    public void updateEntityFromDTO(SupplierContactRequestDTO dto, SupplierContact entity) {
         modelMapper.map(dto, entity);
     }
 }

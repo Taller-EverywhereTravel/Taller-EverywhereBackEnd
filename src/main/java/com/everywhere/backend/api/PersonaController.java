@@ -1,8 +1,8 @@
 package com.everywhere.backend.api;
 
-import com.everywhere.backend.model.dto.PersonaRequestDTO;
-import com.everywhere.backend.model.dto.PersonaResponseDTO;
-import com.everywhere.backend.model.dto.PersonaDisplayDto;
+import com.everywhere.backend.model.dto.PersonRequestDTO;
+import com.everywhere.backend.model.dto.PersonResponseDTO;
+import com.everywhere.backend.model.dto.PersonDisplayDto;
 import com.everywhere.backend.security.RequirePermission;
 import com.everywhere.backend.service.PersonaService;
 import jakarta.validation.Valid;
@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/personas")
+@RequestMapping("/person")
 @RequiredArgsConstructor
 public class PersonaController {
 
@@ -23,37 +23,37 @@ public class PersonaController {
 
     @GetMapping
     @RequirePermission(module = "PERSONAS", permission = "READ")
-    public ResponseEntity<List<PersonaResponseDTO>> getAllPersonas() { 
+    public ResponseEntity<List<PersonResponseDTO>> getAllPersonas() { 
         return ResponseEntity.ok(personaService.findAll());
     }
 
     @GetMapping("/{id}")
     @RequirePermission(module = "PERSONAS", permission = "READ")
-    public ResponseEntity<PersonaResponseDTO> getPersonaById(@PathVariable Integer id) { 
+    public ResponseEntity<PersonResponseDTO> getPersonaById(@PathVariable Integer id) { 
         return ResponseEntity.ok(personaService.findById(id));
     }
 
-    @GetMapping("/email")
+    @GetMapping("/mail")
     @RequirePermission(module = "PERSONAS", permission = "READ")
-    public ResponseEntity<List<PersonaResponseDTO>> getPersonasByEmail(@RequestParam String email) { 
+    public ResponseEntity<List<PersonResponseDTO>> getPersonasByEmail(@RequestParam String email) { 
         return ResponseEntity.ok(personaService.findByEmail(email));
     }
 
-    @GetMapping("/telefono")
+    @GetMapping("/phone")
     @RequirePermission(module = "PERSONAS", permission = "READ")
-    public ResponseEntity<List<PersonaResponseDTO>> getPersonasByTelefono(@RequestParam String telefono) { 
+    public ResponseEntity<List<PersonResponseDTO>> getPersonasByTelefono(@RequestParam String telefono) { 
         return ResponseEntity.ok(personaService.findByTelefono(telefono));
     }
 
     @PostMapping
     @RequirePermission(module = "PERSONAS", permission = "CREATE")
-    public ResponseEntity<PersonaResponseDTO> createPersona(@Valid @RequestBody PersonaRequestDTO personaRequestDTO) { 
+    public ResponseEntity<PersonResponseDTO> createPersona(@Valid @RequestBody PersonRequestDTO personaRequestDTO) { 
         return ResponseEntity.status(HttpStatus.CREATED).body(personaService.save(personaRequestDTO));
     }
 
     @PatchMapping("/{id}")
     @RequirePermission(module = "PERSONAS", permission = "UPDATE")
-    public ResponseEntity<PersonaResponseDTO> patchPersona(@PathVariable Integer id, @Valid @RequestBody PersonaRequestDTO personaRequestDTO) { 
+    public ResponseEntity<PersonResponseDTO> patchPersona(@PathVariable Integer id, @Valid @RequestBody PersonRequestDTO personaRequestDTO) { 
         return ResponseEntity.ok(personaService.patch(id, personaRequestDTO));
     }
 
@@ -64,9 +64,9 @@ public class PersonaController {
         return ResponseEntity.noContent().build();
     }
 
-    @GetMapping("/{personaId}/NaturalOrJuridica")
+    @GetMapping("/{personaId}/NaturalOrJuridic")
     @RequirePermission(module = "PERSONAS", permission = "READ")
-    public ResponseEntity<PersonaDisplayDto> findPersonaNaturalOrJuridicaById(@PathVariable Integer personaId) {
+    public ResponseEntity<PersonDisplayDto> findPersonaNaturalOrJuridicaById(@PathVariable Integer personaId) {
         return ResponseEntity.ok(personaService.findPersonaNaturalOrJuridicaById(personaId));
     }
 }

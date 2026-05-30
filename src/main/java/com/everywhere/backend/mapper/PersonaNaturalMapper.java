@@ -1,9 +1,9 @@
 package com.everywhere.backend.mapper;
 
-import com.everywhere.backend.model.dto.PersonaNaturalRequestDTO;
-import com.everywhere.backend.model.dto.PersonaNaturalResponseDTO;
-import com.everywhere.backend.model.dto.PersonaNaturalSinViajeroResponseDTO;
-import com.everywhere.backend.model.entity.PersonaNatural;
+import com.everywhere.backend.model.dto.PersonNaturalRequestDTO;
+import com.everywhere.backend.model.dto.PersonNaturalResponseDTO;
+import com.everywhere.backend.model.dto.PersonNaturalWithoutTravelerResponseDTO;
+import com.everywhere.backend.model.entity.PersonNatural;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
 
@@ -18,41 +18,41 @@ public class PersonaNaturalMapper {
     private final ViajeroMapper viajeroMapper;
     private final CategoriaPersonaMapper categoriaPersonaMapper; // ✅ Agregado
 
-    public PersonaNaturalResponseDTO toResponseDTO(PersonaNatural personaNatural) {
-        PersonaNaturalResponseDTO personaNaturalResponseDTO = modelMapper.map(personaNatural, PersonaNaturalResponseDTO.class);
+    public PersonNaturalResponseDTO toResponseDTO(PersonNatural personaNatural) {
+        PersonNaturalResponseDTO personaNaturalResponseDTO = modelMapper.map(personaNatural, PersonNaturalResponseDTO.class);
 
         // ✅ Corregido: getPersonas() en lugar de getPersona()
-        if (personaNatural.getPersonas() != null) {
-            personaNaturalResponseDTO.setPersona(personaMapper.toResponseDTO(personaNatural.getPersonas()));
+        if (personaNatural.getPerson() != null) {
+            personaNaturalResponseDTO.setPerson(personaMapper.toResponseDTO(personaNatural.getPerson()));
         }
 
-        if (personaNatural.getViajero() != null) {
-            personaNaturalResponseDTO.setViajero(viajeroMapper.toResponseDTO(personaNatural.getViajero()));
+        if (personaNatural.getTraveler() != null) {
+            personaNaturalResponseDTO.setTraveler(viajeroMapper.toResponseDTO(personaNatural.getTraveler()));
         }
 
         return personaNaturalResponseDTO;
     }
 
-    public PersonaNatural toEntity(PersonaNaturalRequestDTO personaNaturalRequestDTOdto) {
-        return modelMapper.map(personaNaturalRequestDTOdto, PersonaNatural.class);
+    public PersonNatural toEntity(PersonNaturalRequestDTO personaNaturalRequestDTOdto) {
+        return modelMapper.map(personaNaturalRequestDTOdto, PersonNatural.class);
     }
 
-    public void updateEntityFromDTO(PersonaNaturalRequestDTO personaNaturalRequestDTO, PersonaNatural personaNatural) {
+    public void updateEntityFromDTO(PersonNaturalRequestDTO personaNaturalRequestDTO, PersonNatural personaNatural) {
         modelMapper.map(personaNaturalRequestDTO, personaNatural);
 
-        if (personaNaturalRequestDTO.getPersona() != null && personaNatural.getPersonas() != null)
-            personaMapper.updateEntityFromDTO(personaNaturalRequestDTO.getPersona(), personaNatural.getPersonas());
+        if (personaNaturalRequestDTO.getPerson() != null && personaNatural.getPerson() != null)
+            personaMapper.updateEntityFromDTO(personaNaturalRequestDTO.getPerson(), personaNatural.getPerson());
     }
 
-    public PersonaNaturalSinViajeroResponseDTO toSinViajeroResponseDTO(PersonaNatural personaNatural) {
-        PersonaNaturalSinViajeroResponseDTO dto = modelMapper.map(personaNatural, PersonaNaturalSinViajeroResponseDTO.class);
+    public PersonNaturalWithoutTravelerResponseDTO toSinViajeroResponseDTO(PersonNatural personaNatural) {
+        PersonNaturalWithoutTravelerResponseDTO dto = modelMapper.map(personaNatural, PersonNaturalWithoutTravelerResponseDTO.class);
 
-        if (personaNatural.getPersonas() != null) {
-            dto.setPersona(personaMapper.toResponseDTO(personaNatural.getPersonas()));
+        if (personaNatural.getPerson() != null) {
+            dto.setPerson(personaMapper.toResponseDTO(personaNatural.getPerson()));
         }
 
-        if (personaNatural.getCategoriaPersona() != null) {
-            dto.setCategoriaPersona(categoriaPersonaMapper.toResponseDTO(personaNatural.getCategoriaPersona()));
+        if (personaNatural.getCategoryPerson() != null) {
+            dto.setCategoryPerson(categoriaPersonaMapper.toResponseDTO(personaNatural.getCategoryPerson()));
         }
 
         return dto;

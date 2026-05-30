@@ -1,8 +1,8 @@
 package com.everywhere.backend.mapper;
 
-import com.everywhere.backend.model.dto.ProductoRequestDTO;
-import com.everywhere.backend.model.dto.ProductoResponseDTO;
-import com.everywhere.backend.model.entity.Producto;
+import com.everywhere.backend.model.dto.ProductRequestDTO;
+import com.everywhere.backend.model.dto.ProductResponseDTO;
+import com.everywhere.backend.model.entity.Product;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
@@ -14,17 +14,17 @@ public class ProductoMapper {
 
     private final ModelMapper modelMapper;
 
-    public ProductoResponseDTO toResponseDTO(Producto producto) {
-        return modelMapper.map(producto, ProductoResponseDTO.class);
+    public ProductResponseDTO toResponseDTO(Product producto) {
+        return modelMapper.map(producto, ProductResponseDTO.class);
     }
 
-    public Producto toEntity(ProductoRequestDTO productoRequestDTO) {
-        Producto producto = modelMapper.map(productoRequestDTO, Producto.class);
-        producto.setCreado(LocalDateTime.now());
+    public Product toEntity(ProductRequestDTO productoRequestDTO) {
+        Product producto = modelMapper.map(productoRequestDTO, Product.class);
+        producto.setCreated(LocalDateTime.now());
         return producto;
     }
 
-    public void updateEntityFromDTO(ProductoRequestDTO productoRequestDTO, Producto producto) {
+    public void updateEntityFromDTO(ProductRequestDTO productoRequestDTO, Product producto) {
         modelMapper.map(productoRequestDTO, producto);
     }
 }

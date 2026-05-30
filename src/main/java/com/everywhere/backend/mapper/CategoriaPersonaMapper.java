@@ -1,8 +1,8 @@
 package com.everywhere.backend.mapper;
 
-import com.everywhere.backend.model.dto.CategoriaPersonaRequestDTO;
-import com.everywhere.backend.model.dto.CategoriaPersonaResponseDTO;
-import com.everywhere.backend.model.entity.CategoriaPersona;
+import com.everywhere.backend.model.dto.CategoryPersonaRequestDTO;
+import com.everywhere.backend.model.dto.CategoryPersonaResponseDTO;
+import com.everywhere.backend.model.entity.CategoryPerson;
 
 import lombok.RequiredArgsConstructor;
 
@@ -14,15 +14,15 @@ import org.springframework.stereotype.Component;
 public class CategoriaPersonaMapper {
     private final ModelMapper modelMapper;
 
-    public CategoriaPersonaResponseDTO toResponseDTO(CategoriaPersona categoriaPersona) {
-        return modelMapper.map(categoriaPersona, CategoriaPersonaResponseDTO.class);
+    public CategoryPersonaResponseDTO toResponseDTO(CategoryPerson categoriaPersona) {
+        return modelMapper.map(categoriaPersona, CategoryPersonaResponseDTO.class);
     }
 
-    public CategoriaPersona toEntity(CategoriaPersonaRequestDTO categoriaPersonaRequestDTO) {
-        return modelMapper.map(categoriaPersonaRequestDTO, CategoriaPersona.class);
+    public CategoryPerson toEntity(CategoryPersonaRequestDTO categoriaPersonaRequestDTO) {
+        return modelMapper.map(categoriaPersonaRequestDTO, CategoryPerson.class);
     }
 
-    public void updateEntityFromDTO(CategoriaPersonaRequestDTO categoriaPersonaRequestDTO, CategoriaPersona categoriaPersona) {
+    public void updateEntityFromDTO(CategoryPersonaRequestDTO categoriaPersonaRequestDTO, CategoryPerson categoriaPersona) {
         modelMapper.map(categoriaPersonaRequestDTO, categoriaPersona);
     }
 }

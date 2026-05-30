@@ -1,7 +1,7 @@
 package com.everywhere.backend.api;
 
-import com.everywhere.backend.model.dto.DocumentoRequestDto;
-import com.everywhere.backend.model.dto.DocumentoResponseDto;
+import com.everywhere.backend.model.dto.DocumentRequestDto;
+import com.everywhere.backend.model.dto.DocumentResponseDto;
 import com.everywhere.backend.security.RequirePermission;
 import com.everywhere.backend.service.DocumentoService;
 
@@ -15,32 +15,32 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/documentos")
+@RequestMapping("/document")
 public class DocumentoController {
 
     private final DocumentoService documentoService;
 
     @GetMapping
     @RequirePermission(module = "DOCUMENTOS", permission = "CREATE")
-    public ResponseEntity<List<DocumentoResponseDto>> getAll() {
+    public ResponseEntity<List<DocumentResponseDto>> getAll() {
         return ResponseEntity.ok(documentoService.findAll());
     }
 
     @GetMapping("/{id}")
     @RequirePermission(module = "DOCUMENTOS", permission = "READ")
-    public ResponseEntity<DocumentoResponseDto> getById(@PathVariable int id) {
+    public ResponseEntity<DocumentResponseDto> getById(@PathVariable int id) {
         return ResponseEntity.ok(documentoService.findById(id));
     }
 
     @PostMapping
     @RequirePermission(module = "DOCUMENTOS", permission = "CREATE")
-    public ResponseEntity<DocumentoResponseDto> create(@RequestBody DocumentoRequestDto documentoRequestDto) {
+    public ResponseEntity<DocumentResponseDto> create(@RequestBody DocumentRequestDto documentoRequestDto) {
         return ResponseEntity.status(HttpStatus.CREATED).body(documentoService.create(documentoRequestDto));
     }
 
     @PatchMapping("/{id}")
     @RequirePermission(module = "DOCUMENTOS", permission = "UPDATE")
-    public ResponseEntity<DocumentoResponseDto> update(@PathVariable int id, @RequestBody DocumentoRequestDto documentoRequestDto) {
+    public ResponseEntity<DocumentResponseDto> update(@PathVariable int id, @RequestBody DocumentRequestDto documentoRequestDto) {
         return ResponseEntity.ok(documentoService.patch(id, documentoRequestDto));
     }
 

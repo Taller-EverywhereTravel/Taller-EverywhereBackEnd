@@ -3,9 +3,9 @@ package com.everywhere.backend.service.impl;
 import com.everywhere.backend.exceptions.ConflictException;
 import com.everywhere.backend.exceptions.ResourceNotFoundException;
 import com.everywhere.backend.mapper.ProveedorMapper;
-import com.everywhere.backend.model.dto.ProveedorRequestDTO;
-import com.everywhere.backend.model.dto.ProveedorResponseDTO;
-import com.everywhere.backend.model.entity.Proveedor;
+import com.everywhere.backend.model.dto.SupplierRequestDTO;
+import com.everywhere.backend.model.dto.SupplierResponseDTO;
+import com.everywhere.backend.model.entity.Supplier;
 import com.everywhere.backend.repository.DetalleCotizacionRepository;
 import com.everywhere.backend.repository.DetalleLiquidacionRepository;
 import com.everywhere.backend.repository.ProveedorRepository;
@@ -26,20 +26,20 @@ public class ProveedorServiceImpl implements ProveedorService {
     private final DetalleLiquidacionRepository detalleLiquidacionRepository;
 
     @Override
-    public ProveedorResponseDTO create(ProveedorRequestDTO proveedorRequestDTO) {
+    public SupplierResponseDTO create(SupplierRequestDTO proveedorRequestDTO) {
         if (proveedorRequestDTO.getRuc() != null && proveedorRepository.existsByRuc(proveedorRequestDTO.getRuc()))
             throw new DataIntegrityViolationException("Ya existe un proveedor con el RUC: " + proveedorRequestDTO.getRuc());
 
-        Proveedor proveedor = proveedorMapper.toEntity(proveedorRequestDTO);
+        Supplier proveedor = proveedorMapper.toEntity(proveedorRequestDTO);
         return proveedorMapper.toResponseDTO(proveedorRepository.save(proveedor));
     }
 
     @Override
-    public ProveedorResponseDTO update(Integer id, ProveedorRequestDTO proveedorRequestDTO) {
+    public SupplierResponseDTO update(Integer id, SupplierRequestDTO proveedorRequestDTO) {
         if (!proveedorRepository.existsById(id))
             throw new ResourceNotFoundException("Proveedor no encontrado con ID: " + id);
 
-        Proveedor proveedor = proveedorRepository.findById(id).get();
+        Supplier proveedor = proveedorRepository.findById(id).get();
         
         if (proveedorRequestDTO.getRuc() != null && 
             proveedorRepository.existsByRuc(proveedorRequestDTO.getRuc()) &&
@@ -52,14 +52,14 @@ public class ProveedorServiceImpl implements ProveedorService {
     }
 
     @Override
-    public ProveedorResponseDTO getById(Integer id) {
-        Proveedor proveedor = proveedorRepository.findById(id)
+    public SupplierResponseDTO getById(Integer id) {
+        Supplier proveedor = proveedorRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Proveedor no encontrado con ID: " + id));
         return proveedorMapper.toResponseDTO(proveedor);
     }
 
     @Override
-    public List<ProveedorResponseDTO> getAll() {
+    public List<SupplierResponseDTO> getAll() {
         return mapToResponseList(proveedorRepository.findAll());
     }
 
@@ -89,7 +89,7 @@ public class ProveedorServiceImpl implements ProveedorService {
         proveedorRepository.deleteById(id);
     }
 
-    private List<ProveedorResponseDTO> mapToResponseList(List<Proveedor> proveedores) {
+    private List<SupplierResponseDTO> mapToResponseList(List<Supplier> proveedores) {
         return proveedores.stream().map(proveedorMapper::toResponseDTO).toList();
     }
 }

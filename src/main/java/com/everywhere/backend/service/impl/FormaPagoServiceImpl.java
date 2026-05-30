@@ -2,9 +2,9 @@ package com.everywhere.backend.service.impl;
 
 import com.everywhere.backend.exceptions.ConflictException;
 import com.everywhere.backend.mapper.FormaPagoMapper;
-import com.everywhere.backend.model.dto.FormaPagoRequestDTO;
-import com.everywhere.backend.model.dto.FormaPagoResponseDTO;
-import com.everywhere.backend.model.entity.FormaPago;
+import com.everywhere.backend.model.dto.MethodPaymentRequestDTO;
+import com.everywhere.backend.model.dto.MethodPaymentResponseDTO;
+import com.everywhere.backend.model.entity.MethodPayment;
 import com.everywhere.backend.repository.CotizacionRepository;
 import com.everywhere.backend.repository.FormaPagoRepository;
 import com.everywhere.backend.service.FormaPagoService;
@@ -26,51 +26,51 @@ public class FormaPagoServiceImpl implements FormaPagoService {
     private final CotizacionRepository cotizacionRepository;
 
     @Override
-    public List<FormaPagoResponseDTO> findAll() {
+    public List<MethodPaymentResponseDTO> findAll() {
         return mapToResponseList(formaPagoRepository.findAll());
     }
 
     @Override
-    public FormaPagoResponseDTO findById(Integer id) {
+    public MethodPaymentResponseDTO findById(Integer id) {
         return formaPagoRepository.findById(id).map(formaPagoMapper::toResponseDTO)
             .orElseThrow(() -> new ResourceNotFoundException("Forma de pago no encontrada con ID: " + id));
     }
 
     @Override
-    public FormaPagoResponseDTO findByCodigo(Integer codigo) {
+    public MethodPaymentResponseDTO findByCodigo(Integer codigo) {
         return formaPagoRepository.findByCodigo(codigo).map(formaPagoMapper::toResponseDTO)
             .orElseThrow(() -> new ResourceNotFoundException("Forma de pago no encontrada con código: " + codigo));
     }
 
     @Override
-    public List<FormaPagoResponseDTO> findByDescripcion(String descripcion) {
+    public List<MethodPaymentResponseDTO> findByDescripcion(String descripcion) {
         return mapToResponseList(formaPagoRepository.findByDescripcionContainingIgnoreCase(descripcion));
     }
 
     @Override
-    public FormaPagoResponseDTO save(FormaPagoRequestDTO formaPagoRequestDTO) {
-        FormaPago formaPago = formaPagoMapper.toEntity(formaPagoRequestDTO);
+    public MethodPaymentResponseDTO save(MethodPaymentRequestDTO formaPagoRequestDTO) {
+        MethodPayment formaPago = formaPagoMapper.toEntity(formaPagoRequestDTO);
         return formaPagoMapper.toResponseDTO(formaPagoRepository.save(formaPago));
     }
 
     @Override
-    public FormaPagoResponseDTO update(Integer id, FormaPagoRequestDTO formaPagoRequestDTO) {
+    public MethodPaymentResponseDTO update(Integer id, MethodPaymentRequestDTO formaPagoRequestDTO) {
         if (!formaPagoRepository.existsById(id))
             throw new ResourceNotFoundException("Forma de pago no encontrada con ID: " + id);
 
-        FormaPago formaPago = formaPagoRepository.findById(id).get();
+        MethodPayment formaPago = formaPagoRepository.findById(id).get();
 
-        if (formaPagoRequestDTO.getCodigo() != null && 
-            !formaPagoRequestDTO.getCodigo().equals(formaPago.getCodigo()) &&
-            formaPagoRepository.existsByCodigo(formaPagoRequestDTO.getCodigo())) {
-            throw new DataIntegrityViolationException("Ya existe una forma de pago con el código: " + formaPagoRequestDTO.getCodigo());
+        if (formaPagoRequestDTO.getCode() != null && 
+            !formaPagoRequestDTO.getCode().equals(formaPago.getCode()) &&
+            formaPagoRepository.existsByCodigo(formaPagoRequestDTO.getCode())) {
+            throw new DataIntegrityViolationException("Ya existe una forma de pago con el código: " + formaPagoRequestDTO.getCode());
         }
 
-        if (formaPagoRequestDTO.getCodigo() != null)
-            formaPago.setCodigo(formaPagoRequestDTO.getCodigo());
+        if (formaPagoRequestDTO.getCode() != null)
+            formaPago.setCode(formaPagoRequestDTO.getCode());
 
-        if (formaPagoRequestDTO.getDescripcion() != null && !formaPagoRequestDTO.getDescripcion().trim().isEmpty())
-            formaPago.setDescripcion(formaPagoRequestDTO.getDescripcion());
+        if (formaPagoRequestDTO.getDescription() != null && !formaPagoRequestDTO.getDescription().trim().isEmpty())
+            formaPago.setDescription(formaPagoRequestDTO.getDescription());
 
         return formaPagoMapper.toResponseDTO(formaPagoRepository.save(formaPago));
     }
@@ -92,7 +92,7 @@ public class FormaPagoServiceImpl implements FormaPagoService {
         formaPagoRepository.deleteById(id);
     }
 
-    private List<FormaPagoResponseDTO> mapToResponseList(List<FormaPago> formasPago) {
+    private List<MethodPaymentResponseDTO> mapToResponseList(List<MethodPayment> formasPago) {
         return formasPago.stream().map(formaPagoMapper::toResponseDTO).toList();
     }
 }

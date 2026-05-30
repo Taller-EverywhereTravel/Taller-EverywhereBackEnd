@@ -6,9 +6,9 @@ import com.everywhere.backend.mapper.HistorialCotizacionMapper;
 import com.everywhere.backend.model.dto.HistorialCotizacionRequestDTO;
 import com.everywhere.backend.model.dto.HistorialCotizacionResponseDTO;
 import com.everywhere.backend.model.dto.HistorialCotizacionSimpleDTO;
-import com.everywhere.backend.model.entity.Cotizacion;
-import com.everywhere.backend.model.entity.EstadoCotizacion;
-import com.everywhere.backend.model.entity.HistorialCotizacion;
+import com.everywhere.backend.model.entity.Quotation;
+import com.everywhere.backend.model.entity.StatusQuotation;
+import com.everywhere.backend.model.entity.RecordQuotation;
 import com.everywhere.backend.model.entity.User;
 import com.everywhere.backend.repository.CotizacionRepository;
 import com.everywhere.backend.repository.EstadoCotizacionRepository;
@@ -40,7 +40,7 @@ public class HistorialCotizacionServiceImpl implements HistorialCotizacionServic
 
     @Override
     public HistorialCotizacionResponseDTO findById(Integer id) {
-        HistorialCotizacion historialCotizacion = historialCotizacionRepository.findByIdWithRelations(id)
+        RecordQuotation historialCotizacion = historialCotizacionRepository.findByIdWithRelations(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Historial de cotización no encontrado con ID: " + id));
         return historialCotizacionMapper.toResponseDTO(historialCotizacion);
     }
@@ -55,21 +55,21 @@ public class HistorialCotizacionServiceImpl implements HistorialCotizacionServic
 
     @Override
     public HistorialCotizacionResponseDTO save(HistorialCotizacionRequestDTO historialCotizacionRequestDTO) {
-        if (historialCotizacionRequestDTO.getCotizacionId() == null) {
+        if (historialCotizacionRequestDTO.getQuotationId() == null) {
             throw new BadRequestException("El campo cotizacionId es obligatorio para registrar historial");
         }
 
-        if (historialCotizacionRequestDTO.getEstadoCotizacionId() == null) {
+        if (historialCotizacionRequestDTO.getStatusQuotationId() == null) {
             throw new BadRequestException("El campo estadoCotizacionId es obligatorio para registrar historial");
         }
 
-        HistorialCotizacion historialCotizacion = historialCotizacionMapper.toEntity(historialCotizacionRequestDTO);
+        RecordQuotation historialCotizacion = historialCotizacionMapper.toEntity(historialCotizacionRequestDTO);
 
-        historialCotizacion.setCotizacion(resolveCotizacion(historialCotizacionRequestDTO.getCotizacionId()));
-        historialCotizacion.setEstadoCotizacion(resolveEstadoCotizacion(historialCotizacionRequestDTO.getEstadoCotizacionId()));
-        historialCotizacion.setUsuario(resolveUsuario(historialCotizacionRequestDTO.getUsuarioId()));
+        historialCotizacion.setQuotation(resolveCotizacion(historialCotizacionRequestDTO.getQuotationId()));
+        historialCotizacion.setStatusQuotation(resolveEstadoCotizacion(historialCotizacionRequestDTO.getStatusQuotationId()));
+        historialCotizacion.setUser(resolveUsuario(historialCotizacionRequestDTO.getUserId()));
 
-        HistorialCotizacion saved = historialCotizacionRepository.save(historialCotizacion);
+        RecordQuotation saved = historialCotizacionRepository.save(historialCotizacion);
         return historialCotizacionMapper.toResponseDTO(saved);
     }
 
@@ -79,22 +79,22 @@ public class HistorialCotizacionServiceImpl implements HistorialCotizacionServic
             throw new ResourceNotFoundException("Historial de cotización no encontrado con ID: " + id);
         }
 
-        HistorialCotizacion historialCotizacion = historialCotizacionRepository.findById(id).get();
+        RecordQuotation historialCotizacion = historialCotizacionRepository.findById(id).get();
         historialCotizacionMapper.updateEntityFromDTO(historialCotizacionRequestDTO, historialCotizacion);
 
-        if (historialCotizacionRequestDTO.getCotizacionId() != null) {
-            historialCotizacion.setCotizacion(resolveCotizacion(historialCotizacionRequestDTO.getCotizacionId()));
+        if (historialCotizacionRequestDTO.getQuotationId() != null) {
+            historialCotizacion.setQuotation(resolveCotizacion(historialCotizacionRequestDTO.getQuotationId()));
         }
 
-        if (historialCotizacionRequestDTO.getEstadoCotizacionId() != null) {
-            historialCotizacion.setEstadoCotizacion(resolveEstadoCotizacion(historialCotizacionRequestDTO.getEstadoCotizacionId()));
+        if (historialCotizacionRequestDTO.getStatusQuotationId() != null) {
+            historialCotizacion.setStatusQuotation(resolveEstadoCotizacion(historialCotizacionRequestDTO.getStatusQuotationId()));
         }
 
-        if (historialCotizacionRequestDTO.getUsuarioId() != null) {
-            historialCotizacion.setUsuario(resolveUsuario(historialCotizacionRequestDTO.getUsuarioId()));
+        if (historialCotizacionRequestDTO.getUserId() != null) {
+            historialCotizacion.setUser(resolveUsuario(historialCotizacionRequestDTO.getUserId()));
         }
 
-        HistorialCotizacion updated = historialCotizacionRepository.save(historialCotizacion);
+        RecordQuotation updated = historialCotizacionRepository.save(historialCotizacion);
         return historialCotizacionMapper.toResponseDTO(updated);
     }
 
@@ -111,18 +111,18 @@ public class HistorialCotizacionServiceImpl implements HistorialCotizacionServic
                                                                 Integer estadoCotizacionId,
                                                                 String observacion) {
         HistorialCotizacionRequestDTO historialCotizacionRequestDTO = new HistorialCotizacionRequestDTO();
-        historialCotizacionRequestDTO.setCotizacionId(cotizacionId);
-        historialCotizacionRequestDTO.setEstadoCotizacionId(estadoCotizacionId);
-        historialCotizacionRequestDTO.setObservacion(observacion);
+        historialCotizacionRequestDTO.setQuotationId(cotizacionId);
+        historialCotizacionRequestDTO.setStatusQuotationId(estadoCotizacionId);
+        historialCotizacionRequestDTO.setObservation(observacion);
         return save(historialCotizacionRequestDTO);
     }
 
-    private Cotizacion resolveCotizacion(Integer cotizacionId) {
+    private Quotation resolveCotizacion(Integer cotizacionId) {
         return cotizacionRepository.findById(cotizacionId)
                 .orElseThrow(() -> new ResourceNotFoundException("Cotización no encontrada con ID: " + cotizacionId));
     }
 
-    private EstadoCotizacion resolveEstadoCotizacion(Integer estadoCotizacionId) {
+    private StatusQuotation resolveEstadoCotizacion(Integer estadoCotizacionId) {
         return estadoCotizacionRepository.findById(estadoCotizacionId)
                 .orElseThrow(() -> new ResourceNotFoundException(
                         "Estado de cotización no encontrado con ID: " + estadoCotizacionId));
@@ -163,11 +163,11 @@ public class HistorialCotizacionServiceImpl implements HistorialCotizacionServic
         return userPrincipal.getId();
     }
 
-    private List<HistorialCotizacionResponseDTO> mapToResponseList(List<HistorialCotizacion> historialCotizaciones) {
+    private List<HistorialCotizacionResponseDTO> mapToResponseList(List<RecordQuotation> historialCotizaciones) {
         return historialCotizaciones.stream().map(historialCotizacionMapper::toResponseDTO).toList();
     }
 
-    private List<HistorialCotizacionSimpleDTO> mapToSimpleList(List<HistorialCotizacion> historialCotizaciones) {
+    private List<HistorialCotizacionSimpleDTO> mapToSimpleList(List<RecordQuotation> historialCotizaciones) {
         return historialCotizaciones.stream().map(historialCotizacionMapper::toSimpleDTO).toList();
     }
 }

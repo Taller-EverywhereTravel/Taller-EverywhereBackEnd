@@ -1,9 +1,9 @@
 package com.everywhere.backend.mapper;
 
-import com.everywhere.backend.model.dto.DetalleLiquidacionRequestDTO;
-import com.everywhere.backend.model.dto.DetalleLiquidacionResponseDTO;
-import com.everywhere.backend.model.dto.DetalleLiquidacionSinLiquidacionDTO;
-import com.everywhere.backend.model.entity.DetalleLiquidacion;
+import com.everywhere.backend.model.dto.DetailLiquidationRequestDTO;
+import com.everywhere.backend.model.dto.DetailLiquidationResponseDTO;
+import com.everywhere.backend.model.dto.DetailLiquidationWithoutLiquidationDTO;
+import com.everywhere.backend.model.entity.DetailLiquidation;
 
 import jakarta.annotation.PostConstruct;
 
@@ -19,65 +19,65 @@ public class DetalleLiquidacionMapper {
 
     @PostConstruct
     public void init() {
-        modelMapper.typeMap(DetalleLiquidacionRequestDTO.class, DetalleLiquidacion.class)
-                .addMappings(mapper -> mapper.skip(DetalleLiquidacion::setId));
+        modelMapper.typeMap(DetailLiquidationRequestDTO.class, DetailLiquidation.class)
+                .addMappings(mapper -> mapper.skip(DetailLiquidation::setId));
     }
 
-    public DetalleLiquidacionResponseDTO toResponseDTO(DetalleLiquidacion detalleLiquidacion) {
-        DetalleLiquidacionResponseDTO detalleLiquidacionResponseDTO = modelMapper.map(detalleLiquidacion, DetalleLiquidacionResponseDTO.class);
+    public DetailLiquidationResponseDTO toResponseDTO(DetailLiquidation detalleLiquidacion) {
+        DetailLiquidationResponseDTO detalleLiquidacionResponseDTO = modelMapper.map(detalleLiquidacion, DetailLiquidationResponseDTO.class);
         return detalleLiquidacionResponseDTO;
     }
 
-    public DetalleLiquidacionSinLiquidacionDTO toSinLiquidacionDTO(DetalleLiquidacion detalleLiquidacion) {
-        DetalleLiquidacionSinLiquidacionDTO detalleLiquidacionSinLiquidacionDTO = modelMapper.map(detalleLiquidacion, DetalleLiquidacionSinLiquidacionDTO.class);
+    public DetailLiquidationWithoutLiquidationDTO toSinLiquidacionDTO(DetailLiquidation detalleLiquidacion) {
+        DetailLiquidationWithoutLiquidationDTO detalleLiquidacionSinLiquidacionDTO = modelMapper.map(detalleLiquidacion, DetailLiquidationWithoutLiquidationDTO.class);
         return detalleLiquidacionSinLiquidacionDTO;
     }
 
-    public DetalleLiquidacion toEntity(DetalleLiquidacionRequestDTO detalleLiquidacionRequestDTO) {
-        DetalleLiquidacion detalleLiquidacion = new DetalleLiquidacion();
+    public DetailLiquidation toEntity(DetailLiquidationRequestDTO detalleLiquidacionRequestDTO) {
+        DetailLiquidation detalleLiquidacion = new DetailLiquidation();
         updateEntityFromDTO(detalleLiquidacionRequestDTO, detalleLiquidacion);
         return detalleLiquidacion;
     }
 
-    public void updateEntityFromDTO(DetalleLiquidacionRequestDTO detalleLiquidacionRequestDTO, DetalleLiquidacion detalleLiquidacion) {
+    public void updateEntityFromDTO(DetailLiquidationRequestDTO detalleLiquidacionRequestDTO, DetailLiquidation detalleLiquidacion) {
         if (detalleLiquidacionRequestDTO.getTicket() != null) {
             detalleLiquidacion.setTicket(detalleLiquidacionRequestDTO.getTicket());
         }
-        if (detalleLiquidacionRequestDTO.getDocumentoCobro() != null) {
-            detalleLiquidacion.setDocumentoCobro(detalleLiquidacionRequestDTO.getDocumentoCobro());
+        if (detalleLiquidacionRequestDTO.getDocumentCollection() != null) {
+            detalleLiquidacion.setDocumentCollection(detalleLiquidacionRequestDTO.getDocumentCollection());
         }
-        if (detalleLiquidacionRequestDTO.getCostoTicket() != null) {
-            detalleLiquidacion.setCostoTicket(detalleLiquidacionRequestDTO.getCostoTicket());
+        if (detalleLiquidacionRequestDTO.getCostTicket() != null) {
+            detalleLiquidacion.setCostTicket(detalleLiquidacionRequestDTO.getCostTicket());
         }
-        if (detalleLiquidacionRequestDTO.getCargoServicio() != null) {
-            detalleLiquidacion.setCargoServicio(detalleLiquidacionRequestDTO.getCargoServicio());
+        if (detalleLiquidacionRequestDTO.getChargeService() != null) {
+            detalleLiquidacion.setChargeService(detalleLiquidacionRequestDTO.getChargeService());
         }
-        if (detalleLiquidacionRequestDTO.getValorVenta() != null) {
-            detalleLiquidacion.setValorVenta(detalleLiquidacionRequestDTO.getValorVenta());
+        if (detalleLiquidacionRequestDTO.getValueSale() != null) {
+            detalleLiquidacion.setValueSale(detalleLiquidacionRequestDTO.getValueSale());
         }
         if (detalleLiquidacionRequestDTO.getFeeEmision() != null) {
             detalleLiquidacion.setFeeEmision(detalleLiquidacionRequestDTO.getFeeEmision());
         }
-        if (detalleLiquidacionRequestDTO.getDocumentoFee() != null) {
-            detalleLiquidacion.setDocumentoFee(detalleLiquidacionRequestDTO.getDocumentoFee());
+        if (detalleLiquidacionRequestDTO.getDocumentFee() != null) {
+            detalleLiquidacion.setDocumentFee(detalleLiquidacionRequestDTO.getDocumentFee());
         }
-        if (detalleLiquidacionRequestDTO.getComision() != null) {
-            detalleLiquidacion.setComision(detalleLiquidacionRequestDTO.getComision());
+        if (detalleLiquidacionRequestDTO.getComission() != null) {
+            detalleLiquidacion.setCommission(detalleLiquidacionRequestDTO.getComission());
         }
-        if (detalleLiquidacionRequestDTO.getFacturaCompra() != null) {
-            detalleLiquidacion.setFacturaCompra(detalleLiquidacionRequestDTO.getFacturaCompra());
+        if (detalleLiquidacionRequestDTO.getInvoicePurchase() != null) {
+            detalleLiquidacion.setInvoicePurchase(detalleLiquidacionRequestDTO.getInvoicePurchase());
         }
-        if (detalleLiquidacionRequestDTO.getBoletaPasajero() != null) {
-            detalleLiquidacion.setBoletaPasajero(detalleLiquidacionRequestDTO.getBoletaPasajero());
+        if (detalleLiquidacionRequestDTO.getTicketPassenger() != null) {
+            detalleLiquidacion.setTicketPassenger(detalleLiquidacionRequestDTO.getTicketPassenger());
         }
-        if (detalleLiquidacionRequestDTO.getMontoDescuento() != null) {
-            detalleLiquidacion.setMontoDescuento(detalleLiquidacionRequestDTO.getMontoDescuento());
+        if (detalleLiquidacionRequestDTO.getAmountDiscount() != null) {
+            detalleLiquidacion.setAmountDiscount(detalleLiquidacionRequestDTO.getAmountDiscount());
         }
-        if (detalleLiquidacionRequestDTO.getPagoPaxUSD() != null) {
-            detalleLiquidacion.setPagoPaxUSD(detalleLiquidacionRequestDTO.getPagoPaxUSD());
+        if (detalleLiquidacionRequestDTO.getPaymentPaxUSD() != null) {
+            detalleLiquidacion.setPaymentPaxUSD(detalleLiquidacionRequestDTO.getPaymentPaxUSD());
         }
-        if (detalleLiquidacionRequestDTO.getPagoPaxPEN() != null) {
-            detalleLiquidacion.setPagoPaxPEN(detalleLiquidacionRequestDTO.getPagoPaxPEN());
+        if (detalleLiquidacionRequestDTO.getPaymentPaxPEN() != null) {
+            detalleLiquidacion.setPaymentPaxPEN(detalleLiquidacionRequestDTO.getPaymentPaxPEN());
         }
     }
 }

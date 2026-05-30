@@ -2,9 +2,9 @@ package com.everywhere.backend.service.impl;
 
 import com.everywhere.backend.exceptions.ResourceNotFoundException;
 import com.everywhere.backend.mapper.ProveedorGrupoContactoMapper;
-import com.everywhere.backend.model.dto.ProveedorGrupoContactoRequestDTO;
-import com.everywhere.backend.model.dto.ProveedorGrupoContactoResponseDTO;
-import com.everywhere.backend.model.entity.ProveedorGrupoContacto;
+import com.everywhere.backend.model.dto.SupplierGroupContactRequestDTO;
+import com.everywhere.backend.model.dto.SupplierGroupContactResponseDTO;
+import com.everywhere.backend.model.entity.SupplierGroupContact;
 import com.everywhere.backend.repository.ProveedorGrupoContactoRepository;
 import com.everywhere.backend.service.ProveedorGrupoContactoService;
 import lombok.RequiredArgsConstructor;
@@ -20,35 +20,35 @@ public class ProveedorGrupoContactoServiceImpl implements ProveedorGrupoContacto
     private final ProveedorGrupoContactoMapper mapper;
 
     @Override
-    public List<ProveedorGrupoContactoResponseDTO> findAll() {
+    public List<SupplierGroupContactResponseDTO> findAll() {
         return repository.findAll().stream()
                 .map(mapper::toResponseDTO)
                 .toList();
     }
 
     @Override
-    public ProveedorGrupoContactoResponseDTO findById(Integer id) {
-        ProveedorGrupoContacto entity = repository.findById(id)
+    public SupplierGroupContactResponseDTO findById(Integer id) {
+        SupplierGroupContact entity = repository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Grupo de contacto no encontrado con ID: " + id));
         return mapper.toResponseDTO(entity);
     }
 
     @Override
-    public List<ProveedorGrupoContactoResponseDTO> findByNombre(String nombre) {
+    public List<SupplierGroupContactResponseDTO> findByNombre(String nombre) {
         return repository.findByNombreContainingIgnoreCase(nombre).stream()
                 .map(mapper::toResponseDTO)
                 .toList();
     }
 
     @Override
-    public ProveedorGrupoContactoResponseDTO save(ProveedorGrupoContactoRequestDTO dto) {
-        ProveedorGrupoContacto entity = mapper.toEntity(dto);
+    public SupplierGroupContactResponseDTO save(SupplierGroupContactRequestDTO dto) {
+        SupplierGroupContact entity = mapper.toEntity(dto);
         return mapper.toResponseDTO(repository.save(entity));
     }
 
     @Override
-    public ProveedorGrupoContactoResponseDTO update(Integer id, ProveedorGrupoContactoRequestDTO dto) {
-        ProveedorGrupoContacto existing = repository.findById(id)
+    public SupplierGroupContactResponseDTO update(Integer id, SupplierGroupContactRequestDTO dto) {
+        SupplierGroupContact existing = repository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Grupo de contacto no encontrado con ID: " + id));
 
         mapper.updateEntityFromDTO(dto, existing);

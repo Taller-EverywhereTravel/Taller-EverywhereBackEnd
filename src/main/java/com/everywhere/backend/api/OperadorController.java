@@ -1,7 +1,7 @@
 package com.everywhere.backend.api;
 
-import com.everywhere.backend.model.dto.OperadorRequestDTO;
-import com.everywhere.backend.model.dto.OperadorResponseDTO;
+import com.everywhere.backend.model.dto.OperatorRequestDTO;
+import com.everywhere.backend.model.dto.OperatorResponseDTO;
 import com.everywhere.backend.security.RequirePermission;
 import com.everywhere.backend.service.OperadorService;
 import lombok.RequiredArgsConstructor;
@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 
 @RestController
-@RequestMapping("/operadores")
+@RequestMapping("/operator")
 @RequiredArgsConstructor
 public class OperadorController {
 
@@ -23,32 +23,32 @@ public class OperadorController {
 
     @GetMapping
     @RequirePermission(module = "OPERADOR", permission = "READ")
-    public ResponseEntity<List<OperadorResponseDTO>> findAll() { 
+    public ResponseEntity<List<OperatorResponseDTO>> findAll() { 
         return ResponseEntity.ok(operadorService.findAll());
     }
 
     @GetMapping("/{id}")
     @RequirePermission(module = "OPERADOR", permission = "READ")
-    public ResponseEntity<OperadorResponseDTO> getById(@PathVariable Integer id) {
+    public ResponseEntity<OperatorResponseDTO> getById(@PathVariable Integer id) {
         return ResponseEntity.ok(operadorService.findById(id));
     }
 
-    @GetMapping("/nombre")
-    public ResponseEntity<OperadorResponseDTO> getByNombre(@RequestParam String nombre) {
+    @GetMapping("/name")
+    public ResponseEntity<OperatorResponseDTO> getByNombre(@RequestParam String nombre) {
         return ResponseEntity.ok(operadorService.findByNombre(nombre));
     }
 
     @PostMapping
     @RequirePermission(module = "OPERADOR", permission = "CREATE")
-    public ResponseEntity<OperadorResponseDTO> create(@RequestBody OperadorRequestDTO operadorRequestDTO) { 
+    public ResponseEntity<OperatorResponseDTO> create(@RequestBody OperatorRequestDTO operadorRequestDTO) { 
         return ResponseEntity.status(HttpStatus.CREATED).body(operadorService.save(operadorRequestDTO));
     }
 
     @PatchMapping("/{id}")
     @RequirePermission(module = "OPERADOR", permission = "UPDATE")
-    public ResponseEntity<OperadorResponseDTO> partialUpdate(
+    public ResponseEntity<OperatorResponseDTO> partialUpdate(
             @PathVariable Integer id,
-            @RequestBody OperadorRequestDTO dto) {
+            @RequestBody OperatorRequestDTO dto) {
             return ResponseEntity.ok(operadorService.update(id, dto));
     }
 

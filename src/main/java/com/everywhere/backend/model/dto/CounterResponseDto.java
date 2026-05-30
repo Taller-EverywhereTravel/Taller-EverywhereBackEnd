@@ -8,13 +8,13 @@ import java.time.LocalDateTime;
 public class CounterResponseDto {
     private int id;
 
-    private String nombre;
+    private String name;
 
-    private Boolean estado;
+    private Boolean status;
 
-    private String codigo;
+    private String code;
 
-    private LocalDateTime fechaCreacion;
+    private LocalDateTime dateCreation;
 
-    private LocalDateTime fechaActualizacion;
+    private LocalDateTime dateUpdated;
 }

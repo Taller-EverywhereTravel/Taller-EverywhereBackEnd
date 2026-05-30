@@ -1,8 +1,8 @@
 package com.everywhere.backend.api;
 
-import com.everywhere.backend.model.dto.PersonaNaturalRequestDTO;
-import com.everywhere.backend.model.dto.PersonaNaturalResponseDTO;
-import com.everywhere.backend.model.dto.PersonaNaturalViajeroDTO; 
+import com.everywhere.backend.model.dto.PersonNaturalRequestDTO;
+import com.everywhere.backend.model.dto.PersonNaturalResponseDTO;
+import com.everywhere.backend.model.dto.PersonNaturalViajeroDTO; 
 import com.everywhere.backend.security.RequirePermission;
 import com.everywhere.backend.service.PersonaNaturalService;
 import jakarta.validation.Valid;
@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/personas-naturales")
+@RequestMapping("/person-natural")
 @RequiredArgsConstructor
 public class PersonaNaturalController {
 
@@ -22,61 +22,61 @@ public class PersonaNaturalController {
 
     @GetMapping
     @RequirePermission(module = "PERSONAS", permission = "READ")
-    public ResponseEntity<List<PersonaNaturalResponseDTO>> getAllPersonasNaturales() { 
+    public ResponseEntity<List<PersonNaturalResponseDTO>> getAllPersonasNaturales() { 
         return ResponseEntity.ok(personaNaturalService.findAll());
     }
 
-    @GetMapping("/documento")
+    @GetMapping("/document")
     @RequirePermission(module = "PERSONAS", permission = "READ")
-    public ResponseEntity<List<PersonaNaturalResponseDTO>> getPersonasNaturalesByDocumento(@RequestParam String documento) { 
+    public ResponseEntity<List<PersonNaturalResponseDTO>> getPersonasNaturalesByDocumento(@RequestParam String documento) { 
         return ResponseEntity.ok(personaNaturalService.findByDocumento(documento.trim()));
     }
 
-    @GetMapping("/nombres")
+    @GetMapping("/name")
     @RequirePermission(module = "PERSONAS", permission = "READ")
-    public ResponseEntity<List<PersonaNaturalResponseDTO>> getPersonasNaturalesByNombre(@RequestParam String nombres) { 
+    public ResponseEntity<List<PersonNaturalResponseDTO>> getPersonasNaturalesByNombre(@RequestParam String nombres) { 
         return ResponseEntity.ok(personaNaturalService.findByNombres(nombres.trim()));
     }
 
-    @GetMapping("/apellidos-paterno")
+    @GetMapping("/surname-paternal")
     @RequirePermission(module = "PERSONAS", permission = "READ")
-    public ResponseEntity<List<PersonaNaturalResponseDTO>> getPersonasNaturalesByApellidoPaterno(@RequestParam String apellidos) { 
+    public ResponseEntity<List<PersonNaturalResponseDTO>> getPersonasNaturalesByApellidoPaterno(@RequestParam String apellidos) { 
         return ResponseEntity.ok(personaNaturalService.findByApellidosPaternos(apellidos.trim()));
     } 
 
-    @GetMapping("/apellidos-materno")
+    @GetMapping("/surname-maternal")
     @RequirePermission(module = "PERSONAS", permission = "READ")
-    public ResponseEntity<List<PersonaNaturalResponseDTO>> getPersonasNaturalesByApellidoMaterno(@RequestParam String apellidos) { 
+    public ResponseEntity<List<PersonNaturalResponseDTO>> getPersonasNaturalesByApellidoMaterno(@RequestParam String apellidos) { 
         return ResponseEntity.ok(personaNaturalService.findByApellidosMaternos(apellidos.trim()));
     } 
 
     @GetMapping("/{id}")
     @RequirePermission(module = "PERSONAS", permission = "READ")
-    public ResponseEntity<PersonaNaturalResponseDTO> getPersonaNaturalById(@PathVariable Integer id) { 
+    public ResponseEntity<PersonNaturalResponseDTO> getPersonaNaturalById(@PathVariable Integer id) { 
         return ResponseEntity.ok(personaNaturalService.findById(id));
     }
 
     @PostMapping
     @RequirePermission(module = "PERSONAS", permission = "CREATE")
-    public ResponseEntity<PersonaNaturalResponseDTO> createPersonaNatural(@Valid @RequestBody PersonaNaturalRequestDTO personaNaturalRequestDTO) { 
+    public ResponseEntity<PersonNaturalResponseDTO> createPersonaNatural(@Valid @RequestBody PersonNaturalRequestDTO personaNaturalRequestDTO) { 
         return ResponseEntity.status(HttpStatus.CREATED).body(personaNaturalService.save(personaNaturalRequestDTO));
     }
 
     @PatchMapping("/{id}")
     @RequirePermission(module = "PERSONAS", permission = "UPDATE")
-    public ResponseEntity<PersonaNaturalResponseDTO> patchPersonaNatural(@PathVariable Integer id, @RequestBody PersonaNaturalRequestDTO personaNaturalRequestDTO) { 
+    public ResponseEntity<PersonNaturalResponseDTO> patchPersonaNatural(@PathVariable Integer id, @RequestBody PersonNaturalRequestDTO personaNaturalRequestDTO) { 
         return ResponseEntity.ok(personaNaturalService.patch(id, personaNaturalRequestDTO));
     }
 
-    @PatchMapping("/{id}/asociar-viajero")
+    @PatchMapping("/{id}/associate-traveler")
     @RequirePermission(module = "PERSONAS", permission = "UPDATE")
-    public ResponseEntity<PersonaNaturalResponseDTO> patchAsociarViajero(@PathVariable Integer id, @RequestBody PersonaNaturalViajeroDTO personaNaturalViajeroDTO) { 
-        return ResponseEntity.ok(personaNaturalService.asociarViajero(id, personaNaturalViajeroDTO.getViajeroId()));
+    public ResponseEntity<PersonNaturalResponseDTO> patchAsociarViajero(@PathVariable Integer id, @RequestBody PersonNaturalViajeroDTO personaNaturalViajeroDTO) { 
+        return ResponseEntity.ok(personaNaturalService.asociarViajero(id, personaNaturalViajeroDTO.getTravelerId()));
     }
 
-    @PatchMapping("/{id}/desasociar-viajero")
+    @PatchMapping("/{id}/dissociate-traveler")
     @RequirePermission(module = "PERSONAS", permission = "UPDATE")
-    public ResponseEntity<PersonaNaturalResponseDTO> desasociarViajero(@PathVariable Integer id) { 
+    public ResponseEntity<PersonNaturalResponseDTO> desasociarViajero(@PathVariable Integer id) { 
         return ResponseEntity.ok(personaNaturalService.desasociarViajero(id));
     }
 

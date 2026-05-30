@@ -1,8 +1,8 @@
 package com.everywhere.backend.mapper;
 
-import com.everywhere.backend.model.dto.ObservacionLiquidacionRequestDTO;
-import com.everywhere.backend.model.dto.ObservacionLiquidacionResponseDTO;
-import com.everywhere.backend.model.entity.ObservacionLiquidacion; 
+import com.everywhere.backend.model.dto.ObservationLiquidationRequestDTO;
+import com.everywhere.backend.model.dto.ObservationLiquidationResponseDTO;
+import com.everywhere.backend.model.entity.ObservationLiquidation; 
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -16,26 +16,26 @@ public class ObservacionLiquidacionMapper {
 
     @PostConstruct
     public void configureMapping() {
-        modelMapper.typeMap(ObservacionLiquidacionRequestDTO.class, ObservacionLiquidacion.class)
-                .addMappings(mapper -> mapper.skip(ObservacionLiquidacion::setLiquidacion));
+        modelMapper.typeMap(ObservationLiquidationRequestDTO.class, ObservationLiquidation.class)
+                .addMappings(mapper -> mapper.skip(ObservationLiquidation::setLiquidation));
     }
 
-    public ObservacionLiquidacion toEntity(ObservacionLiquidacionRequestDTO observacionLiquidacionRequestDTO) {
-        ObservacionLiquidacion observacionLiquidacion =
-                modelMapper.map(observacionLiquidacionRequestDTO, ObservacionLiquidacion.class);
+    public ObservationLiquidation toEntity(ObservationLiquidationRequestDTO observacionLiquidacionRequestDTO) {
+        ObservationLiquidation observacionLiquidacion =
+                modelMapper.map(observacionLiquidacionRequestDTO, ObservationLiquidation.class);
 
         return observacionLiquidacion;
     }
 
-    public ObservacionLiquidacionResponseDTO toResponseDTO(ObservacionLiquidacion observacionLiquidacion) {
-        ObservacionLiquidacionResponseDTO observacionLiquidacionResponseDTO =
-                modelMapper.map(observacionLiquidacion, ObservacionLiquidacionResponseDTO.class);
+    public ObservationLiquidationResponseDTO toResponseDTO(ObservationLiquidation observacionLiquidacion) {
+        ObservationLiquidationResponseDTO observacionLiquidacionResponseDTO =
+                modelMapper.map(observacionLiquidacion, ObservationLiquidationResponseDTO.class);
 
         return observacionLiquidacionResponseDTO;
     }
 
-    public void updateEntityFromDTO(ObservacionLiquidacionRequestDTO observacionLiquidacionRequestDTO,
-                                    ObservacionLiquidacion observacionLiquidacion) {
+    public void updateEntityFromDTO(ObservationLiquidationRequestDTO observacionLiquidacionRequestDTO,
+                                    ObservationLiquidation observacionLiquidacion) {
         modelMapper.map(observacionLiquidacionRequestDTO, observacionLiquidacion);
    }
 }

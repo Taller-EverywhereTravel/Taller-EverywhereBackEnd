@@ -1,16 +1,16 @@
 package com.everywhere.backend.service;
 
-import com.everywhere.backend.model.dto.TelefonoPersonaRequestDTO;
-import com.everywhere.backend.model.dto.TelefonoPersonaResponseDTO;
+import com.everywhere.backend.model.dto.PhonePersonRequestDTO;
+import com.everywhere.backend.model.dto.PhonePersonResponseDTO;
 
 import java.util.List;
 import java.util.Optional;
 
 public interface TelefonoPersonaService {
-    List<TelefonoPersonaResponseDTO> findAll();
-    Optional<TelefonoPersonaResponseDTO> findById(Integer telefonoId, Integer personaId);
-    List<TelefonoPersonaResponseDTO> findByPersonaId(Integer personaId);
-    TelefonoPersonaResponseDTO save(TelefonoPersonaRequestDTO telefonoPersonaRequestDTO, Integer personaId);
-    TelefonoPersonaResponseDTO update(Integer personaId, TelefonoPersonaRequestDTO TelefonoPersonaRequestDTO, Integer TelefonoPersonaId);
+    List<PhonePersonResponseDTO> findAll();
+    Optional<PhonePersonResponseDTO> findById(Integer telefonoId, Integer personaId);
+    List<PhonePersonResponseDTO> findByPersonaId(Integer personaId);
+    PhonePersonResponseDTO save(PhonePersonRequestDTO telefonoPersonaRequestDTO, Integer personaId);
+    PhonePersonResponseDTO update(Integer personaId, PhonePersonRequestDTO TelefonoPersonaRequestDTO, Integer TelefonoPersonaId);
     void deleteById(Integer telefonoId, Integer personaId);
 }

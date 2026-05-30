@@ -4,7 +4,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
 
 import com.everywhere.backend.model.dto.*;
-import com.everywhere.backend.model.entity.Cotizacion;
+import com.everywhere.backend.model.entity.Quotation;
 import lombok.RequiredArgsConstructor;
 
 import jakarta.annotation.PostConstruct;
@@ -18,61 +18,61 @@ public class CotizacionMapper {
 
     @PostConstruct
     public void configureMapping() {
-        modelMapper.typeMap(CotizacionRequestDto.class, Cotizacion.class).addMappings(mapper -> {
-            mapper.skip(Cotizacion::setCounter);
-            mapper.skip(Cotizacion::setFormaPago);
-            mapper.skip(Cotizacion::setEstadoCotizacion);
-            mapper.skip(Cotizacion::setSucursal);
-            mapper.skip(Cotizacion::setCarpeta);
+        modelMapper.typeMap(QuotationRequestDto.class, Quotation.class).addMappings(mapper -> {
+            mapper.skip(Quotation::setCounter);
+            mapper.skip(Quotation::setMethodPayment);
+            mapper.skip(Quotation::setStatusQuotation);
+            mapper.skip(Quotation::setBranch);
+            mapper.skip(Quotation::setFolder);
         });
     }
 
-    public CotizacionResponseDto toResponse(Cotizacion cotizacion) { 
-        return modelMapper.map(cotizacion, CotizacionResponseDto.class);
+    public QuotationResponseDto toResponse(Quotation cotizacion) { 
+        return modelMapper.map(cotizacion, QuotationResponseDto.class);
     }
 
-    public Cotizacion toEntity(CotizacionRequestDto cotizacionRequestDto) { 
-        return modelMapper.map(cotizacionRequestDto, Cotizacion.class);
+    public Quotation toEntity(QuotationRequestDto cotizacionRequestDto) { 
+        return modelMapper.map(cotizacionRequestDto, Quotation.class);
     }
     
-    public void updateEntityFromRequest(Cotizacion cotizacion, CotizacionRequestDto cotizacionRequestDto) {
-        if (cotizacionRequestDto.getNombreCotizacion() != null) {
-            cotizacion.setNombreCotizacion(cotizacionRequestDto.getNombreCotizacion());
+    public void updateEntityFromRequest(Quotation cotizacion, QuotationRequestDto cotizacionRequestDto) {
+        if (cotizacionRequestDto.getNameQuotation() != null) {
+            cotizacion.setNameQuotation(cotizacionRequestDto.getNameQuotation());
         }
-        if (cotizacionRequestDto.getCantAdultos() != null) {
-            cotizacion.setCantAdultos(cotizacionRequestDto.getCantAdultos());
+        if (cotizacionRequestDto.getNumAdult() != null) {
+            cotizacion.setNumAdult(cotizacionRequestDto.getNumAdult());
         }
-        if (cotizacionRequestDto.getCantNinos() != null) {
-            cotizacion.setCantNinos(cotizacionRequestDto.getCantNinos());
+        if (cotizacionRequestDto.getNumChild() != null) {
+            cotizacion.setNumChild(cotizacionRequestDto.getNumChild());
         }
-        if (cotizacionRequestDto.getFechaVencimiento() != null) {
-            cotizacion.setFechaVencimiento(cotizacionRequestDto.getFechaVencimiento());
+        if (cotizacionRequestDto.getDateExpiration() != null) {
+            cotizacion.setDateExpiration(cotizacionRequestDto.getDateExpiration());
         }
-        if (cotizacionRequestDto.getOrigenDestino() != null) {
-            cotizacion.setOrigenDestino(cotizacionRequestDto.getOrigenDestino());
+        if (cotizacionRequestDto.getOriginDestination() != null) {
+            cotizacion.setOriginDestination(cotizacionRequestDto.getOriginDestination());
         }
-        if (cotizacionRequestDto.getFechaSalida() != null) {
-            cotizacion.setFechaSalida(cotizacionRequestDto.getFechaSalida());
+        if (cotizacionRequestDto.getDateDeparture() != null) {
+            cotizacion.setDateDeparture(cotizacionRequestDto.getDateDeparture());
         }
-        if (cotizacionRequestDto.getFechaRegreso() != null) {
-            cotizacion.setFechaRegreso(cotizacionRequestDto.getFechaRegreso());
+        if (cotizacionRequestDto.getDateReturn() != null) {
+            cotizacion.setDateReturn(cotizacionRequestDto.getDateReturn());
         }
-        if (cotizacionRequestDto.getMoneda() != null) {
-            cotizacion.setMoneda(cotizacionRequestDto.getMoneda());
+        if (cotizacionRequestDto.getCurrency() != null) {
+            cotizacion.setCurrency(cotizacionRequestDto.getCurrency());
         }
-        if (cotizacionRequestDto.getObservacion() != null) {
-            cotizacion.setObservacion(cotizacionRequestDto.getObservacion());
+        if (cotizacionRequestDto.getObservation() != null) {
+            cotizacion.setObservation(cotizacionRequestDto.getObservation());
         }
     }
 
-    public CotizacionConDetallesResponseDTO toResponseWithDetalles(CotizacionResponseDto cotizacionResponseDto, 
-        List<DetalleCotizacionSimpleDTO> detalleCotizacionSimpleDTOs) {
-        CotizacionConDetallesResponseDTO cotizacionConDetallesResponseDTO = modelMapper.map(cotizacionResponseDto, CotizacionConDetallesResponseDTO.class);
-        cotizacionConDetallesResponseDTO.setDetalles(detalleCotizacionSimpleDTOs);
+    public QuotationWithDetailResponseDTO toResponseWithDetalles(QuotationResponseDto cotizacionResponseDto, 
+        List<DetailQuotationSimpleDTO> detalleCotizacionSimpleDTOs) {
+        QuotationWithDetailResponseDTO cotizacionConDetallesResponseDTO = modelMapper.map(cotizacionResponseDto, QuotationWithDetailResponseDTO.class);
+        cotizacionConDetallesResponseDTO.setDetail(detalleCotizacionSimpleDTOs);
         return cotizacionConDetallesResponseDTO;
     }
 
-    public DetalleCotizacionSimpleDTO toDetalleSimple(DetalleCotizacionResponseDto detalleCotizacionResponseDto) {
-        return modelMapper.map(detalleCotizacionResponseDto, DetalleCotizacionSimpleDTO.class);
+    public DetailQuotationSimpleDTO toDetalleSimple(DetailQuotationResponseDto detalleCotizacionResponseDto) {
+        return modelMapper.map(detalleCotizacionResponseDto, DetailQuotationSimpleDTO.class);
     }
 }

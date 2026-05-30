@@ -1,8 +1,8 @@
 package com.everywhere.backend.mapper;
 
-import com.everywhere.backend.model.dto.EstadoCotizacionRequestDTO;
-import com.everywhere.backend.model.dto.EstadoCotizacionResponseDTO;
-import com.everywhere.backend.model.entity.EstadoCotizacion;
+import com.everywhere.backend.model.dto.StatusQuotationRequestDTO;
+import com.everywhere.backend.model.dto.StatusQuotationResponseDTO;
+import com.everywhere.backend.model.entity.StatusQuotation;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -12,13 +12,13 @@ public class EstadoCotizacionMapper {
 
     @Autowired
     private ModelMapper modelMapper;
-    public EstadoCotizacion toEntity(EstadoCotizacionRequestDTO estadoCotizacionRequestDTO) {
-        return modelMapper.map(estadoCotizacionRequestDTO, EstadoCotizacion.class);
+    public StatusQuotation toEntity(StatusQuotationRequestDTO estadoCotizacionRequestDTO) {
+        return modelMapper.map(estadoCotizacionRequestDTO, StatusQuotation.class);
     }
-        public EstadoCotizacionResponseDTO toResponseDTO(EstadoCotizacion estadoCotizacion) {
-        return modelMapper.map(estadoCotizacion, EstadoCotizacionResponseDTO.class);
+        public StatusQuotationResponseDTO toResponseDTO(StatusQuotation estadoCotizacion) {
+        return modelMapper.map(estadoCotizacion, StatusQuotationResponseDTO.class);
     }
-        public void updateEntityFromDTO(EstadoCotizacionRequestDTO estadoCotizacionRequestDTO, EstadoCotizacion estadoCotizacion) {
+        public void updateEntityFromDTO(StatusQuotationRequestDTO estadoCotizacionRequestDTO, StatusQuotation estadoCotizacion) {
         modelMapper.map(estadoCotizacionRequestDTO, estadoCotizacion);
     }
 }

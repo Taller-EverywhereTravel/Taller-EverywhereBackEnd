@@ -1,7 +1,7 @@
 package com.everywhere.backend.api;
 
-import com.everywhere.backend.model.dto.DetalleDocumentoCobranzaRequestDTO;
-import com.everywhere.backend.model.dto.DetalleDocumentoCobranzaResponseDTO;
+import com.everywhere.backend.model.dto.DetailDocumentCollectionRequestDTO;
+import com.everywhere.backend.model.dto.DetailDocumentCollectionResponseDTO;
 import com.everywhere.backend.security.RequirePermission;
 import com.everywhere.backend.service.DetalleDocumentoCobranzaService;
 import jakarta.validation.Valid;
@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/detalle-documento-cobranza")
+@RequestMapping("/detail-document-collection")
 @RequiredArgsConstructor
 public class DetalleDocumentoCobranzaController {
 
@@ -22,32 +22,32 @@ public class DetalleDocumentoCobranzaController {
 
     @GetMapping
     @RequirePermission(module = "DOCUMENTOS_COBRANZA", permission = "READ")
-    public ResponseEntity<List<DetalleDocumentoCobranzaResponseDTO>> getAllDetalles() { 
+    public ResponseEntity<List<DetailDocumentCollectionResponseDTO>> getAllDetalles() { 
         return ResponseEntity.ok(detalleService.findAll());
     }
 
     @GetMapping("/{id}")
     @RequirePermission(module = "DOCUMENTOS_COBRANZA", permission = "READ")
-    public ResponseEntity<DetalleDocumentoCobranzaResponseDTO> getDetalleById(@PathVariable Long id) {
+    public ResponseEntity<DetailDocumentCollectionResponseDTO> getDetalleById(@PathVariable Long id) {
         return ResponseEntity.ok(detalleService.findById(id));
     }
 
-    @GetMapping("/documento-cobranza/{documentoId}")
+    @GetMapping("/document-collection/{documentoId}")
     @RequirePermission(module = "DOCUMENTOS_COBRANZA", permission = "READ")
-    public ResponseEntity<List<DetalleDocumentoCobranzaResponseDTO>> getDetallesByDocumentoCobranza(@PathVariable Long documentoId) {
+    public ResponseEntity<List<DetailDocumentCollectionResponseDTO>> getDetallesByDocumentoCobranza(@PathVariable Long documentoId) {
         return ResponseEntity.ok(detalleService.findByDocumentoCobranzaId(documentoId));
     }
 
     @PostMapping
     @RequirePermission(module = "DOCUMENTOS_COBRANZA", permission = "CREATE")
-    public ResponseEntity<DetalleDocumentoCobranzaResponseDTO> createDetalle(@Valid @RequestBody DetalleDocumentoCobranzaRequestDTO dto) {
+    public ResponseEntity<DetailDocumentCollectionResponseDTO> createDetalle(@Valid @RequestBody DetailDocumentCollectionRequestDTO dto) {
         return ResponseEntity.status(HttpStatus.CREATED).body(detalleService.save(dto));
     }
 
     @PatchMapping("/{id}")
     @RequirePermission(module = "DOCUMENTOS_COBRANZA", permission = "UPDATE")
-    public ResponseEntity<DetalleDocumentoCobranzaResponseDTO> updateDetalle(
-            @PathVariable Long id, @Valid @RequestBody DetalleDocumentoCobranzaRequestDTO detalleDocumentoCobranzaRequestDTO) { 
+    public ResponseEntity<DetailDocumentCollectionResponseDTO> updateDetalle(
+            @PathVariable Long id, @Valid @RequestBody DetailDocumentCollectionRequestDTO detalleDocumentoCobranzaRequestDTO) { 
         return ResponseEntity.ok(detalleService.patch(id, detalleDocumentoCobranzaRequestDTO));
     }
 

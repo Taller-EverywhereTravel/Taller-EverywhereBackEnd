@@ -1,7 +1,7 @@
 package com.everywhere.backend.api;
 
-import com.everywhere.backend.model.dto.PagoPaxRequestDTO;
-import com.everywhere.backend.model.dto.PagoPaxResponseDTO;
+import com.everywhere.backend.model.dto.PaymentPaxRequestDTO;
+import com.everywhere.backend.model.dto.PaymentPaxResponseDTO;
 import com.everywhere.backend.security.RequirePermission;
 import com.everywhere.backend.service.PagoPaxService;
 import jakarta.validation.Valid;
@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/pagos-pax")
+@RequestMapping("/payment-pax")
 @RequiredArgsConstructor
 public class PagoPaxController {
 
@@ -24,8 +24,8 @@ public class PagoPaxController {
      */
     @PostMapping
     @RequirePermission(module = "PAGOS_PAX", permission = "CREATE")
-    public ResponseEntity<PagoPaxResponseDTO> createPagoPax(@Valid @RequestBody PagoPaxRequestDTO requestDTO) {
-        PagoPaxResponseDTO responseDTO = pagoPaxService.create(requestDTO);
+    public ResponseEntity<PaymentPaxResponseDTO> createPagoPax(@Valid @RequestBody PaymentPaxRequestDTO requestDTO) {
+        PaymentPaxResponseDTO responseDTO = pagoPaxService.create(requestDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(responseDTO);
     }
 
@@ -34,7 +34,7 @@ public class PagoPaxController {
      */
     @GetMapping
     @RequirePermission(module = "PAGOS_PAX", permission = "READ")
-    public ResponseEntity<List<PagoPaxResponseDTO>> getAllPagosPax() {
+    public ResponseEntity<List<PaymentPaxResponseDTO>> getAllPagosPax() {
         return ResponseEntity.ok(pagoPaxService.findAll());
     }
 
@@ -43,16 +43,16 @@ public class PagoPaxController {
      */
     @GetMapping("/{id}")
     @RequirePermission(module = "PAGOS_PAX", permission = "READ")
-    public ResponseEntity<PagoPaxResponseDTO> getPagoPaxById(@PathVariable Integer id) {
+    public ResponseEntity<PaymentPaxResponseDTO> getPagoPaxById(@PathVariable Integer id) {
         return ResponseEntity.ok(pagoPaxService.findById(id));
     }
 
     /**
      * Obtener todos los pagos pax de una liquidación
      */
-    @GetMapping("/liquidacion/{liquidacionId}")
+    @GetMapping("/liquidation/{liquidacionId}")
     @RequirePermission(module = "PAGOS_PAX", permission = "READ")
-    public ResponseEntity<List<PagoPaxResponseDTO>> getPagosPaxByLiquidacion(@PathVariable Integer liquidacionId) {
+    public ResponseEntity<List<PaymentPaxResponseDTO>> getPagosPaxByLiquidacion(@PathVariable Integer liquidacionId) {
         return ResponseEntity.ok(pagoPaxService.findByLiquidacionId(liquidacionId));
     }
 
@@ -61,9 +61,9 @@ public class PagoPaxController {
      */
     @PatchMapping("/{id}")
     @RequirePermission(module = "PAGOS_PAX", permission = "UPDATE")
-    public ResponseEntity<PagoPaxResponseDTO> updatePagoPax(
+    public ResponseEntity<PaymentPaxResponseDTO> updatePagoPax(
             @PathVariable Integer id,
-            @Valid @RequestBody PagoPaxRequestDTO requestDTO) {
+            @Valid @RequestBody PaymentPaxRequestDTO requestDTO) {
         return ResponseEntity.ok(pagoPaxService.update(id, requestDTO));
     }
 

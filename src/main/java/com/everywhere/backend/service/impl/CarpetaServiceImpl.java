@@ -1,9 +1,9 @@
 package com.everywhere.backend.service.impl;
 
 import com.everywhere.backend.mapper.CarpetaMapper;
-import com.everywhere.backend.model.dto.CarpetaRequestDto;
-import com.everywhere.backend.model.dto.CarpetaResponseDto;
-import com.everywhere.backend.model.entity.Carpeta;
+import com.everywhere.backend.model.dto.FolderRequestDto;
+import com.everywhere.backend.model.dto.FolderResponseDto;
+import com.everywhere.backend.model.entity.Folder;
 import com.everywhere.backend.repository.CarpetaRepository;
 import com.everywhere.backend.service.CarpetaService;
 import com.everywhere.backend.exceptions.ResourceNotFoundException;
@@ -32,40 +32,40 @@ public class CarpetaServiceImpl implements CarpetaService {
 
     @Override
     @Transactional
-    public CarpetaResponseDto create(CarpetaRequestDto carpetaRequestDto, Integer carpetaPadreId) {
-        Carpeta carpeta = carpetaMapper.toEntity(carpetaRequestDto);
+    public FolderResponseDto create(FolderRequestDto carpetaRequestDto, Integer carpetaPadreId) {
+        Folder carpeta = carpetaMapper.toEntity(carpetaRequestDto);
         
         if (carpetaPadreId != null) { // Primero asignar el nivel correcto
-            Carpeta carpetaPadre = carpetaRepository.findById(carpetaPadreId)
+            Folder carpetaPadre = carpetaRepository.findById(carpetaPadreId)
                     .orElseThrow(() -> new ResourceNotFoundException(
                             "Carpeta padre no encontrada con ID: " + carpetaPadreId));
-            carpeta.setCarpetaPadre(carpetaPadre);
-            carpeta.setNivel(carpetaPadre.getNivel() + 1);
+            carpeta.setFolderFather(carpetaPadre);
+            carpeta.setLevel(carpetaPadre.getLevel() + 1);
         } else {
-            carpeta.setNivel(0); // raíz
+            carpeta.setLevel(0); // raíz
         }
 
-        if (carpetaRepository.existsByNombreAndNivel(carpeta.getNombre(), carpeta.getNivel()))
-            throw new DataIntegrityViolationException("Ya existe una carpeta con el nombre '" + carpeta.getNombre() + "' en el nivel " + carpeta.getNivel());
+        if (carpetaRepository.existsByNombreAndNivel(carpeta.getName(), carpeta.getLevel()))
+            throw new DataIntegrityViolationException("Ya existe una carpeta con el nombre '" + carpeta.getName() + "' en el nivel " + carpeta.getLevel());
 
         return carpetaMapper.toResponse(carpetaRepository.save(carpeta));
     }
 
     @Override
-    public CarpetaResponseDto findById(Integer id) {
+    public FolderResponseDto findById(Integer id) {
         return carpetaRepository.findById(id).map(carpetaMapper::toResponse)
             .orElseThrow(() -> new ResourceNotFoundException("Carpeta no encontrada con ID: " + id));
     }
 
     @Override
-    public List<CarpetaResponseDto> findAll() {
+    public List<FolderResponseDto> findAll() {
         return mapToResponseList(carpetaRepository.findAll());
     }
 
     @Override
     @Transactional
-    public CarpetaResponseDto update(Integer id, CarpetaRequestDto carpetaRequestDto) {
-        Carpeta carpeta = carpetaRepository.findById(id)
+    public FolderResponseDto update(Integer id, FolderRequestDto carpetaRequestDto) {
+        Folder carpeta = carpetaRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Carpeta no encontrada con ID: " + id));
 
         carpetaMapper.updateEntityFromRequest(carpetaRequestDto, carpeta);
@@ -81,69 +81,69 @@ public class CarpetaServiceImpl implements CarpetaService {
     }
 
     @Override
-    public List<CarpetaResponseDto> findByCarpetaPadreId(Integer carpetaPadreId) {
+    public List<FolderResponseDto> findByCarpetaPadreId(Integer carpetaPadreId) {
         if (!carpetaRepository.existsById(carpetaPadreId)) 
             throw new ResourceNotFoundException("Carpeta padre no encontrada con ID: " + carpetaPadreId);
         return mapToResponseList(carpetaRepository.findByCarpetaPadreId(carpetaPadreId));
     }
 
     @Override
-    public List<CarpetaResponseDto> findByNivel(Integer nivel) {
+    public List<FolderResponseDto> findByNivel(Integer nivel) {
         return mapToResponseList(carpetaRepository.findByNivel(nivel));
     }
 
     @Override
-    public List<CarpetaResponseDto> findByNombre(String nombre) { 
+    public List<FolderResponseDto> findByNombre(String nombre) { 
         return mapToResponseList(carpetaRepository.findByNombreContainingIgnoreCase(nombre));
     }
 
     @Override
-    public List<CarpetaResponseDto> findByMes(int mes) {
+    public List<FolderResponseDto> findByMes(int mes) {
         int anioActual = LocalDate.now().getYear(); 
         return mapToResponseList(carpetaRepository.findByAnioAndMes(anioActual, mes));
     }
 
     @Override
-    public List<CarpetaResponseDto> findByFechaCreacionBetween(LocalDate inicio, LocalDate fin) {
+    public List<FolderResponseDto> findByFechaCreacionBetween(LocalDate inicio, LocalDate fin) {
         LocalDateTime start = inicio.atStartOfDay();
         LocalDateTime end = fin.plusDays(1).atStartOfDay().minusSeconds(1); 
         return mapToResponseList(carpetaRepository.findByCreadoBetweenOrderByCreadoAsc(start, end));
     }
 
     @Override
-    public List<CarpetaResponseDto> findRecent(int limit) {
-        List<Carpeta> recientes = carpetaRepository.findAll(PageRequest.of(0, limit, Sort.by("creado").descending())).getContent();
+    public List<FolderResponseDto> findRecent(int limit) {
+        List<Folder> recientes = carpetaRepository.findAll(PageRequest.of(0, limit, Sort.by("creado").descending())).getContent();
         return mapToResponseList(recientes);
     }
 
     @Override
-    public List<CarpetaResponseDto> findRaices() { 
+    public List<FolderResponseDto> findRaices() { 
         return mapToResponseList(carpetaRepository.findByCarpetaPadreIsNull());
     }
 
     @Override
-    public List<CarpetaResponseDto> findCamino(Integer carpetaId) {
-        Carpeta carpeta = carpetaRepository.findById(carpetaId)
+    public List<FolderResponseDto> findCamino(Integer carpetaId) {
+        Folder carpeta = carpetaRepository.findById(carpetaId)
                 .orElseThrow(() -> new ResourceNotFoundException("Carpeta no encontrada con ID: " + carpetaId));
 
-        List<Carpeta> camino = new ArrayList<>();
+        List<Folder> camino = new ArrayList<>();
 
         while (carpeta != null) { // Recorremos hacia arriba hasta la raíz
             camino.add(carpeta);
-            carpeta = carpeta.getCarpetaPadre();
+            carpeta = carpeta.getFolderFather();
         }
         Collections.reverse(camino); // Invertimos para que quede desde la raíz hasta la carpeta actual
         return mapToResponseList(camino);
     }
 
     @Override
-    public List<CarpetaResponseDto> findHijosByPadreId(Integer carpetaPadreId) {
+    public List<FolderResponseDto> findHijosByPadreId(Integer carpetaPadreId) {
         if (!carpetaRepository.existsById(carpetaPadreId)) 
             throw new ResourceNotFoundException("Carpeta padre no encontrada con ID: " + carpetaPadreId);
         return mapToResponseList(carpetaRepository.findByCarpetaPadreId(carpetaPadreId));
     }
 
-    private List<CarpetaResponseDto> mapToResponseList(List<Carpeta> carpetas) {
+    private List<FolderResponseDto> mapToResponseList(List<Folder> carpetas) {
         return carpetas.stream().map(carpetaMapper::toResponse).toList();
     }
 }

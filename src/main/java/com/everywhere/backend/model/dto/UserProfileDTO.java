@@ -6,7 +6,7 @@ import lombok.Data;
 public class UserProfileDTO {
     private Integer id;
     private String name;
-    private String email;
+    private String mail;
     private String role;
-    private SucursalResponseDTO sucursal;
+    private BranchResponseDTO branch;
 }
